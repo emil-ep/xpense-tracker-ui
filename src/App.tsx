@@ -1,5 +1,6 @@
-import logo from './logo.svg';
-import './App.css';
+//@ts-expect-error
+import logo from "./logo.svg";
+import "./App.css";
 
 function App() {
   return (
