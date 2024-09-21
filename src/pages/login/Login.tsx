@@ -1,8 +1,22 @@
-import React from "react";
+import React, { useState } from "react";
 import Stack from "../../components/Stack";
 import './login.css'
+import { signIn } from "../../api/authApi";
 
 export default function Login() {
+
+  const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
+
+  async function tryLogin(){
+    try{
+      const response = await signIn({username, password});
+      localStorage.setItem('authToken', response.token);
+    }catch(error){
+      console.error('error during sign', error);
+    }
+  }
+
   return (
     <Stack className="container" direction="row">
       <Stack className="imageSection" direction="row" justify='center'>
@@ -15,8 +29,10 @@ export default function Login() {
             className="inputField"
             id="email" 
             type="email" 
-            // value={email} 
-            // onChange={handleEmailChange} 
+            value={username} 
+            onChange={(e) => {
+              setUsername(e.target.value)
+            }} 
             placeholder="Enter your email" 
           />
           <label className="inputLabel" htmlFor="password">Password</label>
@@ -24,11 +40,13 @@ export default function Login() {
             className="inputField"
             id="password" 
             type="password" 
-            // value={password} 
-            // onChange={handlePasswordChange} 
+            value={password} 
+            onChange={(e) => {
+              setPassword(e.target.value)
+            }} 
             placeholder="Enter your password" 
           />
-          <button className="submitButton">
+          <button className="submitButton" onClick={tryLogin}>
             Submit
           </button>
         </Stack>
