@@ -187,7 +187,6 @@ const headers = [
 
 export default function Home(){
 
-
     return (
         <Stack className="homeContainer" direction="row" align="center" justify="center" >
             <Stack className="tableContainer" direction="column" >
