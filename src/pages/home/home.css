@@ -5,4 +5,8 @@
     height: 100vh;
     width: 100vw;
 
+    .tableContainer {
+        width: 70%;
+    }
+
 }
