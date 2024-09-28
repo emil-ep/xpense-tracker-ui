@@ -3,11 +3,13 @@ import Stack from "../../components/Stack";
 import './login.css'
 import { signIn } from "../../api/authApi";
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
+  const navigate = useNavigate();
 
   async function tryLogin(){
     try{
@@ -23,6 +25,7 @@ export default function Login() {
         progress: undefined,
         theme: "dark",
       });
+      navigate('/home');
     }catch(error){
       console.error('error during sign', error);
       toast("Login Failed", {
