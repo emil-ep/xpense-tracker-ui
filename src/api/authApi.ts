@@ -5,9 +5,12 @@ interface SignInRequest {
 }
 
 interface SignInResponse {
-    token: string;
+    data: SignInData;
 }
 
+interface SignInData{
+    token: string;
+}
 
 export const signIn = async (data: SignInRequest): Promise<SignInResponse> => {
     const response = await fetch('http://localhost:8080/v1/auth/signIn', {

@@ -14,7 +14,7 @@ export default function Login() {
   async function tryLogin(){
     try{
       const response = await signIn({username, password});
-      localStorage.setItem('authToken', response.token);
+      localStorage.setItem('authToken', response.data.token);
       toast("Login Success", {
         position: "top-right",
         autoClose: 5000,
@@ -27,7 +27,6 @@ export default function Login() {
       });
       navigate('/home');
     }catch(error){
-      console.error('error during sign', error);
       toast("Login Failed", {
         position: "top-right",
         autoClose: 5000,
