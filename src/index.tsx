@@ -1,11 +1,13 @@
-import { createRoot } from "react-dom/client";
-import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
-import Login from "./pages/login/Login";
 import './index.css';
-import Home from "./pages/home/Home";
-import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Route, BrowserRouter as Router, Routes } from "react-router-dom";
+
+import Home from "./pages/home/Home";
+import Login from "./pages/login/Login";
+import ProtectedRoute from "./components/ProtectedRoute";
+import { ToastContainer } from 'react-toastify';
+import { createRoot } from "react-dom/client";
 
 const container = document.getElementById("root");
 //@ts-expect-error
@@ -28,7 +30,7 @@ root.render(
     <Router>
       <Routes>
         <Route path="/login" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/home" element={<ProtectedRoute element={Home} />} />
       </Routes>
     </Router>
   </div>
