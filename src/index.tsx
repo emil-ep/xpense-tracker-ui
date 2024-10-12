@@ -8,6 +8,7 @@ import Login from "./pages/login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from 'react-toastify';
 import { createRoot } from "react-dom/client";
+import AddExpense from './pages/expense/AddExpense';
 
 const container = document.getElementById("root");
 //@ts-expect-error
@@ -31,6 +32,7 @@ root.render(
       <Routes>
         <Route path="/login" element={<Login />} />
         <Route path="/home" element={<ProtectedRoute element={Home} />} />
+        <Route path='/expense' element={<ProtectedRoute element={AddExpense}/>} />
       </Routes>
     </Router>
   </div>

@@ -69,7 +69,7 @@ export default function Login() {
             }} 
             placeholder="Enter your password" 
           />
-          <button className="submitButton" onClick={tryLogin}>
+          <button className="submitButton" type="submit" onClick={tryLogin}>
             Submit
           </button>
         </Stack>

@@ -3,6 +3,7 @@ import Stack from "../../components/Stack";
 import './home.css'
 import ExpenseTable from "../../components/table/ExpenseTable";
 import { getExpenses } from "../../api/expensesApi";
+import { useNavigate } from 'react-router-dom';
 
 
 const headers = [
@@ -31,13 +32,12 @@ interface ExpenseItem{
 
 export default function Home(){
 
+    const navigate = useNavigate();
     const [expenseItems, setExpenseItems] = useState<ExpenseItem[]>([]);
     useEffect(() => {
-        
         getExpenses()
             .then((response: ExpenseResponse) => {
                 const items = response.data;
-                console.log('items', items)
                 items.forEach((element: ExpenseItem) => {
                     if(element.type === 'CREDIT'){
                         element.amount = element.credit;
@@ -49,14 +49,19 @@ export default function Home(){
             })
             .catch((err) => {
                 console.error('error occurred', err);
-            }).finally(() => {
-                console.log('finally')
-            })
+            });
     }, []);
+
+    function navigateToExpense(){
+        navigate('/expense');
+    }
 
     return (
         <Stack className="homeContainer" direction="row" align="center" justify="center" >
-            <Stack className="tableContainer" direction="column" >
+            <Stack className="tableContainer" direction="column">
+                <Stack direction="row" justify="flex-end">
+                    <button className="addExpenseBtn" onClick={navigateToExpense}> Add Expense</button>
+                </Stack>
                 <ExpenseTable rows={expenseItems} header={headers}/>
             </Stack>
         </Stack>
