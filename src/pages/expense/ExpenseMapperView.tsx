@@ -49,7 +49,6 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
                     </tbody>
                 </table>
             </Stack>
-            
         </Stack>
     )
 }
