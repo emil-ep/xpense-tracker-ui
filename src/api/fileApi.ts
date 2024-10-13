@@ -1,5 +1,6 @@
+import { UploadResponse } from "./ApiResponses";
 
-export const uploadStatement = async (selectedFile : File) : Promise<any> => {
+export const uploadStatement = async (selectedFile : File) : Promise<UploadResponse> => {
 
     const formData = new FormData();
     formData.append('file', selectedFile);
@@ -14,6 +15,6 @@ export const uploadStatement = async (selectedFile : File) : Promise<any> => {
     if(!response.ok){
         throw new Error('Failed to fetch expenses')
     }
-    const responseData: any = await response.json();
+    const responseData: UploadResponse = await response.json();
     return responseData;
 }
