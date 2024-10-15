@@ -1,0 +1,60 @@
+
+.tableContainer {
+    width: 100vw;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 1rem;
+  text-align: left;
+  border: 1px solid #ddd;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+thead th {
+  background-color: #705c59;
+  color: white;
+  padding: 12px 15px;
+  font-weight: bold;
+  font-family: 'Ubuntu', sans-serif;
+  border-bottom: 2px solid #ddd;
+}
+
+tbody tr {
+  border-bottom: 1px solid #ddd;
+  font-family: 'Ubuntu', sans-serif;
+}
+
+tbody tr {
+  background-color: #695b5b;
+}
+
+tbody tr:hover {
+  background-color: #958282;
+}
+
+/* Cell padding for readability */
+td {
+  padding: 12px 15px;
+}
+
+/* Select dropdown styling */
+select {
+  width: 80%;
+  padding: 8px 10px;
+  border: 1px solid #dbcfcf;
+  border-radius: 4px;
+  background-color: white;
+  font-family: 'Ubuntu', sans-serif;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+ 
+
+h1 {
+    font-family: 'Ubuntu', sans-serif;
+    font-size: 2rem;
+    color: #1d1c1c;
+}

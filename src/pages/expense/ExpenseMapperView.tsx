@@ -2,10 +2,11 @@ import { useEffect, useState} from "react"
 import { useHeaderMapper } from "../../api/fileMapperApi";
 import { useApi } from "../../api/hook/useApi";
 import Stack from "../../components/Stack";
+import './ExpenseMapperView.css';
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
-    const [headerIndexMap, setHeaderIndexMap] = useState<Map<string, number>>();
+    const [headerIndexMap, setHeaderIndexMap] = useState<string[]>();
     const [systemHeaders, setSystemHeaders] = useState<string[]>([]);
 
     const getHeaderMapper = useHeaderMapper(fileName);
@@ -14,20 +15,16 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
     useEffect(() => {
         if(responseBody){
-            const headers: string[] = responseBody.data.header;
-            const headerMap = new Map<string, number>();
-            headers.forEach((header: string, index: number) => {
-                headerMap.set(header, index);
-            });
-            setHeaderIndexMap(headerMap);
+            const headers: string[] = responseBody.data.header;            
+            setHeaderIndexMap(headers);
             setSystemHeaders(responseBody.data.entityMap);
         }
     }, [responseBody]);
 
     return (
         <Stack direction="column" justify="center" align="center">
-            <p>Please map your statement header with xpense tracker entity</p>
-            <Stack direction="row" >
+            <h1>Please map your statement header with xpense tracker entity</h1>
+            <Stack direction="row" className="tableContainer">
                 <table>
                     <thead>
                         <tr>
@@ -41,7 +38,14 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
                                 <td>{header}</td>
                                 <td>
                                     <select id={header}>
-
+                                        <option value="">
+                                            Select Item
+                                        </option>
+                                        {headerIndexMap?.map((header: string) => (
+                                            <option key={header} value={header}>
+                                                {header}
+                                            </option>
+                                        ))}
                                     </select>
                                 </td>
                             </tr>
