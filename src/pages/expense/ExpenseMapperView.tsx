@@ -4,12 +4,14 @@ import { useApi } from "../../api/hook/useApi";
 import Stack from "../../components/Stack";
 import './ExpenseMapperView.css';
 import { apiCaller } from "../../api/apicaller";
+import { ExpensePreviewModal } from "./ExpensePreviewModal";
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
     const [headerIndexMap, setHeaderIndexMap] = useState<string[]>();
     const [systemHeaders, setSystemHeaders] = useState<string[]>([]);
     const [selectedHeaders, setSelectedHeaders] = useState<{ [key: string]: string }>({});
+    const [isModalOpen, setIsModalOpen] = useState(false); 
 
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
@@ -40,10 +42,11 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
         }
         }
         const data = await apiCaller(getPreviewApi(fileName, result));
+        setIsModalOpen(true);
         console.log('response data:', data)
     };
 
-
+    const closeModal = () => setIsModalOpen(false);
     useEffect(() => {
         if(responseBody){
             const headers: string[] = responseBody.data.header;            
@@ -90,6 +93,10 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             <button className="verifyBtn" type="submit" onClick={handleVerifyExpense}>
                 Verify Expense
             </button>
+            <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
+                <h2>Manual Data</h2>
+                {/* <pre>{JSON.stringify(manualData, null, 2)}</pre> */}
+            </ExpensePreviewModal>
         </Stack>
     )
 }
