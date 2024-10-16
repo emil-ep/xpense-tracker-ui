@@ -1,8 +1,9 @@
-import { useEffect, useState} from "react"
-import { useExpensePreview, useHeaderMapper } from "../../api/fileMapperApi";
+import { useCallback, useEffect, useState} from "react"
+import { getHeaderMapperConfig, getPreviewApi} from "../../api/fileMapperApi";
 import { useApi } from "../../api/hook/useApi";
 import Stack from "../../components/Stack";
 import './ExpenseMapperView.css';
+import { apiCaller } from "../../api/apicaller";
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
@@ -10,9 +11,10 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
     const [systemHeaders, setSystemHeaders] = useState<string[]>([]);
     const [selectedHeaders, setSelectedHeaders] = useState<{ [key: string]: string }>({});
 
-    const getHeaderMapper = useHeaderMapper(fileName);
 
-    const { responseBody } = useApi<any>(getHeaderMapper, [fileName]);
+    const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
+
+    const { responseBody } = useApi<any>(headerMapperGetApi, [fileName]);
 
     const handleSelectionChange = (systemHeader: string, selectedHeader: string) => {
         setSelectedHeaders((prev) => ({
@@ -27,7 +29,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
         );
     };
 
-    const handleVerifyExpense = () => {
+    const handleVerifyExpense = async () => {
         const result: { [key: string]: number | null | undefined} = {};
 
         // Map each system header to the index of the selected statement header.
@@ -37,8 +39,8 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             result[systemHeader] = index;
         }
         }
-        // const getExpensePreview = useExpensePreview(fileName, result)
-        // const {responseBody} = useApi<any>(getExpensePreview, [fileName, result]) 
+        const data = await apiCaller(getPreviewApi(fileName, result));
+        console.log('response data:', data)
     };
 
 
