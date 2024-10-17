@@ -4,19 +4,13 @@ import Stack from "../../components/Stack"
 import { uploadStatement } from "../../api/fileApi";
 import { toast } from 'react-toastify';
 import ExpenseMapperView from "./ExpenseMapperView";
-
-interface UploadData {
-    message : string;
-    fileName: string;
-}
-
-interface UploadResponse {
-    data : UploadData;
-    status: number;
-}
+import { UploadResponse } from "../../api/ApiResponses";
+import { useSearchParams } from "react-router-dom";
+  
 
 export default function AddExpense(){
 
+    const [searchParams, setSearchParams] = useSearchParams(); // Manage query parameters
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isUploadComplete, setUploadComplete] = useState<boolean>(false);
     const [fileName, setFileName] = useState<string>('');
@@ -36,6 +30,7 @@ export default function AddExpense(){
             const uploadResponse: UploadResponse = await uploadStatement(selectedFile);
             if(uploadResponse.status === 1){
                 setFileName(uploadResponse.data.fileName);
+                setSearchParams({ file: selectedFile.name });
                 setUploadComplete(true);
             }
         }catch(err){

@@ -4,7 +4,7 @@ import { useApi } from "../../api/hook/useApi";
 import Stack from "../../components/Stack";
 import './ExpenseMapperView.css';
 import { apiCaller } from "../../api/apicaller";
-import { ExpensePreviewModal } from "./ExpensePreviewModal";
+import { ExpensePreviewModal } from "./modal/ExpensePreviewModal";
 import ExpenseTable from "../../components/table/ExpenseTable";
 import { ExpenseItemType, ExpensePreviewResponse } from "../../api/ApiResponses";
 import { toast } from 'react-toastify';
