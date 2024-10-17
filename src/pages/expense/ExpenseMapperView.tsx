@@ -5,6 +5,11 @@ import Stack from "../../components/Stack";
 import './ExpenseMapperView.css';
 import { apiCaller } from "../../api/apicaller";
 import { ExpensePreviewModal } from "./ExpensePreviewModal";
+import ExpenseTable from "../../components/table/ExpenseTable";
+import { ExpenseItemType, ExpensePreviewResponse } from "../../api/ApiResponses";
+import { toast } from 'react-toastify';
+import { EXPENSE_HEADERS } from "../../constants/ExpenseConstants";
+
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
@@ -12,11 +17,12 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
     const [systemHeaders, setSystemHeaders] = useState<string[]>([]);
     const [selectedHeaders, setSelectedHeaders] = useState<{ [key: string]: string }>({});
     const [isModalOpen, setIsModalOpen] = useState(false); 
+    const [expensePreviewItems, setExpensePreviewItems] = useState<ExpenseItemType[]>([]);
 
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
 
-    const { responseBody } = useApi<any>(headerMapperGetApi, [fileName]);
+    const { responseBody, error } = useApi<any>(headerMapperGetApi, [fileName]);
 
     const handleSelectionChange = (systemHeader: string, selectedHeader: string) => {
         setSelectedHeaders((prev) => ({
@@ -41,19 +47,55 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             result[systemHeader] = index;
         }
         }
-        const data = await apiCaller(getPreviewApi(fileName, result));
-        setIsModalOpen(true);
-        console.log('response data:', data)
+        try{
+            const expensePreviewResponse: ExpensePreviewResponse = await apiCaller(getPreviewApi(fileName, result));
+            if(expensePreviewResponse.status === 1){
+                const items = expensePreviewResponse.data;
+                items.forEach((element: ExpenseItemType) => {
+                    if(element.type === 'CREDIT'){
+                        element.amount = element.credit;
+                    }else{
+                        element.amount = element.debit;
+                    }
+                });
+                setExpensePreviewItems(items);
+            }
+            setIsModalOpen(true);
+        }catch(err){
+            toast("Fetching preview failed", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
     };
 
     const closeModal = () => setIsModalOpen(false);
+
     useEffect(() => {
         if(responseBody){
             const headers: string[] = responseBody.data.header;            
             setHeaderIndexMap(headers);
             setSystemHeaders(responseBody.data.entityMap);
         }
-    }, [responseBody]);
+        if(error){
+            toast("Fetching expense mapping failed", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }, [responseBody, error]);
 
     return (
         <Stack direction="column" justify="center" align="center">
@@ -94,8 +136,8 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
                 Verify Expense
             </button>
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
-                <h2>Manual Data</h2>
-                {/* <pre>{JSON.stringify(manualData, null, 2)}</pre> */}
+                <h2>Your Expense Preview</h2>
+                <ExpenseTable rows={expensePreviewItems} header={EXPENSE_HEADERS}/>
             </ExpensePreviewModal>
         </Stack>
     )

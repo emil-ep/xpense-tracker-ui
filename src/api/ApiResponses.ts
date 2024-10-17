@@ -5,7 +5,26 @@ interface UploadData {
     fileName: string;
 }
 
-export interface UploadResponse {
-    data : UploadData;
+interface BaseResponse {
     status: number;
+}
+
+export interface UploadResponse extends BaseResponse {
+    data: UploadData;
+}
+
+export interface ExpensePreviewResponse extends BaseResponse {
+    data: ExpenseItemType[];
+}
+
+export interface ExpenseItemType {
+    id?: string;
+    transactionDate?: string;
+    description?: string;
+    bankReferenceNo?: string;
+    debit?: number;
+    credit?: number;
+    closingBalance?: number;
+    type?: string;
+    amount?: number //derived value from credit or debit based on type
 }

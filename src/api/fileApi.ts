@@ -13,7 +13,7 @@ export const uploadStatement = async (selectedFile : File) : Promise<UploadRespo
         }
     });
     if(!response.ok){
-        throw new Error('Failed to fetch expenses')
+        throw new Error(response.status.toString())
     }
     const responseData: UploadResponse = await response.json();
     return responseData;

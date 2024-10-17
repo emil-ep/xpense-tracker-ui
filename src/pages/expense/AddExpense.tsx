@@ -2,6 +2,7 @@ import React, { ChangeEvent, useState } from "react"
 import './AddExpense.css'
 import Stack from "../../components/Stack"
 import { uploadStatement } from "../../api/fileApi";
+import { toast } from 'react-toastify';
 import ExpenseMapperView from "./ExpenseMapperView";
 
 interface UploadData {
@@ -31,10 +32,23 @@ export default function AddExpense(){
             alert("Please select a file first!");
             return;
         }
-        const uploadResponse: UploadResponse = await uploadStatement(selectedFile);
-        if(uploadResponse.status === 1){
-            setFileName(uploadResponse.data.fileName);
-            setUploadComplete(true);
+        try{
+            const uploadResponse: UploadResponse = await uploadStatement(selectedFile);
+            if(uploadResponse.status === 1){
+                setFileName(uploadResponse.data.fileName);
+                setUploadComplete(true);
+            }
+        }catch(err){
+            toast(`Upload failed : ${err}`, {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
         }
     }
 

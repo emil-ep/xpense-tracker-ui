@@ -18,7 +18,7 @@ interface ExpenseResponse {
     data: ExpenseItem[]
 }
 
-interface ExpenseItem{
+export interface ExpenseItem{
     id: string;
     transactionDate: string;
     description: string;
