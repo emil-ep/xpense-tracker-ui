@@ -1,3 +1,4 @@
+import { getErrorMessage } from "./ApiUtil";
 
 interface SignInRequest {
     username: string;
@@ -22,7 +23,8 @@ export const signIn = async (data: SignInRequest): Promise<SignInResponse> => {
     })
 
     if(!response.ok){
-        throw new Error('Failed to signIn')
+        const errorMessage = await getErrorMessage(response);
+        throw new Error(errorMessage);
     }
     const responseData: SignInResponse = await response.json();
     return responseData;

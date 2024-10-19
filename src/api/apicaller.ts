@@ -1,3 +1,4 @@
+import { getErrorMessage } from "./ApiUtil";
 import { ApiConfig } from "./hook/useApi";
 
 
@@ -16,7 +17,8 @@ export const apiCaller = async <T>(config: ApiConfig): Promise<T> => {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to fetch: ${response.statusText}`);
+     const errorMessage = await getErrorMessage(response);
+     throw new Error(errorMessage);
   }
 
   return (await response.json()) as T;

@@ -1,3 +1,4 @@
+import { getErrorMessage } from "./ApiUtil";
 
 
 export const getExpenses = async() : Promise<any>=> {
@@ -11,7 +12,8 @@ export const getExpenses = async() : Promise<any>=> {
         }
     });
     if(!response.ok){
-        throw new Error('Failed to fetch expenses')
+        const errorMessage = await getErrorMessage(response);
+        throw new Error(errorMessage);
     }
 
     const responseData: any = await response.json();

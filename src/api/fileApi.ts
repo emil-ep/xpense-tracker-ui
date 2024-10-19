@@ -1,4 +1,5 @@
 import { UploadResponse } from "./ApiResponses";
+import { getErrorMessage } from "./ApiUtil";
 
 export const uploadStatement = async (selectedFile : File) : Promise<UploadResponse> => {
 
@@ -13,7 +14,8 @@ export const uploadStatement = async (selectedFile : File) : Promise<UploadRespo
         }
     });
     if(!response.ok){
-        throw new Error(response.status.toString())
+        const errorMessage = await getErrorMessage(response);
+        throw new Error(errorMessage);
     }
     const responseData: UploadResponse = await response.json();
     return responseData;
