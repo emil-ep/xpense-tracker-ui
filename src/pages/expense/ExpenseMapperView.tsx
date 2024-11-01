@@ -6,13 +6,15 @@ import './ExpenseMapperView.css';
 import { apiCaller } from "../../api/apicaller";
 import { ExpensePreviewModal } from "./modal/ExpensePreviewModal";
 import ExpenseTable from "../../components/table/ExpenseTable";
-import { ExpenseItemType, ExpensePreviewResponse } from "../../api/ApiResponses";
+import { ExpenseItemType, ExpensePreviewResponse, ExpenseSaveResponse } from "../../api/ApiResponses";
 import { toast } from 'react-toastify';
 import { EXPENSE_HEADERS } from "../../constants/ExpenseConstants";
+import { saveExpense } from "../../api/expensesApi";
+import { getNavigate } from "../../navigation";
 
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
-
+    const navigate = getNavigate();
     const [headerIndexMap, setHeaderIndexMap] = useState<string[]>();
     const [systemHeaders, setSystemHeaders] = useState<string[]>([]);
     const [selectedHeaders, setSelectedHeaders] = useState<{ [key: string]: string }>({});
@@ -42,10 +44,10 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
 
         // Map each system header to the index of the selected statement header.
         for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
-        const index = headerIndexMap?.indexOf(selectedHeader);
-        if (index !== -1) {
-            result[systemHeader] = index;
-        }
+            const index = headerIndexMap?.indexOf(selectedHeader);
+            if (index !== -1) {
+                result[systemHeader] = index;
+            }
         }
         try{
             const expensePreviewResponse: ExpensePreviewResponse = await apiCaller(getPreviewApi(fileName, result));
@@ -74,6 +76,44 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             });
         }
     };
+
+    const handleSaveExpense = async () => {
+        const result: { [key: string]: number | null | undefined} = {};
+        // Map each system header to the index of the selected statement header.
+        for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
+            const index = headerIndexMap?.indexOf(selectedHeader);
+            if (index !== -1) {
+                result[systemHeader] = index;
+            }
+        }
+        try{
+            const expenseSaveResponse: ExpenseSaveResponse = await apiCaller(saveExpense(fileName, result));
+            if(expenseSaveResponse.status === 1){
+                toast("Expense saved!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+                });
+                navigate('/home');
+            }
+        }catch(err) {
+            toast("Saving expense failed", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
+    }
 
     const closeModal = () => setIsModalOpen(false);
 
@@ -134,6 +174,9 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             </Stack>
             <button className="verifyBtn" type="submit" onClick={handleVerifyExpense}>
                 Verify Expense
+            </button>
+            <button className="verifyBtn" type="submit" onClick={handleSaveExpense}>
+                Submit Expense
             </button>
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
                 <h2>Your Expense Preview</h2>

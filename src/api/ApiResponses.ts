@@ -17,6 +17,10 @@ export interface ExpensePreviewResponse extends BaseResponse {
     data: ExpenseItemType[];
 }
 
+export interface ExpenseSaveResponse extends BaseResponse {
+    data: string;
+}
+
 export interface ExpenseItemType {
     id?: string;
     transactionDate?: string;

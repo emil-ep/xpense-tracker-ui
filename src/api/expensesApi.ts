@@ -1,4 +1,5 @@
 import { getErrorMessage } from "./ApiUtil";
+import { ApiConfig } from "./hook/useApi";
 
 
 export const getExpenses = async() : Promise<any>=> {
@@ -19,3 +20,9 @@ export const getExpenses = async() : Promise<any>=> {
     const responseData: any = await response.json();
     return responseData;
 }
+
+export const saveExpense = (fileName: string, body: any): ApiConfig => ({
+    url: `http://localhost:8080/v1/expenses/save?fileName=${fileName}`,
+    method: 'PUT',
+    body: body
+})

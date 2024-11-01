@@ -3,7 +3,7 @@ import Stack from "../../components/Stack";
 import './home.css'
 import ExpenseTable from "../../components/table/ExpenseTable";
 import { getExpenses } from "../../api/expensesApi";
-import { useNavigate } from 'react-router-dom';
+import { getNavigate } from "../../navigation";
 
 
 const headers = [
@@ -32,7 +32,7 @@ export interface ExpenseItem{
 
 export default function Home(){
 
-    const navigate = useNavigate();
+    const navigate = getNavigate();
     const [expenseItems, setExpenseItems] = useState<ExpenseItem[]>([]);
     useEffect(() => {
         getExpenses()
