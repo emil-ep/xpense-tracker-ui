@@ -1,23 +1,24 @@
 import React, { useState } from "react";
 import Stack from "../../components/Stack";
 import './login.css'
-import { signIn } from "../../api/authApi";
+import { signInV2 } from "../../api/authApi";
 import { toast } from 'react-toastify';
-import { getNavigate } from "../../navigation";
+import { useNavigate } from 'react-router-dom';
+import { apiCaller } from "../../api/apicaller";
 
 export default function Login() {
 
   const [username, setUsername] = useState<string>('');
   const [password, setPassword] = useState<string>('');
-  const navigate = getNavigate();
+  const navigate = useNavigate();
 
   async function tryLogin(){
     try{
-      const response = await signIn({username, password});
+      const response: any = await apiCaller(signInV2({username, password}));
       localStorage.setItem('authToken', response.data.token);
       toast("Login Success", {
         position: "top-right",
-        autoClose: 1000,
+        autoClose: 5000,
         hideProgressBar: false,
         closeOnClick: true,
         pauseOnHover: true,
