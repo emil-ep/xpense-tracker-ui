@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import Stack from "../../components/Stack";
 import './home.css'
 import ExpenseTable from "../../components/table/ExpenseTable";
-import { getExpenses } from "../../api/expensesApi";
+import { getExpensesV2 } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";
+import { useApi } from "../../api/hook/useApi";
 
 
 const headers = [
@@ -34,23 +35,22 @@ export default function Home(){
 
     const navigate = getNavigate();
     const [expenseItems, setExpenseItems] = useState<ExpenseItem[]>([]);
+    const { responseBody, error } = useApi<any>(getExpensesV2, []);
+
     useEffect(() => {
-        getExpenses()
-            .then((response: ExpenseResponse) => {
-                const items = response.data;
+
+        if(responseBody && responseBody.data){
+            const items = responseBody.data;
                 items.forEach((element: ExpenseItem) => {
                     if(element.type === 'CREDIT'){
                         element.amount = element.credit;
                     }else{
                         element.amount = element.debit;
                     }
-                });
-                setExpenseItems(items);
-            })
-            .catch((err) => {
-                console.error('error occurred', err);
-            });
-    }, []);
+                }); 
+            setExpenseItems(items);
+        }
+    }, [responseBody]);
 
     function navigateToExpense(){
         navigate('/expense');
