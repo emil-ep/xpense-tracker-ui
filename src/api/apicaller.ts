@@ -18,7 +18,6 @@ export const apiCaller = async <T>(config: ApiConfig): Promise<T> => {
   });
 
   if (response.status === 401) {
-    console.log('navigate', navigate);
     if (navigate) {
       navigate('/login'); // Redirect to login page
     }

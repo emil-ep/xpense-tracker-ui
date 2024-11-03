@@ -1,8 +1,8 @@
 import { ApiConfig } from "./hook/useApi";
 
 
-export const getExpensesV2 = (): ApiConfig => ({
-    url: 'http://localhost:8080/v1/expenses',
+export const getExpensesV2 = (page: number, size: number): ApiConfig => ({
+    url: `http://localhost:8080/v1/expenses?page=${page}&size=${size}`,
     method: 'GET',
 })
 

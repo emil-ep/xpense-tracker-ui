@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import Stack from "../../components/Stack";
 import './home.css'
 import ExpenseTable from "../../components/table/ExpenseTable";
 import { getExpensesV2 } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";
 import { useApi } from "../../api/hook/useApi";
+import { ExpenseItemType, PaginatedExpenseResponse } from "../../api/ApiResponses";
 
 
 const headers = [
@@ -15,33 +16,23 @@ const headers = [
     {field: "amount"},
 ]
 
-interface ExpenseResponse {
-    data: ExpenseItem[]
-}
-
-export interface ExpenseItem{
-    id: string;
-    transactionDate: string;
-    description: string;
-    bankReferenceNo: string;
-    debit: number;
-    credit: number;
-    closingBalance: number;
-    type: string;
-    amount?: number;
-}
-
 export default function Home(){
 
     const navigate = getNavigate();
-    const [expenseItems, setExpenseItems] = useState<ExpenseItem[]>([]);
-    const { responseBody, error } = useApi<any>(getExpensesV2, []);
+    const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
+
+    const fetchExpenses = useCallback(() => {
+        return getExpensesV2(1, 50);
+    }, []);
+
+    const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+
 
     useEffect(() => {
 
         if(responseBody && responseBody.data){
-            const items = responseBody.data;
-                items.forEach((element: ExpenseItem) => {
+            const items = responseBody.data.expenses;
+                items.forEach((element: ExpenseItemType) => {
                     if(element.type === 'CREDIT'){
                         element.amount = element.credit;
                     }else{

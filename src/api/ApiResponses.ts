@@ -21,6 +21,18 @@ export interface ExpenseSaveResponse extends BaseResponse {
     data: string;
 }
 
+export interface PaginatedExpenseResponse extends BaseResponse {
+    data: PaginatedExpenses;
+}
+
+interface PaginatedExpenses {
+    totalPages : number;
+    totalCount: number;
+    currentCount: number;
+    page: number;
+    expenses : ExpenseItemType[];
+}
+
 export interface ExpenseItemType {
     id?: string;
     transactionDate?: string;
