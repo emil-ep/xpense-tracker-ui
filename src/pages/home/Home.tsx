@@ -14,8 +14,8 @@ const headers = [
     {field: "description"},
     {field: "type"},
     {field: "amount"},
+    {field: 'tags'}
 ]
-
 export default function Home(){
 
     const navigate = getNavigate();
@@ -53,7 +53,7 @@ export default function Home(){
                 <Stack direction="row" justify="flex-end">
                     <button className="addExpenseBtn" onClick={navigateToExpense}> Add Expense</button>
                 </Stack>
-                <ExpenseTable rows={expenseItems} header={headers}/>
+                <ExpenseTable expenses={expenseItems}/>
             </Stack>
         </Stack>
     )

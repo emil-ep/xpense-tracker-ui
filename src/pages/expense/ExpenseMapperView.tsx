@@ -180,7 +180,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             </button>
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
                 <h2>Your Expense Preview</h2>
-                <ExpenseTable rows={expensePreviewItems} header={EXPENSE_HEADERS}/>
+                <ExpenseTable expenses={expensePreviewItems}/>
             </ExpensePreviewModal>
         </Stack>
     )

@@ -33,6 +33,15 @@ interface PaginatedExpenses {
     expenses : ExpenseItemType[];
 }
 
+export interface Tag {
+    id: string;
+    parentTag?: Tag;
+    name: string;
+    tagType: string;
+    keywords: string[];
+    editable: boolean;
+}
+
 export interface ExpenseItemType {
     id?: string;
     transactionDate?: string;
@@ -42,5 +51,6 @@ export interface ExpenseItemType {
     credit?: number;
     closingBalance?: number;
     type?: string;
-    amount?: number //derived value from credit or debit based on type
+    amount?: number; //derived value from credit or debit based on type
+    tags: Tag[];
 }
