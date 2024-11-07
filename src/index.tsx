@@ -9,11 +9,11 @@ import ProtectedRoute from "./components/ProtectedRoute";
 import { ToastContainer } from 'react-toastify';
 import { createRoot } from "react-dom/client";
 import AddExpense from './pages/expense/AddExpense';
-import { useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { setNavigate } from './navigation';
 
 const container = document.getElementById("root");
-//@ts-expect-error
+if (!container) throw new Error("Failed to find the root element");
 const root = createRoot(container);
 
 const AppRoutes: React.FC = () => {
@@ -35,23 +35,26 @@ const AppRoutes: React.FC = () => {
 
 
 root.render(
-  <Router>
-    <div>
-      <ToastContainer 
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="light"
-      />
-      <AppRoutes />
-    </div>
-  </Router>
+  <React.StrictMode>
+    <Router>
+      <div>
+        <ToastContainer 
+          position="top-right"
+          autoClose={5000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss={false}
+          draggable
+          pauseOnHover
+          theme="light"
+        />
+        <AppRoutes />
+      </div>
+    </Router>
+  </React.StrictMode>
+  
   
   
 );
