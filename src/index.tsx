@@ -1,7 +1,7 @@
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
-import { Route, BrowserRouter as Router, Routes, useNavigate } from "react-router-dom";
+import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -11,6 +11,7 @@ import { createRoot } from "react-dom/client";
 import AddExpense from './pages/expense/AddExpense';
 import React, { useEffect } from 'react';
 import { setNavigate } from './navigation';
+import AppLayout from './components/AppLayout';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -18,18 +19,30 @@ const root = createRoot(container);
 
 const AppRoutes: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
 
   // Set the navigate function when the component mounts
   useEffect(() => {
     setNavigate(navigate);
   }, [navigate]);
 
+  const isLoginRoute = location.pathname === '/login';
+
   return (
-    <Routes>
-      <Route path="/login" element={<Login />} />
-      <Route path="/home" element={<ProtectedRoute element={Home} />} />
-      <Route path='/expense' element={<ProtectedRoute element={AddExpense} />} />
-    </Routes>
+    <div>
+      {isLoginRoute ? (
+        <Routes>
+          <Route path="/login" element={<Login />} />
+        </Routes>
+      ) : (
+        <AppLayout>
+          <Routes>
+            <Route path="/home" element={<ProtectedRoute element={Home} />} />
+            <Route path="/expense" element={<ProtectedRoute element={AddExpense} />} />
+          </Routes>
+        </AppLayout>
+      )}
+    </div>
   );
 };
 
