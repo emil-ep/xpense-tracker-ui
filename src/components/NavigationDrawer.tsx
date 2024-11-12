@@ -3,6 +3,7 @@ import { List, ListItem, ListItemText, Divider, Box, ListItemButton, ListItemIco
 import { Link } from "react-router-dom";
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
 import { Home, KeyboardArrowDown, People } from "@mui/icons-material";
+import './navigationDrawer.css'
 
 const drawerWidth = 240;
 
@@ -58,12 +59,14 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, toggleDrawe
       >
         <FireNav component="nav" disablePadding>
           <ListItemButton component={Link} to="/home" onClick={toggleDrawer}>
-            <ListItemIcon sx={{ fontSize: 20 }}>🔥</ListItemIcon>
+            <ListItemIcon sx={{ fontSize: 20 }}>
+                <img src="/images/wallet-icon-custom-3.svg" alt="Expense-icon" className="appIcon"></img>
+            </ListItemIcon>
             <ListItemText
               sx={{ my: 0 }}
               primary="Xpense Tracker"
               primaryTypographyProps={{
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: 'medium',
                 letterSpacing: 0,
               }}
