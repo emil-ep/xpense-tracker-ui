@@ -12,6 +12,7 @@ import AddExpense from './pages/expense/AddExpense';
 import React, { useEffect } from 'react';
 import { setNavigate } from './navigation';
 import AppLayout from './components/AppLayout';
+import { AnalyticsView } from './pages/analytics/AnalyticsView';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -39,6 +40,7 @@ const AppRoutes: React.FC = () => {
           <Routes>
             <Route path="/home" element={<ProtectedRoute element={Home} />} />
             <Route path="/expense" element={<ProtectedRoute element={AddExpense} />} />
+            <Route path="/analytics" element={<ProtectedRoute element={AnalyticsView} />} />
           </Routes>
         </AppLayout>
       )}

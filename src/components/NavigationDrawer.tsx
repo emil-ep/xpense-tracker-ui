@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { List, ListItem, ListItemText, Divider, Box, ListItemButton, ListItemIcon, Drawer } from "@mui/material";
 import { Link } from "react-router-dom";
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
-import { Home, KeyboardArrowDown, People } from "@mui/icons-material";
+import { BarChart, Home, KeyboardArrowDown, Label, People } from "@mui/icons-material";
 import './navigationDrawer.css'
 
 const drawerWidth = 240;
 
 const data = [
   { icon: <Home />, label: 'Home', path: '/home' },
-  { icon: <People />, label: 'Add Expense', path: '/expense' }
+  { icon: <People />, label: 'Add Expense', path: '/expense' },
+  { icon: <BarChart />, label: 'View Analytics', path: '/analytics'}
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
