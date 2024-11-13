@@ -44,7 +44,7 @@ export default function Home(){
     }, [responseBody]);
 
     function navigateToExpense(){
-        navigate('/expense');
+        navigate('/add/expense');
     }
 
     return (
@@ -53,7 +53,7 @@ export default function Home(){
                 <Stack direction="row" justify="flex-end">
                     <button className="addExpenseBtn" onClick={navigateToExpense}> Add Expense</button>
                 </Stack>
-                <ExpenseTable expenses={expenseItems}/>
+                <ExpenseTable clazzName="expenseTable" height={500} expenses={expenseItems}/>
             </Stack>
         </Stack>
     )

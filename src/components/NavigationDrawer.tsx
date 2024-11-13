@@ -2,14 +2,15 @@ import React, { useState } from "react";
 import { List, ListItem, ListItemText, Divider, Box, ListItemButton, ListItemIcon, Drawer } from "@mui/material";
 import { Link } from "react-router-dom";
 import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
-import { BarChart, Home, KeyboardArrowDown, Label, People } from "@mui/icons-material";
+import { BarChart, Home, KeyboardArrowDown } from "@mui/icons-material";
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import './navigationDrawer.css'
 
 const drawerWidth = 240;
 
 const data = [
   { icon: <Home />, label: 'Home', path: '/home' },
-  { icon: <People />, label: 'Add Expense', path: '/expense' },
+  { icon: <AccountBalanceWalletOutlinedIcon />, label: 'Expenses', path: '/expense' },
   { icon: <BarChart />, label: 'View Analytics', path: '/analytics'}
 ];
 

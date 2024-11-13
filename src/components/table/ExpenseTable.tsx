@@ -5,11 +5,15 @@ import "ag-grid-community/styles/ag-theme-quartz.css";
 import { ExpenseItemType, Tag } from "../../api/ApiResponses";
 
 interface TableProps {
+    clazzName?: string;
     expenses: ExpenseItemType[]
+    pagination?: boolean,
+    height: number | string
+
 }
 
 
-export default function ExpenseTable({expenses} : TableProps){
+export default function ExpenseTable({clazzName, expenses, pagination, height} : TableProps){
 
     const tagCellRenderer = (props: any) => {
         return (
@@ -38,10 +42,13 @@ export default function ExpenseTable({expenses} : TableProps){
     
     return (
         <div
-        className="ag-theme-quartz" // applying the Data Grid theme
-        style={{ height: 500 }} // the Data Grid will fill the size of the parent container
+        className={`ag-theme-quartz ${clazzName}`} // applying the Data Grid theme
+        style={{ height: height}} // the Data Grid will fill the size of the parent container
         >
             <AgGridReact
+                pagination={pagination? pagination : undefined}
+                paginationPageSize={20}
+                paginationPageSizeSelector={[20, 50, 100]}
                 rowData={expenses}
                 columnDefs={headers}
             />
