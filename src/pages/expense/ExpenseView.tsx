@@ -5,7 +5,7 @@ import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
 import ExpenseTable from '../../components/table/ExpenseTable';
 import { Stack } from '@mui/material';
-import { Box, createTheme, CssBaseline, Grid2, Paper, ThemeProvider } from '@mui/material'
+import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
 
 
 const theme = createTheme({
@@ -24,7 +24,7 @@ export const ExpenseView = () => {
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
 
     const fetchExpenses = useCallback(() => {
-        return getExpensesV2(1, 100);
+        return getExpensesV2(1, 500);
     }, []);
 
     const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);

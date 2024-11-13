@@ -42,7 +42,7 @@ export default function ExpenseTable({clazzName, expenses, pagination, height} :
     
     return (
         <div
-        className={`ag-theme-quartz ${clazzName}`} 
+        className={`ag-theme-quartz-auto-dark ${clazzName}`} 
         style={{ height: height}}
         >
             <AgGridReact

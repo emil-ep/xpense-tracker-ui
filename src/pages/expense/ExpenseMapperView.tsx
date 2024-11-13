@@ -8,7 +8,6 @@ import { ExpensePreviewModal } from "./modal/ExpensePreviewModal";
 import ExpenseTable from "../../components/table/ExpenseTable";
 import { ExpenseItemType, ExpensePreviewResponse, ExpenseSaveResponse } from "../../api/ApiResponses";
 import { toast } from 'react-toastify';
-import { EXPENSE_HEADERS } from "../../constants/ExpenseConstants";
 import { saveExpense } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";
 
