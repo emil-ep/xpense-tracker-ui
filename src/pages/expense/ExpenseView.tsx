@@ -5,6 +5,19 @@ import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
 import ExpenseTable from '../../components/table/ExpenseTable';
 import { Stack } from '@mui/material';
+import { Box, createTheme, CssBaseline, Grid2, Paper, ThemeProvider } from '@mui/material'
+
+
+const theme = createTheme({
+  palette: {
+    mode: 'dark',
+    primary: { main: '#669df6' },
+    background: { 
+      default: 'rgb(5, 30, 52)',
+      paper: 'rgb(5, 30, 52)',   
+    },
+  },
+});
 
 export const ExpenseView = () => {
 
@@ -33,8 +46,17 @@ export const ExpenseView = () => {
     }, [responseBody]);
 
     return (
-       <Stack className="expenseContainer" direction="column" alignItems="stretch" justifyContent="center">
-        <ExpenseTable clazzName="expenseTableContainer" height="100%" pagination={true} expenses={expenseItems}/>
-       </Stack>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Stack className="expenseContainer" direction="column" alignItems="stretch" justifyContent="center">
+                <ExpenseTable 
+                    clazzName="expenseTableContainer" 
+                    height="100%" 
+                    pagination={true} 
+                    expenses={expenseItems}
+                />
+            </Stack>
+        </ThemeProvider>
+       
     )
 }

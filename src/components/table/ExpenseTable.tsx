@@ -42,8 +42,8 @@ export default function ExpenseTable({clazzName, expenses, pagination, height} :
     
     return (
         <div
-        className={`ag-theme-quartz ${clazzName}`} // applying the Data Grid theme
-        style={{ height: height}} // the Data Grid will fill the size of the parent container
+        className={`ag-theme-quartz ${clazzName}`} 
+        style={{ height: height}}
         >
             <AgGridReact
                 pagination={pagination? pagination : undefined}
