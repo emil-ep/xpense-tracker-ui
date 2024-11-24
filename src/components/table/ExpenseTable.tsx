@@ -6,6 +6,7 @@ import { ExpenseItemType, Tag } from "../../api/ApiResponses";
 import { IconButton } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TagPopper from "../popper/TagPopper";
+import './expenseTable.css'
 
 
 interface TableProps {
@@ -52,6 +53,7 @@ export default function ExpenseTable(
                     <AddCircleIcon />
                 </IconButton>
                 <TagPopper
+                    clazzName="popperCentered"
                     anchorEl={dummyAnchor}
                     open={openPopperId === props.data.id}
                     onClose={handleClose}
@@ -90,6 +92,12 @@ export default function ExpenseTable(
                 rowData={expenses}
                 columnDefs={headers}
             />
+            {openPopperId && (
+                <div
+                    className="overlay"
+                    onClick={handleClose}
+                />
+            )}
         </div>
 )
 }
