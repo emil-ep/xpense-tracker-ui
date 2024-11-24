@@ -17,6 +17,7 @@ interface TableProps {
     handleTagAdded?: (tag: string) => void;
 }
 
+const dummyAnchor = document.createElement('div');
 
 export default function ExpenseTable(
     {clazzName, 
@@ -28,15 +29,15 @@ export default function ExpenseTable(
     } : TableProps){
         
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
-    const [open, setOpen] = useState<boolean>(false);
+    const [openPopperId, setOpenPopperId] = useState<string | null>(null);
 
     const handleClose = () => {
-        setAnchorEl(null);
-        setOpen(false);
+        setOpenPopperId(null);
     };
 
-    const handleOpen = () => {
-        setOpen(true);
+    const handleOpen = (event: React.MouseEvent<HTMLElement>, id: string) => {
+        setAnchorEl(dummyAnchor);
+        setOpenPopperId(id);
     }
 
     const tagCellRenderer = (props: any) => {
@@ -47,12 +48,12 @@ export default function ExpenseTable(
                         {tag.name}
                     </button>
                 ))}
-                <IconButton aria-label="add-tag" onClick={handleOpen}>
+                <IconButton aria-label="add-tag" onClick={(e) => handleOpen(e, props.data.id)}>
                     <AddCircleIcon />
                 </IconButton>
                 <TagPopper
-                    anchorEl={anchorEl}
-                    open={open}
+                    anchorEl={dummyAnchor}
+                    open={openPopperId === props.data.id}
                     onClose={handleClose}
                     onCreate={handleTagAdded}
                 />

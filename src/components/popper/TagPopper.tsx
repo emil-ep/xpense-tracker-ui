@@ -1,36 +1,51 @@
 import { Button, Paper, Popper, TextField } from "@mui/material";
 import { useState } from "react";
-
+import './tagPopper.css'
 
 
 interface TagPopupProps {
-  anchorEl: HTMLElement | null; // Element to anchor the popup
-  open: boolean; // Whether the popup is open
-  onClose: () => void; // Function to close the popup
-  onCreate?: (tag: string) => void; // Callback to handle tag creation
+  anchorEl: HTMLElement | null; 
+  open: boolean;
+  onClose: () => void;
+  onCreate?: (tag: string) => void; 
 }
 
-
 const TagPopper: React.FC<TagPopupProps> = ({ anchorEl, open, onClose, onCreate }) => {
-  const [newTag, setNewTag] = useState<string>("");
-
+  const [tagName, setTagName] = useState<string>("");
+  const [keywords, setKeywords] = useState<string>("");
   const handleCreate = () => {
-    if (newTag.trim()) {
+    if (tagName.trim()) {
     //   onCreate(newTag);
-      setNewTag(""); // Clear input
-      onClose();     // Close popup
+    //   setTagName(""); // Clear input
+      onClose();   
     }
   };
 
+//   const processKeywords = (input: string)  => {
+//     const value : string[] = input
+//         .split(",") // Split the string by commas
+//         .map((tag) => tag.trim()) // Remove any extra whitespace
+//         .filter((tag) => tag !== "");
+//     setKeywords(value)
+//   }
+
+
   return (
-    <Popper open={open} anchorEl={anchorEl} placement="bottom-start">
+    <Popper className="popperCentered" open={open} anchorEl={anchorEl} placement="bottom-start">
       <Paper style={{ padding: 16, width: 200 }}>
         <TextField
-          label="New Tag"
+          label="Tag name"
           variant="outlined"
           fullWidth
-          value={newTag}
-          onChange={(e) => setNewTag(e.target.value)}
+          value={tagName}
+          onChange={(e) => setTagName(e.target.value)}
+        />
+        <TextField
+            label="Enter keywords seperated by comma (,)"
+            variant="outlined"
+            fullWidth
+            value={keywords}
+            onChange={(e) => setKeywords(e.target.value)}
         />
         <Button
           variant="contained"
@@ -39,7 +54,7 @@ const TagPopper: React.FC<TagPopupProps> = ({ anchorEl, open, onClose, onCreate 
           onClick={handleCreate}
           style={{ marginTop: 8 }}
         >
-          Add Tag
+          Create new tag
         </Button>
       </Paper>
     </Popper>
