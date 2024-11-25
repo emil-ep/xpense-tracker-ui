@@ -7,6 +7,10 @@ import { IconButton } from "@mui/material";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TagPopper from "../popper/TagPopper";
 import './expenseTable.css'
+import { apiCaller } from "../../api/apicaller";
+import { createTagApi } from "../../api/tagApi";
+import { toast } from "react-toastify";
+import { getNavigate } from "../../navigation";
 
 
 interface TableProps {
@@ -14,8 +18,6 @@ interface TableProps {
     expenses: ExpenseItemType[]
     pagination?: boolean,
     height: number | string
-    handleAddTag?: () => void;
-    handleTagAdded?: (tag: string) => void;
 }
 
 const dummyAnchor = document.createElement('div');
@@ -24,11 +26,10 @@ export default function ExpenseTable(
     {clazzName, 
         expenses, 
         pagination, 
-        height, 
-        handleAddTag, 
-        handleTagAdded
+        height,
     } : TableProps){
         
+    const navigate = getNavigate();
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openPopperId, setOpenPopperId] = useState<string | null>(null);
 
@@ -39,6 +40,42 @@ export default function ExpenseTable(
     const handleOpen = (event: React.MouseEvent<HTMLElement>, id: string) => {
         setAnchorEl(dummyAnchor);
         setOpenPopperId(id);
+    }
+
+    const handleCreateTag = async (tagName: string, keywords: string[], canBeConsideredExpense: boolean) => {
+        const body = {
+        name : tagName,
+        keywords : keywords,
+        canBeCountedAsExpense: canBeConsideredExpense
+    }
+
+    try{
+            const createTagResponse: any = await apiCaller(createTagApi(body));
+            if(createTagResponse.status === 1){
+                toast("Tag Saved!", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+                });
+                navigate('/home');
+            }
+        }catch(err) {
+            toast("Creating tag failed", {
+                position: "top-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: true,
+                pauseOnHover: false,
+                draggable: false,
+                progress: undefined,
+                theme: "dark",
+            });
+        }
     }
 
     const tagCellRenderer = (props: any) => {
@@ -57,7 +94,7 @@ export default function ExpenseTable(
                     anchorEl={dummyAnchor}
                     open={openPopperId === props.data.id}
                     onClose={handleClose}
-                    onCreate={handleTagAdded}
+                    onCreate={handleCreateTag}
                 />
             </div>
         );
@@ -73,9 +110,9 @@ export default function ExpenseTable(
             field: 'tags', 
             cellRenderer: tagCellRenderer, 
             sortable: false, 
-            cellRendererParams: {
-                onTagAdded: handleTagAdded,
-            },
+            // cellRendererParams: {
+            //     onTagAdded: handleTagAdded,
+            // },
         }
     ];
 

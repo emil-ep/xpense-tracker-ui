@@ -29,19 +29,6 @@ export const ExpenseView = () => {
 
     const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
 
-
-    const handleAddTag = () => {
-        console.log('clicked');
-    }
-
-    const handleTagAdded = (newTag: string, rowIndex: number) => {
-        console.log('tag added clicked')
-        // const updatedRows = [...rowData];
-        // updatedRows[rowIndex].tags.push(newTag);
-        // setRowData(updatedRows);
-    };
-
-
     useEffect(() => {
 
         if(responseBody && responseBody.data){
@@ -66,10 +53,9 @@ export const ExpenseView = () => {
                     height="100%" 
                     pagination={true} 
                     expenses={expenseItems}
-                    handleAddTag={handleAddTag}
+                    // onCreate={handleAddTag}
                 />
             </Stack>
         </ThemeProvider>
-       
     )
 }

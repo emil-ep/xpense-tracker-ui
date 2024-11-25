@@ -1,6 +1,10 @@
-import { Button, Paper, Popper, Stack, TextField } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, Paper, Popper, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import './tagPopper.css'
+import { apiCaller } from "../../api/apicaller";
+import { createTagApi } from "../../api/tagApi";
+import { toast } from 'react-toastify';
+import { getNavigate } from "../../navigation";
 
 
 interface TagPopupProps {
@@ -8,28 +12,22 @@ interface TagPopupProps {
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
-  onCreate?: (tag: string) => void; 
+  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean) => void; 
 }
 
 const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose, onCreate }) => {
+
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
-  const handleCreate = () => {
-    if (tagName.trim()) {
-    //   onCreate(newTag);
-    //   setTagName(""); // Clear input
-      onClose();   
-    }
-  };
 
-//   const processKeywords = (input: string)  => {
-//     const value : string[] = input
-//         .split(",") // Split the string by commas
-//         .map((tag) => tag.trim()) // Remove any extra whitespace
-//         .filter((tag) => tag !== "");
-//     setKeywords(value)
-//   }
 
+  const processKeywords = ()  => {
+    const value : string[] = keywords
+        .split(",") 
+        .map((tag) => tag.trim()) 
+        .filter((tag) => tag !== "");
+    return value;
+  }
 
   return (
     <Popper className={clazzName} open={open} anchorEl={anchorEl} placement="bottom-start">
@@ -52,16 +50,18 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose
                     value={keywords}
                     onChange={(e) => setKeywords(e.target.value)}
                 />
-                <Button
-                    variant="contained"
-                    color="primary"
-                    fullWidth
-                    onClick={handleCreate}
-                    style={{ marginTop: 8 }}
-                >
-                    Create new tag
-                </Button>
             </Stack>
+            <FormControlLabel control={<Checkbox defaultChecked />} label="Is it an Expense?" />
+            <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={() => onCreate(tagName, processKeywords(), true)}
+                style={{ marginTop: 8 }}
+                disabled={tagName === '' || keywords === ''}
+            >
+                Create new tag
+            </Button>
       </Paper>
     </Popper>
   );

@@ -27,11 +27,6 @@ export default function Home(){
 
     const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
 
-    const handleAddTag = () => {
-        console.log('clicked from home');
-    }
-
-
     useEffect(() => {
 
         if(responseBody && responseBody.data){
@@ -57,7 +52,7 @@ export default function Home(){
                 <Stack direction="row" justify="flex-end">
                     <button className="addExpenseBtn" onClick={navigateToExpense}> Add Expense</button>
                 </Stack>
-                <ExpenseTable clazzName="expenseTable" height={500} expenses={expenseItems} handleAddTag={handleAddTag}/>
+                <ExpenseTable clazzName="expenseTable" height={500} expenses={expenseItems} />
             </Stack>
         </Stack>
     )
