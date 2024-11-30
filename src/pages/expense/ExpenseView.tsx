@@ -53,7 +53,6 @@ export const ExpenseView = () => {
                     height="100%" 
                     pagination={true} 
                     expenses={expenseItems}
-                    // onCreate={handleAddTag}
                 />
             </Stack>
         </ThemeProvider>

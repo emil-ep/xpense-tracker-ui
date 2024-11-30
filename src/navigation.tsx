@@ -1,4 +1,6 @@
-// navigation.ts
+
+
+
 let navigateRef: (path: string) => void;
 
 export const setNavigate = (navigate: (path: string) => void) => {

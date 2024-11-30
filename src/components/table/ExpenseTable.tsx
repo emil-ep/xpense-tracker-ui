@@ -110,9 +110,6 @@ export default function ExpenseTable(
             field: 'tags', 
             cellRenderer: tagCellRenderer, 
             sortable: false, 
-            // cellRendererParams: {
-            //     onTagAdded: handleTagAdded,
-            // },
         }
     ];
 

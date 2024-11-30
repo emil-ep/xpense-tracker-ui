@@ -1,10 +1,6 @@
 import { Button, Checkbox, FormControlLabel, Paper, Popper, Stack, TextField } from "@mui/material";
 import { useState } from "react";
 import './tagPopper.css'
-import { apiCaller } from "../../api/apicaller";
-import { createTagApi } from "../../api/tagApi";
-import { toast } from 'react-toastify';
-import { getNavigate } from "../../navigation";
 
 
 interface TagPopupProps {
@@ -19,6 +15,7 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose
 
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
+  const [isExpense, setIsExpense] = useState<boolean>(true);
 
 
   const processKeywords = ()  => {
@@ -27,6 +24,10 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose
         .map((tag) => tag.trim()) 
         .filter((tag) => tag !== "");
     return value;
+  }
+
+  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setIsExpense(event.target.checked);
   }
 
   return (
@@ -51,12 +52,15 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose
                     onChange={(e) => setKeywords(e.target.value)}
                 />
             </Stack>
-            <FormControlLabel control={<Checkbox defaultChecked />} label="Is it an Expense?" />
+            <FormControlLabel control={
+                <Checkbox defaultChecked checked={isExpense} onChange={handleCheckboxChange}/>}
+                 label="Is it an Expense?" 
+            />
             <Button
                 variant="contained"
                 color="primary"
                 fullWidth
-                onClick={() => onCreate(tagName, processKeywords(), true)}
+                onClick={() => onCreate(tagName, processKeywords(), isExpense)}
                 style={{ marginTop: 8 }}
                 disabled={tagName === '' || keywords === ''}
             >
