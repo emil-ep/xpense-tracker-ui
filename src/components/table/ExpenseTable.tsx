@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
@@ -10,7 +10,7 @@ import './expenseTable.css'
 import { apiCaller } from "../../api/apicaller";
 import { createTagApi } from "../../api/tagApi";
 import { toast } from "react-toastify";
-import { getNavigate } from "../../navigation";
+import { updateExpense } from "../../api/expensesApi";
 
 
 interface TableProps {
@@ -29,9 +29,13 @@ export default function ExpenseTable(
         height,
     } : TableProps){
         
-    const navigate = getNavigate();
+    const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openPopperId, setOpenPopperId] = useState<string | null>(null);
+
+    useEffect(() => {
+        setRowData(expenses);
+    }, [expenses]);
 
     const handleClose = () => {
         setOpenPopperId(null);
@@ -42,7 +46,7 @@ export default function ExpenseTable(
         setOpenPopperId(id);
     }
 
-    const handleCreateTag = async (tagName: string, keywords: string[], canBeConsideredExpense: boolean) => {
+    const handleCreateTag = async (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => {
         const body = {
         name : tagName,
         keywords : keywords,
@@ -52,19 +56,34 @@ export default function ExpenseTable(
     try{
             const createTagResponse: any = await apiCaller(createTagApi(body));
             if(createTagResponse.status === 1){
-                toast("Tag Saved!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-                });
-                navigate('/home');
+                const tagId = createTagResponse.data.id;
+                const tag = createTagResponse.data;
+                const updateExpenseBody = {
+                    tagIds: [tagId]
+                }
+                handleClose();
+                const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, updateExpenseBody));
+                if(updateExpenseResponse.status === 1){
+                    toast("Expense Saved!", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: false,
+                    draggable: false,
+                    progress: undefined,
+                    theme: "dark",
+                    });
+                    setRowData((prevRowData) =>
+                        prevRowData.map((expense) =>
+                            expense.id === expenseId
+                            ? { ...expense, tags: [...expense.tags, tag] } // Add the new tag
+                            : expense
+                        )
+                    );
+                }
             }
-        }catch(err) {
+        } catch(err) {
             toast("Creating tag failed", {
                 position: "top-right",
                 autoClose: 5000,
@@ -91,6 +110,7 @@ export default function ExpenseTable(
                 </IconButton>
                 <TagPopper
                     clazzName="popperCentered"
+                    expenseId={props.data.id}
                     anchorEl={dummyAnchor}
                     open={openPopperId === props.data.id}
                     onClose={handleClose}
@@ -98,7 +118,7 @@ export default function ExpenseTable(
                 />
             </div>
         );
-    };  
+    };
 
     const headers: Object[] = [
         {field: "id"},
@@ -123,7 +143,7 @@ export default function ExpenseTable(
                 pagination={pagination? pagination : undefined}
                 paginationPageSize={20}
                 paginationPageSizeSelector={[20, 50, 100]}
-                rowData={expenses}
+                rowData={rowData}
                 columnDefs={headers}
             />
             {openPopperId && (

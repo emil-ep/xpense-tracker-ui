@@ -5,13 +5,14 @@ import './tagPopper.css'
 
 interface TagPopupProps {
   clazzName: string;
+  expenseId: string;
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
-  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean) => void; 
+  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => void; 
 }
 
-const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose, onCreate }) => {
+const TagPopper: React.FC<TagPopupProps> = ({ clazzName, expenseId, anchorEl, open, onClose, onCreate }) => {
 
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
@@ -60,7 +61,7 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, anchorEl, open, onClose
                 variant="contained"
                 color="primary"
                 fullWidth
-                onClick={() => onCreate(tagName, processKeywords(), isExpense)}
+                onClick={() => onCreate(tagName, processKeywords(), isExpense, expenseId)}
                 style={{ marginTop: 8 }}
                 disabled={tagName === '' || keywords === ''}
             >

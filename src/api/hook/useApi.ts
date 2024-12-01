@@ -3,7 +3,7 @@ import { getNavigate } from '../../navigation';
 
 export interface ApiConfig {
   url: string;
-  method: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
   headers?: Record<string, string>;
   body?: any;
 }
@@ -15,7 +15,7 @@ export const useApi = <T>(fetchConfig: FetchFunction, dependencies: any[] = []) 
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = getNavigate();
-  
+
   const fetchData = useCallback(async () => {
     const { url, method, headers = {}, body } = fetchConfig();
 
