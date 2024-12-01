@@ -52,7 +52,7 @@ const AppRoutes: React.FC = () => {
 
 
 root.render(
-  <React.StrictMode>
+  // <React.StrictMode> This is commented since api calls were going twice
     <Router>
       <div>
         <ToastContainer 
@@ -70,9 +70,6 @@ root.render(
         <AppRoutes />
       </div>
     </Router>
-  </React.StrictMode>
-  
-  
-  
+    //<React.StrictMode>
 );
 
