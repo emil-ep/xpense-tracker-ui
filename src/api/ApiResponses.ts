@@ -25,6 +25,16 @@ export interface PaginatedExpenseResponse extends BaseResponse {
     data: PaginatedExpenses;
 }
 
+export interface MetricsV2Response extends BaseResponse {
+    data: MetricsV2[];
+}
+
+export interface MetricsV2 {
+    timeframe : string;
+    debit_aggregate?: number;
+    credit_aggregate?: number;
+}
+
 interface PaginatedExpenses {
     totalPages : number;
     totalCount: number;

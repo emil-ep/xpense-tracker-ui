@@ -23,16 +23,16 @@ export const AnalyticsView = () => {
             <Box sx={{ flexGrow: 1}}>
                 <Grid2 className="gridContainer" container spacing={2}>
                     <Grid2 size={8}>
-                        <AnalyticCard aggregationMode='daily' metrics={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
                     <Grid2 size={4}>
-                        <AnalyticCard aggregationMode='daily' metrics={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
                     <Grid2 size={4}>
-                        <AnalyticCard aggregationMode='monthly' metrics={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard aggregationMode='monthly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
                     <Grid2 size={8}>/
-                        <AnalyticCard aggregationMode='yearly' metrics={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard aggregationMode='yearly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
                 </Grid2>
             </Box>

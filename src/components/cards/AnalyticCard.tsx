@@ -9,6 +9,7 @@ import AnalyticBarChart from '../charts/AnalyticBarChart';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
+import { MetricsV2, MetricsV2Response } from '../../api/ApiResponses';
 
 const bull = (
   <Box
@@ -19,13 +20,27 @@ const bull = (
   </Box>
 );
 
-export const card = (
+export interface AnalyticCardProps {
+  aggregationMode : MetricAggregatioMode;
+  metricsToFetch: Metrics[]
+}
+
+export default function AnalyticCard({aggregationMode, metricsToFetch}: AnalyticCardProps) {
+
+  const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
+
+  const timeframeBody = {
+    fromDate: '01/11/24',
+    toDate: '16/12/24'
+  }
+
+  const card = (
   <React.Fragment>
     <CardContent>
       <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
         Word of the Day
       </Typography>
-      <AnalyticBarChart />
+      <AnalyticBarChart metrics={metrics}/>
     </CardContent>
     <CardActions>
       <Button size="small">Learn More</Button>
@@ -33,23 +48,19 @@ export const card = (
   </React.Fragment>
 );
 
-export interface AnalyticCardProps {
-  aggregationMode : MetricAggregatioMode;
-  metrics: Metrics[]
-}
-
-export default function AnalyticCard({aggregationMode, metrics}: AnalyticCardProps) {
-
-  const timeframeBody = {
-    fromDate: '01/11/24',
-    toDate: '16/12/24'
-  }
-
   const fetchMetrics = React.useCallback(() => {
-        return fetchMetricsV2(aggregationMode, metrics, timeframeBody);
+        return fetchMetricsV2(aggregationMode, metricsToFetch, timeframeBody);
     }, []);
 
-  const { responseBody, error } = useApi<any>(fetchMetrics, []);
+  const { responseBody, error } = useApi<MetricsV2Response>(fetchMetrics, []);
+
+  React.useEffect(() => {
+
+        if(responseBody && responseBody.data){
+            const items = responseBody.data;
+            setMetrics(items);
+        }
+    }, [responseBody]);
 
   return (
     <Box sx={{ minWidth: 275 }}>
