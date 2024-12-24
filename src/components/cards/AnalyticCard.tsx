@@ -6,6 +6,9 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import AnalyticBarChart from '../charts/AnalyticBarChart';
+import { useApi } from '../../api/hook/useApi';
+import { fetchMetricsV2 } from '../../api/metricsApi';
+import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
 
 const bull = (
   <Box
@@ -30,7 +33,24 @@ export const card = (
   </React.Fragment>
 );
 
-export default function OutlinedCard() {
+export interface AnalyticCardProps {
+  aggregationMode : MetricAggregatioMode;
+  metrics: Metrics[]
+}
+
+export default function AnalyticCard({aggregationMode, metrics}: AnalyticCardProps) {
+
+  const timeframeBody = {
+    fromDate: '01/11/24',
+    toDate: '16/12/24'
+  }
+
+  const fetchMetrics = React.useCallback(() => {
+        return fetchMetricsV2(aggregationMode, metrics, timeframeBody);
+    }, []);
+
+  const { responseBody, error } = useApi<any>(fetchMetrics, []);
+
   return (
     <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">{card}</Card>
