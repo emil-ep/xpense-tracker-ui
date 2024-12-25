@@ -11,26 +11,18 @@ import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
 import { MetricsV2, MetricsV2Response } from '../../api/ApiResponses';
 
-const bull = (
-  <Box
-    component="span"
-    sx={{ display: 'inline-block', mx: '2px', transform: 'scale(0.8)' }}
-  >
-    •
-  </Box>
-);
-
 export interface AnalyticCardProps {
-  aggregationMode : MetricAggregatioMode;
+  title?: string;
+  aggregationMode: MetricAggregatioMode;
   metricsToFetch: Metrics[]
 }
 
-export default function AnalyticCard({aggregationMode, metricsToFetch}: AnalyticCardProps) {
+export default function AnalyticCard({title = '', aggregationMode, metricsToFetch}: AnalyticCardProps) {
 
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
 
   const timeframeBody = {
-    fromDate: '01/11/24',
+    fromDate: '01/01/24',
     toDate: '16/12/24'
   }
 
@@ -38,9 +30,11 @@ export default function AnalyticCard({aggregationMode, metricsToFetch}: Analytic
   <React.Fragment>
     <CardContent>
       <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-        Word of the Day
+        {title}
       </Typography>
-      <AnalyticBarChart metrics={metrics}/>
+      <Box sx={{ width: "100%" }}>
+          <AnalyticBarChart metrics={metrics} />
+      </Box>
     </CardContent>
     <CardActions>
       <Button size="small">Learn More</Button>

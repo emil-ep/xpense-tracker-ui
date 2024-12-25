@@ -22,17 +22,17 @@ export const AnalyticsView = () => {
             <CssBaseline />
             <Box sx={{ flexGrow: 1}}>
                 <Grid2 className="gridContainer" container spacing={2}>
-                    <Grid2 size={8}>
-                        <AnalyticCard aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                    <Grid2 size={16}>
+                        <AnalyticCard title='Daily Aggregation' aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
-                    <Grid2 size={4}>
-                        <AnalyticCard aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                    <Grid2 size={6}>
+                        <AnalyticCard title='Monthly Aggregation' aggregationMode='monthly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
-                    <Grid2 size={4}>
-                        <AnalyticCard aggregationMode='monthly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                    <Grid2 size={6}>
+                        <AnalyticCard title='Weekly Aggregation' aggregationMode='weekly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
-                    <Grid2 size={8}>/
-                        <AnalyticCard aggregationMode='yearly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                    <Grid2 size={4}>/
+                        <AnalyticCard title='Yearly Aggregation' aggregationMode='yearly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
                 </Grid2>
             </Box>
