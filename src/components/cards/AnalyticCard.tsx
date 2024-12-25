@@ -51,8 +51,20 @@ export default function AnalyticCard({title = '', aggregationMode, metricsToFetc
   React.useEffect(() => {
 
         if(responseBody && responseBody.data){
-            const items = responseBody.data;
-            setMetrics(items);
+
+          const results: any[] = [];
+          responseBody.data.forEach((item: MetricsV2) => {
+            const { tags_aggregate, ...otherFields } = item;
+            const resultItem : Record<string, any> = { ...otherFields };
+            if(item.tags_aggregate && typeof item.tags_aggregate === "object"){
+              Object.entries(item.tags_aggregate).forEach(([key, value]) => {
+                resultItem[key] = value;
+              });
+            }
+            results.push(resultItem);
+
+          });
+            setMetrics(results);
         }
     }, [responseBody]);
 
