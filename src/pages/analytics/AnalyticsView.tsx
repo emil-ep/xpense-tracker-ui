@@ -34,6 +34,9 @@ export const AnalyticsView = () => {
                     <Grid2 size={4}>/
                         <AnalyticCard title='Yearly Aggregation' aggregationMode='yearly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
                     </Grid2>
+                    <Grid2 size={16}>/
+                        <AnalyticCard title='Tags Aggregate' aggregationMode='monthly' metricsToFetch={['tags_aggregate']}/>
+                    </Grid2>
                 </Grid2>
             </Box>
         </ThemeProvider>

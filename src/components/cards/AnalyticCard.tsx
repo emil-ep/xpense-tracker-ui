@@ -27,19 +27,19 @@ export default function AnalyticCard({title = '', aggregationMode, metricsToFetc
   }
 
   const card = (
-  <React.Fragment>
-    <CardContent>
-      <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-        {title}
-      </Typography>
-      <Box sx={{ width: "100%" }}>
-          <AnalyticBarChart metrics={metrics} />
-      </Box>
-    </CardContent>
-    <CardActions>
-      <Button size="small">Learn More</Button>
-    </CardActions>
-  </React.Fragment>
+    <React.Fragment>
+      <CardContent>
+        <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+          {title}
+        </Typography>
+        <Box sx={{ width: "100%" }}>
+            <AnalyticBarChart metrics={metrics} />
+        </Box>
+      </CardContent>
+      <CardActions>
+        <Button size="small">Learn More</Button>
+      </CardActions>
+    </React.Fragment>
 );
 
   const fetchMetrics = React.useCallback(() => {

@@ -33,6 +33,7 @@ export interface MetricsV2 {
     timeframe : string;
     debit_aggregate?: number;
     credit_aggregate?: number;
+    tags_aggregate?: Object;
 }
 
 interface PaginatedExpenses {
