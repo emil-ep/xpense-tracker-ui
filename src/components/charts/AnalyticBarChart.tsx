@@ -10,7 +10,6 @@ interface Metrics {
 export default function AnalyticBarChart({metrics} : Metrics) {
 
   if (!metrics || metrics.length === 0) {
-    // Return null or a loader/message if metrics is not available
     return <div>Loading chart data...</div>;
   }
 
@@ -26,15 +25,18 @@ export default function AnalyticBarChart({metrics} : Metrics) {
   return (
     <Box
       sx={{
-        width: "100%", // Ensure the chart takes full width of its parent
-        height: 300, // Set height explicitly
+        width: "100%",// Ensure the chart takes full width of its parent
+        height: 300,
       }}
     >
       <BarChart
-      xAxis={[{ scaleType: 'band', data: metrics?.map(metric => metric.timeframe) }]}
-      series={series}
-      height={300}
-    />
+        xAxis={[{ scaleType: 'band', data: metrics?.map(metric => metric.timeframe) }]}
+        series={series}
+        sx={{
+          paddingBlockStart: "1rem"
+        }}
+        height={300}
+      />
     </Box>
   );
 }
