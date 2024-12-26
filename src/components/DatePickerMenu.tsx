@@ -3,21 +3,19 @@ import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useEffect, useState } from "react";
 import { subMonths, format } from 'date-fns';
-
+import { useDateRange } from "../hooks/useDate";
 
 export default function DatePickerMenu() {
 
+const { fromDate, toDate, updateDateRange } = useDateRange(); 
 const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
 const [customDateMode, setCustomDateMode] = useState(false);
-const [fromDate, setFromDate] = useState<Date | null>(null);
-const [toDate, setToDate] = useState<Date | null>(null);
 const [selectedRange, setSelectedRange] = useState<string>('Select Date Range');
 
 useEffect(() => {
     const to = new Date();
     const from = subMonths(to, 6); // Last 6 months
-    setFromDate(from);
-    setToDate(to);
+    updateDateRange(from, to);
     setSelectedRange('Last 6 Months');
 }, []);
 
@@ -27,27 +25,20 @@ const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
 
 const handleClose = () => {
     setAnchorEl(null);
+    setCustomDateMode(false);
 };
 
-const handleMenuClose = () => {
-    setAnchorEl(null);
-    setCustomDateMode(false); // Reset custom date mode when closing
-};
-
-const updateDateRange = (months: number, label: string) => {
+const handlePresetRange = (months: number, label: string) => {
     const to = new Date();
     const from = subMonths(to, months);
-    setFromDate(from);
-    setToDate(to);
-    console.log('from :', from);
-    console.log('to :', to);
+    updateDateRange(from, to);
     setSelectedRange(label);
     handleClose();
   };
 
 const handleCustomDateSelect = () => {
     if (fromDate && toDate) {
-      const formattedRange = `${format(fromDate, 'MM/dd/yyyy')} to ${format(toDate, 'MM/dd/yyyy')}`;
+      const formattedRange = `${format(fromDate, 'dd/MM/yyyy')} to ${format(toDate, 'dd/MM/yyyy')}`;
       setSelectedRange(formattedRange);
     }
     handleClose();
@@ -65,12 +56,12 @@ return (
         <Menu
             anchorEl={anchorEl}
             open={Boolean(anchorEl)}
-            onClose={handleMenuClose}
+            onClose={handleClose}
         >
-            <MenuItem onClick={() => updateDateRange(1, 'Last 1 month')}>Last 1 Month</MenuItem>
-            <MenuItem onClick={() => updateDateRange(2, 'Last 2 month')}>Last 2 Months</MenuItem>
-            <MenuItem onClick={() => updateDateRange(6, 'Last 6 month')}>Last 6 Months</MenuItem>
-            <MenuItem onClick={() => updateDateRange(12, 'Last 1 year')}>Last 1 Year</MenuItem>
+            <MenuItem onClick={() => handlePresetRange(1, 'Last 1 month')}>Last 1 Month</MenuItem>
+            <MenuItem onClick={() => handlePresetRange(2, 'Last 2 month')}>Last 2 Months</MenuItem>
+            <MenuItem onClick={() => handlePresetRange(6, 'Last 6 month')}>Last 6 Months</MenuItem>
+            <MenuItem onClick={() => handlePresetRange(12, 'Last 1 year')}>Last 1 Year</MenuItem>
             <MenuItem
                 onClick={() => setCustomDateMode(true)}
             >
@@ -81,14 +72,14 @@ return (
                 <DatePicker
                 label="From"
                 value={fromDate}
-                onChange={(newValue: any) => setFromDate(newValue)}
+                onChange={(newValue: any) => updateDateRange(newValue!, toDate!)}
                 slotProps={{ textField: { fullWidth: true } }}
                 />
                 
                 <DatePicker
                 label="To"
                 value={toDate}
-                onChange={(newValue: any) => setToDate(newValue)}
+                onChange={(newValue: any) => updateDateRange(fromDate!, newValue!)}
                 slotProps={{ textField: { fullWidth: true } }}
                 />
                 
