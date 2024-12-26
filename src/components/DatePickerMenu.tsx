@@ -48,7 +48,7 @@ return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
         <Button
             variant="contained"
-            color="secondary"
+            color="primary"
             onClick={handleMenuOpen}
         >
             {selectedRange}
