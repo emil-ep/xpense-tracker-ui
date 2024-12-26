@@ -1,8 +1,8 @@
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
-import { useState } from "react";
-import { subMonths } from 'date-fns';
+import { useEffect, useState } from "react";
+import { subMonths, format } from 'date-fns';
 
 
 export default function DatePickerMenu() {
@@ -12,6 +12,14 @@ const [customDateMode, setCustomDateMode] = useState(false);
 const [fromDate, setFromDate] = useState<Date | null>(null);
 const [toDate, setToDate] = useState<Date | null>(null);
 const [selectedRange, setSelectedRange] = useState<string>('Select Date Range');
+
+useEffect(() => {
+    const to = new Date();
+    const from = subMonths(to, 6); // Last 6 months
+    setFromDate(from);
+    setToDate(to);
+    setSelectedRange('Last 6 Months');
+}, []);
 
 const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
@@ -31,9 +39,19 @@ const updateDateRange = (months: number, label: string) => {
     const from = subMonths(to, months);
     setFromDate(from);
     setToDate(to);
+    console.log('from :', from);
+    console.log('to :', to);
     setSelectedRange(label);
     handleClose();
   };
+
+const handleCustomDateSelect = () => {
+    if (fromDate && toDate) {
+      const formattedRange = `${format(fromDate, 'MM/dd/yyyy')} to ${format(toDate, 'MM/dd/yyyy')}`;
+      setSelectedRange(formattedRange);
+    }
+    handleClose();
+};
 
 return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
@@ -75,12 +93,13 @@ return (
                 />
                 
                 <Button
-                variant="contained"
-                color="primary"
-                onClick={handleMenuClose}
-                sx={{ mt: 1 }}
+                    variant="contained"
+                    color="primary"
+                    onClick={handleCustomDateSelect}
+                    disabled={!fromDate || !toDate}
+                    sx={{ mt: 1 }}
                 >
-                Apply
+                    Apply
                 </Button>
             </Box>
             )}
