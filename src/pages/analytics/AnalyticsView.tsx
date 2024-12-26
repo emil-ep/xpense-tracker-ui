@@ -1,7 +1,9 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import './analyticsView.css'
 import { Box, createTheme, CssBaseline, Grid2, Paper, ThemeProvider } from '@mui/material'
 import AnalyticCard from '../../components/cards/AnalyticCard';
+import { useDateRange } from '../../context/DateRangeContext';
+import { format } from "date-fns";
 
 
 const theme = createTheme({
@@ -15,7 +17,28 @@ const theme = createTheme({
   },
 });
 
+export interface Timeframe {
+    fromDate: string;
+    toDate: string;
+}
+
 export const AnalyticsView = () => {
+
+    const [timeframe, setTimeframe] = useState<Timeframe>({ fromDate: '01/01/24', toDate: '01/01/24'});
+
+    const { fromDate, toDate } = useDateRange();
+
+    useEffect(() => {
+        if (fromDate && toDate) {
+            // Fetch analytics data based on the new date range
+            const newTimeframe = {
+                fromDate: format(fromDate, "dd/MM/yy"),
+                toDate: format(toDate, "dd/MM/yy")
+            }
+            setTimeframe(newTimeframe);
+        }
+    }, [fromDate, toDate]);
+
 
     return (
         <ThemeProvider theme={theme}>
@@ -23,19 +46,44 @@ export const AnalyticsView = () => {
             <Box sx={{ flexGrow: 1}}>
                 <Grid2 className="gridContainer" container spacing={2}>
                     <Grid2 size={16}>
-                        <AnalyticCard title='Daily Aggregation' aggregationMode='daily' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard 
+                            title='Daily Aggregation' 
+                            aggregationMode='daily' 
+                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                            timeframe={timeframe}
+                        />
                     </Grid2>
                     <Grid2 size={6}>
-                        <AnalyticCard title='Monthly Aggregation' aggregationMode='monthly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard 
+                            title='Monthly Aggregation' 
+                            aggregationMode='monthly' 
+                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                            timeframe={timeframe}
+                        />
                     </Grid2>
                     <Grid2 size={6}>
-                        <AnalyticCard title='Weekly Aggregation' aggregationMode='weekly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard 
+                            title='Weekly Aggregation' 
+                            aggregationMode='weekly' 
+                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                            timeframe={timeframe}
+                        />
                     </Grid2>
                     <Grid2 size={4}>/
-                        <AnalyticCard title='Yearly Aggregation' aggregationMode='yearly' metricsToFetch={['credit_aggregate', 'debit_aggregate']}/>
+                        <AnalyticCard 
+                            title='Yearly Aggregation' 
+                            aggregationMode='yearly' 
+                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                            timeframe={timeframe}
+                        />
                     </Grid2>
                     <Grid2 size={16}>/
-                        <AnalyticCard title='Tags Aggregate' aggregationMode='monthly' metricsToFetch={['tags_aggregate']}/>
+                        <AnalyticCard 
+                            title='Tags Aggregate' 
+                            aggregationMode='monthly' 
+                            metricsToFetch={['tags_aggregate']} 
+                            timeframe={timeframe}
+                        />
                     </Grid2>
                 </Grid2>
             </Box>

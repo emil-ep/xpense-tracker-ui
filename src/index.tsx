@@ -14,6 +14,7 @@ import { setNavigate } from './navigation';
 import AppLayout from './components/AppLayout';
 import { AnalyticsView } from './pages/analytics/AnalyticsView';
 import { ExpenseView } from './pages/expense/ExpenseView';
+import { DateRangeProvider } from './context/DateRangeContext';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -54,21 +55,23 @@ const AppRoutes: React.FC = () => {
 root.render(
   // <React.StrictMode> This is commented since api calls were going twice
     <Router>
-      <div>
-        <ToastContainer 
-          position="top-right"
-          autoClose={5000}
-          hideProgressBar={false}
-          newestOnTop={false}
-          closeOnClick
-          rtl={false}
-          pauseOnFocusLoss={false}
-          draggable
-          pauseOnHover
-          theme="light"
-        />
-        <AppRoutes />
-      </div>
+      <DateRangeProvider>
+        <div>
+          <ToastContainer 
+            position="top-right"
+            autoClose={5000}
+            hideProgressBar={false}
+            newestOnTop={false}
+            closeOnClick
+            rtl={false}
+            pauseOnFocusLoss={false}
+            draggable
+            pauseOnHover
+            theme="light"
+          />
+          <AppRoutes />
+        </div>
+      </DateRangeProvider>
     </Router>
     //<React.StrictMode>
 );

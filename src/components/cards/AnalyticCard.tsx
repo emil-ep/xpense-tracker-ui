@@ -10,21 +10,18 @@ import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
 import { MetricsV2, MetricsV2Response } from '../../api/ApiResponses';
+import { Timeframe } from '../../pages/analytics/AnalyticsView';
 
 export interface AnalyticCardProps {
   title?: string;
   aggregationMode: MetricAggregatioMode;
-  metricsToFetch: Metrics[]
+  metricsToFetch: Metrics[];
+  timeframe: Timeframe;
 }
 
-export default function AnalyticCard({title = '', aggregationMode, metricsToFetch}: AnalyticCardProps) {
+export default function AnalyticCard({title = '', aggregationMode, metricsToFetch, timeframe}: AnalyticCardProps) {
 
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
-
-  const timeframeBody = {
-    fromDate: '01/01/24',
-    toDate: '16/12/24'
-  }
 
   const card = (
     <React.Fragment>
@@ -43,8 +40,8 @@ export default function AnalyticCard({title = '', aggregationMode, metricsToFetc
 );
 
   const fetchMetrics = React.useCallback(() => {
-        return fetchMetricsV2(aggregationMode, metricsToFetch, timeframeBody);
-    }, []);
+        return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
+    }, [timeframe]);
 
   const { responseBody, error } = useApi<MetricsV2Response>(fetchMetrics, []);
 
