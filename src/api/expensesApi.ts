@@ -24,3 +24,8 @@ export const updateExpense = (expenseId: string, body: any): ApiConfig => ({
     method: 'PATCH',
     body: body
 });
+
+export const syncExpense = () : ApiConfig => ({
+    url: `http://localhost:8080/v1/expenses/sync`,
+    method: 'POST'
+})

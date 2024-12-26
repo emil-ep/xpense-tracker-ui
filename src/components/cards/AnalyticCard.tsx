@@ -59,9 +59,8 @@ export default function AnalyticCard({title = '', aggregationMode, metricsToFetc
               });
             }
             results.push(resultItem);
-
           });
-            setMetrics(results);
+          setMetrics(results);
         }
     }, [responseBody]);
 
