@@ -1,4 +1,5 @@
 import { UploadResponse } from "./ApiResponses";
+import { FILE_URL } from "./ApiUrl";
 import { getErrorMessage } from "./ApiUtil";
 
 export const uploadStatement = async (selectedFile : File) : Promise<UploadResponse> => {
@@ -6,7 +7,7 @@ export const uploadStatement = async (selectedFile : File) : Promise<UploadRespo
     const formData = new FormData();
     formData.append('file', selectedFile);
 
-    const response  = await fetch('http://localhost:8080/v1/file/upload/statement', {
+    const response  = await fetch(`${FILE_URL}/upload/statement`, {
         method: 'POST',
         body: formData,
         headers: {

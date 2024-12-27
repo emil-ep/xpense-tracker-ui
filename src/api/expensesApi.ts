@@ -1,3 +1,4 @@
+import { EXPENSES_URL } from "./ApiUrl";
 import { ApiConfig } from "./hook/useApi";
 
 
@@ -9,23 +10,23 @@ const fetchExpenseParams = (page: number, size: number) => {
 }
 
 export const getExpensesV2 = (page: number, size: number): ApiConfig => ({
-    url: `http://localhost:8080/v1/expenses?${fetchExpenseParams(page, size)}`,
+    url: `${EXPENSES_URL}?${fetchExpenseParams(page, size)}`,
     method: 'GET',
 });
 
 export const saveExpense = (fileName: string, body: any): ApiConfig => ({
-    url: `http://localhost:8080/v1/expenses/save?fileName=${fileName}`,
+    url: `${EXPENSES_URL}/save?fileName=${fileName}`,
     method: 'PUT',
     body: body
 });
 
 export const updateExpense = (expenseId: string, body: any): ApiConfig => ({
-    url: `http://localhost:8080/v1/expenses?expense=${expenseId}`,
+    url: `${EXPENSES_URL}?expense=${expenseId}`,
     method: 'PATCH',
     body: body
 });
 
 export const syncExpense = () : ApiConfig => ({
-    url: `http://localhost:8080/v1/expenses/sync`,
+    url: `${EXPENSES_URL}/sync`,
     method: 'POST'
 })

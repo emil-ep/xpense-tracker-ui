@@ -1,14 +1,15 @@
 
+import { FILE_MAPPER_URL } from "./ApiUrl";
 import { ApiConfig } from "./hook/useApi";
 
 
 export const getHeaderMapperConfig = (fileName: string): ApiConfig => ({
-  url: `http://localhost:8080/v1/expenses/statement/mapper?fileName=${fileName}`,
+  url: `${FILE_MAPPER_URL}/mapper?fileName=${fileName}`,
   method: "GET",
 });
 
 export const getPreviewApi = (fileName: string, body: any): ApiConfig => ({
-    url: `http://localhost:8080/v1/expenses/statement/preview?fileName=${fileName}`,
+    url: `${FILE_MAPPER_URL}/preview?fileName=${fileName}`,
     method: 'POST',
     body: body
 });

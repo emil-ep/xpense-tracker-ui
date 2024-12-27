@@ -1,3 +1,4 @@
+import { SIGN_IN_URL } from "./ApiUrl";
 import { ApiConfig } from "./hook/useApi";
 
 interface SignInRequest {
@@ -14,7 +15,7 @@ interface SignInData{
 }
 
 export const signInV2 = (body: SignInRequest): ApiConfig => ({
-    url: 'http://localhost:8080/v1/auth/signIn',
+    url: SIGN_IN_URL,
     method: 'POST',
     body: body
 })
