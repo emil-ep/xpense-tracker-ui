@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8080';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'https://xpense-tracker-xe5d.onrender.com';
 
 export const SIGN_IN_URL = `${API_BASE_URL}/v1/auth/signIn`;
 export const EXPENSES_URL = `${API_BASE_URL}/v1/expenses`;
