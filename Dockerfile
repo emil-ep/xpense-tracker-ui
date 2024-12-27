@@ -22,6 +22,9 @@ FROM nginx:stable-alpine
 # Copy the React build output to the NGINX HTML directory
 COPY --from=build /app/build /usr/share/nginx/html
 
+# Copy the custom NGINX configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Expose port 80 for the container
 EXPOSE 80
 
