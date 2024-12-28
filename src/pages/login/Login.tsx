@@ -43,42 +43,28 @@ export default function Login() {
     <Box
       sx={{
         display: "flex",
-        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "center",
         height: "100vh",
-        backgroundColor: "#f5f5f5",
+        background: "url('/images/art-expense.png') no-repeat center center",
+        backgroundSize: "cover",
       }}
     >
-      {/* Left Section with Image */}
+      {/* Transparent Form */}
       <Box
         sx={{
-          flex: 1.5,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          background: "url('/images/art-expense.png') no-repeat center center",
-          backgroundSize: "cover",
-        }}
-      ></Box>
-
-      {/* Right Section with Form */}
-      <Box
-        sx={{
-          flex: 1,
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "center",
-          alignItems: "center",
+          width: "100%",
+          maxWidth: "400px",
           padding: 4,
-          backgroundColor: "#fff",
+          backgroundColor: "rgba(255, 255, 255, 0.8)", // Transparent white background
+          borderRadius: 2,
+          boxShadow: "0px 4px 10px rgba(0, 0, 0, 0.25)",
         }}
       >
-        <Typography variant="h4" gutterBottom>
+        <Typography variant="h4" gutterBottom align="center">
           Login
         </Typography>
-        <Stack
-          spacing={2}
-          sx={{ width: "100%", maxWidth: "400px" }}
-        >
+        <Stack spacing={2}>
           <TextField
             label="Email"
             variant="outlined"
