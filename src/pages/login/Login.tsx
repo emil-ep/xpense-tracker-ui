@@ -54,7 +54,7 @@ export default function Login() {
 
     // Call the signup API
     try {
-      await apiCaller({ method: "POST", url: "/api/signup", body: { name, email, password } });
+      await apiCaller({ method: "POST", url: "http://localhost:8080/v1/auth/signUp", body: { name, email, password } });
       toast("Signup Success. Please log in.", {
         position: "top-right",
         autoClose: 5000,
