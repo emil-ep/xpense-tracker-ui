@@ -8,7 +8,7 @@ import AddCircleIcon from '@mui/icons-material/AddCircle';
 import TagPopper from "../popper/TagPopper";
 import './expenseTable.css'
 import { apiCaller } from "../../api/apicaller";
-import { createTagApi } from "../../api/tagApi";
+import { createTagApi, editTagApi } from "../../api/tagApi";
 import { toast } from "react-toastify";
 import { updateExpense } from "../../api/expensesApi";
 
@@ -32,6 +32,7 @@ export default function ExpenseTable(
     const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openPopperId, setOpenPopperId] = useState<string | null>(null);
+    const [editingTag, setEditingTag] = useState<Tag | null>();
 
     useEffect(() => {
         setRowData(expenses);
@@ -42,15 +43,16 @@ export default function ExpenseTable(
     };
 
     const handleOpen = (event: React.MouseEvent<HTMLElement>, id: string) => {
+        setEditingTag(null);
         setAnchorEl(dummyAnchor);
         setOpenPopperId(id);
     }
 
     const handleCreateTag = async (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => {
         const body = {
-        name : tagName,
-        keywords : keywords,
-        canBeCountedAsExpense: canBeConsideredExpense
+            name : tagName,
+            keywords : keywords,
+            canBeCountedAsExpense: canBeConsideredExpense
     }
 
     try{
@@ -97,11 +99,52 @@ export default function ExpenseTable(
         }
     }
 
+    const handleEditTag = (event: React.MouseEvent<HTMLElement>, expenseId: string, tag: Tag) => {
+        setAnchorEl(dummyAnchor); // Keep the popper aligned
+        setOpenPopperId(expenseId);
+        setEditingTag(tag); // Set the tag to edit
+    };
+
+    const handleEditTagSave = async (updatedTag: Tag, expenseId: string) => {
+        try {
+            // Call API to update the tag
+            const updateTagResponse: any = await apiCaller(editTagApi(updatedTag));
+            if (updateTagResponse.status === 1) {
+                toast("Tag updated!", {
+                    position: "top-right",
+                    autoClose: 5000,
+                    theme: "dark",
+                });
+
+                // Update the state with the modified tag
+                setRowData((prevRowData) =>
+                    prevRowData.map((expense) =>
+                        expense.id === expenseId
+                            ? {
+                                ...expense,
+                                tags: expense.tags.map((tag) =>
+                                    tag.id === updatedTag.id ? updatedTag : tag
+                                ),
+                            }
+                            : expense
+                    )
+                );
+            }
+        } catch (err) {
+            toast("Updating tag failed", {
+                position: "top-right",
+                autoClose: 5000,
+                theme: "dark",
+            });
+        }
+        handleClose();
+    };
+
     const tagCellRenderer = (props: any) => {
         return (
             <div>
                 {props.value.map((tag: Tag, index: number) => (
-                    <button key={index} className="tag-button" >
+                    <button key={index} className="tag-button" onClick={(e) => handleEditTag(e, props.data.id, tag)}>
                         {tag.name}
                     </button>
                 ))}
@@ -111,10 +154,12 @@ export default function ExpenseTable(
                 <TagPopper
                     clazzName="popperCentered"
                     expenseId={props.data.id}
+                    tag={editingTag}
                     anchorEl={dummyAnchor}
                     open={openPopperId === props.data.id}
                     onClose={handleClose}
                     onCreate={handleCreateTag}
+                    onEdit={handleEditTagSave}
                 />
             </div>
         );

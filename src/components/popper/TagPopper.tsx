@@ -1,22 +1,36 @@
 import { Button, Checkbox, FormControlLabel, Paper, Popper, Stack, TextField } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './tagPopper.css'
+import { Tag } from "../../api/ApiResponses";
 
 
 interface TagPopupProps {
   clazzName: string;
+  tag?: Tag | null;
   expenseId: string;
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
-  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => void; 
+  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => void;
+  onEdit?: (updatedTag: Tag, expenseId: string) => void; 
 }
 
-const TagPopper: React.FC<TagPopupProps> = ({ clazzName, expenseId, anchorEl, open, onClose, onCreate }) => {
+const TagPopper: React.FC<TagPopupProps> = ({ clazzName, tag, expenseId, anchorEl, open, onClose, onCreate, onEdit }) => {
 
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
   const [isExpense, setIsExpense] = useState<boolean>(true);
+
+  useEffect(() => {
+    if(tag){
+      setTagName(tag.name);
+      setKeywords(tag.keywords.join(", "));
+      // setCanBeConsideredExpense(tag.canBeCountedAsExpense);
+    }else{
+      setTagName("");
+      setKeywords("");
+    }
+  }, []);
 
 
   const processKeywords = ()  => {
@@ -30,6 +44,22 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, expenseId, anchorEl, op
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setIsExpense(event.target.checked);
   }
+
+  const handleSave = () => {
+        if (tag) {
+            onEdit?.(
+                {
+                    ...tag,
+                    name: tagName,
+                    keywords: keywords.split(",").map((kw) => kw.trim()),
+                    // isExpense,
+                },
+                expenseId
+            );
+        } else {
+            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), isExpense, expenseId);
+        }
+    };
 
   return (
     <Popper className={clazzName} open={open} anchorEl={anchorEl} placement="bottom-start">
@@ -61,12 +91,13 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, expenseId, anchorEl, op
                 variant="contained"
                 color="primary"
                 fullWidth
-                onClick={() => onCreate(tagName, processKeywords(), isExpense, expenseId)}
+                onClick={handleSave}
                 style={{ marginTop: 8 }}
                 disabled={tagName === '' || keywords === ''}
             >
-                Create new tag
+                {tag ? "Save Changes" : "Create tag"}
             </Button>
+            <Button onClick={onClose}>Cancel</Button>
       </Paper>
     </Popper>
   );
