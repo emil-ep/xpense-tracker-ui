@@ -1,23 +1,25 @@
-import React, { useState, useEffect } from "react";
-import { AgGridReact } from 'ag-grid-react';
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
-import { ExpenseItemType, Tag } from "../../api/ApiResponses";
-import { IconButton } from "@mui/material";
-import AddCircleIcon from '@mui/icons-material/AddCircle';
-import TagPopper from "../popper/TagPopper";
 import './expenseTable.css'
-import { apiCaller } from "../../api/apicaller";
+
+import { ExpenseItemType, Tag } from "../../api/ApiResponses";
+import React, { useEffect, useState } from "react";
 import { createTagApi, editTagApi } from "../../api/tagApi";
+
+import AddCircleIcon from '@mui/icons-material/AddCircle';
+import { AgGridReact } from 'ag-grid-react';
+import { IconButton } from "@mui/material";
+import TagPopper from "../popper/TagPopper";
+import { apiCaller } from "../../api/apicaller";
 import { toast } from "react-toastify";
 import { updateExpense } from "../../api/expensesApi";
 
-
 interface TableProps {
     clazzName?: string;
-    expenses: ExpenseItemType[]
-    pagination?: boolean,
-    height: number | string
+    expenses: ExpenseItemType[];
+    pagination?: boolean;
+    height: number | string;
+    isPreview?: boolean;
 }
 
 const dummyAnchor = document.createElement('div');
@@ -27,6 +29,7 @@ export default function ExpenseTable(
         expenses, 
         pagination, 
         height,
+        isPreview
     } : TableProps){
         
     const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
@@ -151,16 +154,18 @@ export default function ExpenseTable(
                 <IconButton aria-label="add-tag" onClick={(e) => handleOpen(e, props.data.id)}>
                     <AddCircleIcon />
                 </IconButton>
-                <TagPopper
-                    clazzName="popperCentered"
-                    expenseId={props.data.id}
-                    tag={editingTag}
-                    anchorEl={dummyAnchor}
-                    open={openPopperId === props.data.id}
-                    onClose={handleClose}
-                    onCreate={handleCreateTag}
-                    onEdit={handleEditTagSave}
-                />
+                {!isPreview && 
+                    <TagPopper
+                        clazzName="popperCentered"
+                        expenseId={props.data.id}
+                        tag={editingTag}
+                        anchorEl={dummyAnchor}
+                        open={openPopperId === props.data.id}
+                        onClose={handleClose}
+                        onCreate={handleCreateTag}
+                        onEdit={handleEditTagSave}
+                    />
+                }
             </div>
         );
     };

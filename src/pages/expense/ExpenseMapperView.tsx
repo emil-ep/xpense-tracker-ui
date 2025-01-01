@@ -1,16 +1,17 @@
-import { useCallback, useEffect, useState} from "react"
-import { getHeaderMapperConfig, getPreviewApi} from "../../api/fileMapperApi";
-import { useApi } from "../../api/hook/useApi";
-import Stack from "../../components/Stack";
 import './ExpenseMapperView.css';
-import { apiCaller } from "../../api/apicaller";
+
+import { ExpenseItemType, ExpensePreviewResponse, ExpenseSaveResponse } from "../../api/ApiResponses";
+import { getHeaderMapperConfig, getPreviewApi } from "../../api/fileMapperApi";
+import { useCallback, useEffect, useState } from "react"
+
 import { ExpensePreviewModal } from "./modal/ExpensePreviewModal";
 import ExpenseTable from "../../components/table/ExpenseTable";
-import { ExpenseItemType, ExpensePreviewResponse, ExpenseSaveResponse } from "../../api/ApiResponses";
-import { toast } from 'react-toastify';
-import { saveExpense } from "../../api/expensesApi";
+import Stack from "../../components/Stack";
+import { apiCaller } from "../../api/apicaller";
 import { getNavigate } from "../../navigation";
-
+import { saveExpense } from "../../api/expensesApi";
+import { toast } from 'react-toastify';
+import { useApi } from "../../api/hook/useApi";
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
     const navigate = getNavigate();
@@ -179,7 +180,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             </button>
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
                 <h2>Your Expense Preview</h2>
-                <ExpenseTable expenses={expensePreviewItems} height={500}/>
+                <ExpenseTable expenses={expensePreviewItems} height={500} isPreview={true} />
             </ExpensePreviewModal>
         </Stack>
     )
