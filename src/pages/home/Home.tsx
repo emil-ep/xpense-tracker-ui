@@ -1,21 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import Stack from "../../components/Stack";
 import './home.css'
+
+import { ExpenseItemType, PaginatedExpenseResponse } from "../../api/ApiResponses";
+import React, { useCallback, useEffect, useState } from "react";
+
 import ExpenseTable from "../../components/table/ExpenseTable";
+import Stack from "../../components/Stack";
 import { getExpensesV2 } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";
 import { useApi } from "../../api/hook/useApi";
-import { ExpenseItemType, PaginatedExpenseResponse } from "../../api/ApiResponses";
 
-
-const headers = [
-    {field: "id"},
-    {field: "transactionDate"},
-    {field: "description"},
-    {field: "type"},
-    {field: "amount"},
-    {field: 'tags'}
-]
 export default function Home(){
 
     const navigate = getNavigate();

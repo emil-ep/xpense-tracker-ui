@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react'
 import './analyticsView.css'
-import { Box, createTheme, CssBaseline, Grid2, Paper, ThemeProvider } from '@mui/material'
-import AnalyticCard from '../../components/cards/AnalyticCard';
-import { useDateRange } from '../../context/DateRangeContext';
-import { format } from "date-fns";
 
+import { Box, CssBaseline, Grid2, ThemeProvider, createTheme } from '@mui/material'
+import React, { useEffect, useState } from 'react'
+
+import AnalyticCard from '../../components/cards/AnalyticCard';
+import { format } from "date-fns";
+import { useDateRange } from '../../context/DateRangeContext';
 
 const theme = createTheme({
   palette: {
