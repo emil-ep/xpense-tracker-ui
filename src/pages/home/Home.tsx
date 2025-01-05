@@ -3,7 +3,7 @@ import './home.css'
 import { ExpenseItemType, PaginatedExpenseResponse } from "../../api/ApiResponses";
 import React, { useCallback, useEffect, useState } from "react";
 
-import ExpenseTable from "../../components/table/ExpenseTable";
+import ExpenseTable from "../../components/table/expenses/ExpenseTable";
 import Stack from "../../components/Stack";
 import { getExpensesV2 } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";

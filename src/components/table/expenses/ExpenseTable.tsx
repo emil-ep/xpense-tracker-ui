@@ -2,17 +2,17 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './expenseTable.css'
 
-import { ExpenseItemType, Tag } from "../../api/ApiResponses";
+import { ExpenseItemType, Tag } from "../../../api/ApiResponses";
 import React, { useEffect, useState } from "react";
-import { createTagApi, editTagApi } from "../../api/tagApi";
+import { createTagApi, editTagApi } from "../../../api/tagApi";
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from "@mui/material";
-import TagPopper from "../popper/TagPopper";
-import { apiCaller } from "../../api/apicaller";
+import TagPopper from "../../popper/TagPopper";
+import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
-import { updateExpense } from "../../api/expensesApi";
+import { updateExpense } from "../../../api/expensesApi";
 
 interface TableProps {
     clazzName?: string;
@@ -38,6 +38,7 @@ export default function ExpenseTable(
     const [editingTag, setEditingTag] = useState<Tag | null>();
 
     useEffect(() => {
+        console.log('expenses :', expenses);
         setRowData(expenses);
     }, [expenses]);
 

@@ -1,20 +1,21 @@
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import React, { useEffect } from 'react';
 import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
 
+import AddExpense from './pages/expense/AddExpense';
+import { AnalyticsView } from './pages/analytics/AnalyticsView';
+import AppLayout from './components/AppLayout';
+import { DateRangeProvider } from './context/DateRangeContext';
+import { ExpenseView } from './pages/expense/ExpenseView';
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import ProtectedRoute from "./components/ProtectedRoute";
+import TagManagement from './pages/tagManagement/TagManagementView';
 import { ToastContainer } from 'react-toastify';
 import { createRoot } from "react-dom/client";
-import AddExpense from './pages/expense/AddExpense';
-import React, { useEffect } from 'react';
 import { setNavigate } from './navigation';
-import AppLayout from './components/AppLayout';
-import { AnalyticsView } from './pages/analytics/AnalyticsView';
-import { ExpenseView } from './pages/expense/ExpenseView';
-import { DateRangeProvider } from './context/DateRangeContext';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -44,6 +45,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/add/expense" element={<ProtectedRoute element={AddExpense} />} />
             <Route path="/analytics" element={<ProtectedRoute element={AnalyticsView} />} />
             <Route path="/expense" element={<ProtectedRoute element={ExpenseView}/>} />
+            <Route path='/tagManagement' element={<ProtectedRoute element={TagManagement}/>}/>
           </Routes>
         </AppLayout>
       )}

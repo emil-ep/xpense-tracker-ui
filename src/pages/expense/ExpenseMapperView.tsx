@@ -5,7 +5,7 @@ import { getHeaderMapperConfig, getPreviewApi } from "../../api/fileMapperApi";
 import { useCallback, useEffect, useState } from "react"
 
 import { ExpensePreviewModal } from "./modal/ExpensePreviewModal";
-import ExpenseTable from "../../components/table/ExpenseTable";
+import ExpenseTable from "../../components/table/expenses/ExpenseTable";
 import Stack from "../../components/Stack";
 import { apiCaller } from "../../api/apicaller";
 import { getNavigate } from "../../navigation";

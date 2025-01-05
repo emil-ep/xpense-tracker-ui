@@ -29,6 +29,10 @@ export interface MetricsV2Response extends BaseResponse {
     data: MetricsV2[];
 }
 
+export interface FetchTagsResponse extends BaseResponse {
+    data: Tag[];
+}
+
 export interface MetricsV2 {
     timeframe : string;
     debit_aggregate?: number;

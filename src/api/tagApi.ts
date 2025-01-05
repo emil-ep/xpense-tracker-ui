@@ -1,5 +1,5 @@
-import { TAG_URL } from "./ApiUrl";
 import { ApiConfig } from "./hook/useApi";
+import { TAG_URL } from "./ApiUrl";
 
 export const createTagApi = (body: any): ApiConfig => ({
     url: `${TAG_URL}`,
@@ -11,4 +11,9 @@ export const editTagApi = (body: any): ApiConfig => ({
     url: `${TAG_URL}`,
     method: 'PUT',
     body: body
+});
+
+export const fetchTagsApi = (): ApiConfig => ({
+    url: TAG_URL,
+    method: 'GET',
 })

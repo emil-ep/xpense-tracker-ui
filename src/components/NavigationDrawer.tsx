@@ -1,16 +1,19 @@
-import React, { useState } from "react";
-import { List, ListItem, ListItemText, Divider, Box, ListItemButton, ListItemIcon, Drawer } from "@mui/material";
-import { Link } from "react-router-dom";
-import { styled, ThemeProvider, createTheme } from '@mui/material/styles';
-import { BarChart, Home, KeyboardArrowDown } from "@mui/icons-material";
-import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import './navigationDrawer.css'
+
+import { BarChart, Home, KeyboardArrowDown } from "@mui/icons-material";
+import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
+import React, { useState } from "react";
+import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+
+import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
+import { Link } from "react-router-dom";
 
 const drawerWidth = 240;
 
 const data = [
   { icon: <Home />, label: 'Home', path: '/home' },
   { icon: <AccountBalanceWalletOutlinedIcon />, label: 'Expenses', path: '/expense' },
+  { icon: <BarChart />, label: 'Tags', path: '/tagManagement'},
   { icon: <BarChart />, label: 'View Analytics', path: '/analytics'}
 ];
 

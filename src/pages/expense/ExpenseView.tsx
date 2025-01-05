@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useState } from 'react';
 import './expenseView.css'
+
+import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { ExpenseItemType, PaginatedExpenseResponse } from '../../api/ApiResponses';
+import { useCallback, useEffect, useState } from 'react';
+
+import ExpenseTable from '../../components/table/expenses/ExpenseTable';
+import { Stack } from '@mui/material';
 import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
-import ExpenseTable from '../../components/table/ExpenseTable';
-import { Stack } from '@mui/material';
-import { createTheme, CssBaseline, ThemeProvider } from '@mui/material'
-
 
 const theme = createTheme({
   palette: {
