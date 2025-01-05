@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 
 import { AgGridReact } from "ag-grid-react";
 import { Tag } from "../../../api/ApiResponses";
+import { TextField } from "@mui/material";
 
 interface TagTableProps {
     clazzName? : string;
@@ -9,16 +10,42 @@ interface TagTableProps {
     height: number | string;
 }
 
+const keyWordsCellRenderer = (props: any) => {
+    return (
+        <TextField 
+            value={props.value.join(",")} 
+            variant="outlined" 
+            fullWidth={true} 
+        />
+    )
+}
+
+const tagNameCellRenderer = (props: any) => {
+    return (
+        <TextField 
+            value={props.value}
+            variant="outlined"
+            fullWidth={true}
+        />
+    )
+}
+
 const headers: Object[] = [
     // {field: "id"},
-    {field: "name"},
+    {
+        field: "name",
+        cellRenderer: tagNameCellRenderer,
+        sortable: true
+    },
     {field: "tagType"},
-    {field: "keywords"}
+    {
+        field: 'keywords',
+        cellRenderer: keyWordsCellRenderer,
+        sortable: false
+    }
 ];
 
 export default function TagTable({ clazzName, tags, height } : TagTableProps) {
-
-    console.log('tags : ', tags)
     const [rowData, setRowData] = useState<Tag[]>(tags);
 
     useEffect(() => {

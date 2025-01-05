@@ -1,6 +1,6 @@
 import './tagManagementView.css';
 
-import { Box, Button, Table, TableBody, TableCell, TableHead, TableRow, TextField } from "@mui/material";
+import { Box, Button, CssBaseline, Table, TableBody, TableCell, TableHead, TableRow, TextField, ThemeProvider, createTheme } from "@mui/material";
 import { FetchTagsResponse, Tag } from "../../api/ApiResponses"; // Assuming you have a `Tag` type
 import React, { useCallback, useEffect, useState } from "react";
 
@@ -12,7 +12,16 @@ import { useApi } from "../../api/hook/useApi";
 
 // import { updateTagApi } from "../../api/tagApi";
 
-
+const theme = createTheme({
+    palette: {
+      mode: 'dark',
+      primary: { main: '#669df6' },
+      background: { 
+        default: 'rgb(5, 30, 52)',
+        paper: 'rgb(5, 30, 52)',   
+      },
+    },
+});
 
 const TagManagement = () => {
     const [tagData, setTagData] = useState<Tag[]>([]);
@@ -63,9 +72,17 @@ const TagManagement = () => {
     };
 
     return (
-        <Box pt="4rem" height="100vh">
-            <TagTable clazzName="tagTable" tags={tagData} height="100%"/>
-        </Box>
+        <ThemeProvider theme={theme}>
+            <CssBaseline />
+            <Box pt="5rem" pr="1rem" pb="2rem" pl="4rem" height="90vh">
+                <TagTable 
+                    clazzName="tagTable" 
+                    tags={tagData} 
+                    height="100%"
+                />
+            </Box>
+        </ThemeProvider>
+        
         // <Box p={2}>
         //     <Table>
         //         <TableHead>
