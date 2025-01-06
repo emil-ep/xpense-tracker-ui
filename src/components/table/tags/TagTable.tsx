@@ -1,8 +1,9 @@
+import { Button, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { AgGridReact } from "ag-grid-react";
 import { Tag } from "../../../api/ApiResponses";
-import { TextField } from "@mui/material";
+import TagKeywordsEditor from "./TagKeywordsEditor";
 
 interface TagTableProps {
     clazzName? : string;
@@ -34,23 +35,39 @@ const headers: Object[] = [
     // {field: "id"},
     {
         field: "name",
-        cellRenderer: tagNameCellRenderer,
-        sortable: true
+        editable: true
+        // cellRenderer: tagNameCellRenderer,
+        // sortable: true
     },
     {field: "tagType"},
     {
         field: 'keywords',
-        cellRenderer: keyWordsCellRenderer,
-        sortable: false
+        // editable: (params: any) => params.data.tagType === 'CUSTOM',
+        editable: true,
+        cellEditor: TagKeywordsEditor,
+        // cellRenderer: keyWordsCellRenderer,
+        // sortable: false
     }
 ];
 
+
+
 export default function TagTable({ clazzName, tags, height } : TagTableProps) {
     const [rowData, setRowData] = useState<Tag[]>(tags);
+    const [edited, setEdited ] = useState<boolean>(false);
 
     useEffect(() => {
         setRowData(tags);
     }, [tags])
+
+
+    const saveValue = () => {
+        console.log('rows :', rowData)
+    }
+
+    const handleCellEditingStopped = () => {
+        setEdited(true);
+      };
 
     return (
         <div 
@@ -60,7 +77,16 @@ export default function TagTable({ clazzName, tags, height } : TagTableProps) {
             <AgGridReact 
                 rowData={rowData}
                 columnDefs={headers}
+                onCellEditingStopped={handleCellEditingStopped}
             />
+            <Button 
+                sx={{ m : "0.5rem"}} 
+                variant="contained" 
+                disabled={!edited} 
+                onClick={saveValue}
+            >
+                Save
+            </Button>
         </div>
     )
 }
