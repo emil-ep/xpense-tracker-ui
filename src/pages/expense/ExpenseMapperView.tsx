@@ -12,6 +12,7 @@ import { getNavigate } from "../../navigation";
 import { saveExpense } from "../../api/expensesApi";
 import { toast } from 'react-toastify';
 import { useApi } from "../../api/hook/useApi";
+import { showToast } from '../../utils/ToastUtil';
 
 export default function ExpenseMapperView({fileName } : { fileName : string}) {
     const navigate = getNavigate();
@@ -64,16 +65,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             }
             setIsModalOpen(true);
         }catch(err){
-            toast("Fetching preview failed", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-            });
+            showToast("Fetching preview failed");
         }
     };
 
@@ -89,29 +81,11 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
         try{
             const expenseSaveResponse: ExpenseSaveResponse = await apiCaller(saveExpense(fileName, result));
             if(expenseSaveResponse.status === 1){
-                toast("Expense saved!", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-                });
+                showToast("Expense saved!");
                 navigate('/home');
             }
         }catch(err) {
-            toast("Saving expense failed", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-            });
+            showToast("Saving expense failed");
         }
     }
 
@@ -124,16 +98,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             setSystemHeaders(responseBody.data.entityMap);
         }
         if(error){
-            toast("Fetching expense mapping failed", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-            });
+            showToast("Fetching expense mapping failed");
         }
     }, [responseBody, error]);
 

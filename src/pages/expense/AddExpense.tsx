@@ -8,6 +8,7 @@ import { UploadResponse } from "../../api/ApiResponses";
 import { toast } from 'react-toastify';
 import { uploadStatement } from "../../api/fileApi";
 import { useSearchParams } from "react-router-dom";
+import { showToast } from '../../utils/ToastUtil';
 
 export default function AddExpense(){
 
@@ -35,16 +36,7 @@ export default function AddExpense(){
                 setUploadComplete(true);
             }
         }catch(err){
-            toast(`Upload failed : ${err}`, {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-            });
+            showToast(`Upload failed : ${err}`)
         }
     }
 

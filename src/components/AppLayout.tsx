@@ -6,7 +6,7 @@ import DatePickerMenu from "./DatePickerMenu";
 import SyncIcon from '@mui/icons-material/Sync';
 import { apiCaller } from "../api/apicaller";
 import { syncExpense } from "../api/expensesApi";
-import { toast } from "react-toastify";
+import { showToast } from "../utils/ToastUtil";
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
@@ -19,39 +19,12 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     try{
       const syncExpenseResponse: any = await apiCaller(syncExpense());
       if(syncExpenseResponse.status === 0){
-        toast("Sync failed", {
-          position: "top-right",
-          autoClose: 5000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "dark",
-        });
+        showToast("Sync Failed");
       }else {
-        toast("Sync started", {
-          position: "top-right",
-          autoClose: 1000,
-          hideProgressBar: false,
-          closeOnClick: true,
-          pauseOnHover: false,
-          draggable: false,
-          progress: undefined,
-          theme: "dark",
-        });
+        showToast("Sync started, refresh after 10 seconds");
       }
     }catch(err){
-      toast("Sync failed", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: false,
-        draggable: false,
-        progress: undefined,
-        theme: "dark",
-      });
+      showToast("Sync failed");
     }
   }
 

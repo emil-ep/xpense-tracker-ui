@@ -4,6 +4,7 @@ import { signInV2 } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { apiCaller } from "../../api/apicaller";
+import { showToast } from "../../utils/ToastUtil";
 
 export default function Login() {
   const [isSignUp, setIsSignUp] = useState<boolean>(false);
@@ -17,28 +18,10 @@ export default function Login() {
     try {
       const response: any = await apiCaller(signInV2({ username: email, password }));
       localStorage.setItem("authToken", response.data.token);
-      toast("Login Success", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      showToast("Login Success");
       navigate("/home");
     } catch (error) {
-      toast("Login Failed", {
-        position: "top-right",
-        autoClose: 5000,
-        hideProgressBar: false,
-        closeOnClick: true,
-        pauseOnHover: true,
-        draggable: true,
-        progress: undefined,
-        theme: "dark",
-      });
+      showToast("Login Failed");
     }
   }
 
@@ -55,11 +38,7 @@ export default function Login() {
     // Call the signup API
     try {
       await apiCaller({ method: "POST", url: "http://localhost:8080/v1/auth/signUp", body: { name, email, password } });
-      toast("Signup Success. Please log in.", {
-        position: "top-right",
-        autoClose: 5000,
-        theme: "dark",
-      });
+      showToast("Signup Success. Please log in");
       setIsSignUp(false);
     } catch (error) {
       toast.error("Signup Failed", {

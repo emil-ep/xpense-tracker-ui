@@ -13,6 +13,7 @@ import TagPopper from "../../popper/TagPopper";
 import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
 import { updateExpense } from "../../../api/expensesApi";
+import { showToast } from "../../../utils/ToastUtil";
 
 interface TableProps {
     clazzName?: string;
@@ -69,16 +70,7 @@ export default function ExpenseTable(
                 handleClose();
                 const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, updateExpenseBody));
                 if(updateExpenseResponse.status === 1){
-                    toast("Expense Saved!", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: true,
-                    pauseOnHover: false,
-                    draggable: false,
-                    progress: undefined,
-                    theme: "dark",
-                    });
+                    showToast("Expense Saved!");
                     setRowData((prevRowData) =>
                         prevRowData.map((expense) =>
                             expense.id === expenseId
@@ -89,16 +81,7 @@ export default function ExpenseTable(
                 }
             }
         } catch(err) {
-            toast("Creating tag failed", {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: false,
-                draggable: false,
-                progress: undefined,
-                theme: "dark",
-            });
+            showToast("Creating tag failed")
         }
     }
 
@@ -113,12 +96,7 @@ export default function ExpenseTable(
             // Call API to update the tag
             const updateTagResponse: any = await apiCaller(editTagApi(updatedTag));
             if (updateTagResponse.status === 1) {
-                toast("Tag updated!", {
-                    position: "top-right",
-                    autoClose: 5000,
-                    theme: "dark",
-                });
-
+                showToast("Tag updated!");
                 // Update the state with the modified tag
                 setRowData((prevRowData) =>
                     prevRowData.map((expense) =>
