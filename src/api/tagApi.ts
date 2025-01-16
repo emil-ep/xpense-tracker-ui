@@ -17,3 +17,9 @@ export const fetchTagsApi = (): ApiConfig => ({
     url: TAG_URL,
     method: 'GET',
 })
+
+export const editTagsApi = (body: any): ApiConfig => ({
+    url: `${TAG_URL}/multiple`,
+    method: 'PATCH',
+    body: body
+})

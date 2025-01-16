@@ -38,7 +38,6 @@ export default function ExpenseTable(
     const [editingTag, setEditingTag] = useState<Tag | null>();
 
     useEffect(() => {
-        console.log('expenses :', expenses);
         setRowData(expenses);
     }, [expenses]);
 

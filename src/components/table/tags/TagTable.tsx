@@ -1,9 +1,11 @@
-import { Button, TextField } from "@mui/material";
+import { Button } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { AgGridReact } from "ag-grid-react";
 import { Tag } from "../../../api/ApiResponses";
 import TagKeywordsEditor from "./TagKeywordsEditor";
+import { apiCaller } from "../../../api/apicaller";
+import { editTagsApi } from "../../../api/tagApi";
 
 interface TagTableProps {
     clazzName? : string;
@@ -11,42 +13,17 @@ interface TagTableProps {
     height: number | string;
 }
 
-const keyWordsCellRenderer = (props: any) => {
-    return (
-        <TextField 
-            value={props.value.join(",")} 
-            variant="outlined" 
-            fullWidth={true} 
-        />
-    )
-}
-
-const tagNameCellRenderer = (props: any) => {
-    return (
-        <TextField 
-            value={props.value}
-            variant="outlined"
-            fullWidth={true}
-        />
-    )
-}
 
 const headers: Object[] = [
-    // {field: "id"},
     {
         field: "name",
         editable: true
-        // cellRenderer: tagNameCellRenderer,
-        // sortable: true
     },
     {field: "tagType"},
     {
         field: 'keywords',
-        // editable: (params: any) => params.data.tagType === 'CUSTOM',
         editable: true,
         cellEditor: TagKeywordsEditor,
-        // cellRenderer: keyWordsCellRenderer,
-        // sortable: false
     }
 ];
 
@@ -54,6 +31,7 @@ const headers: Object[] = [
 
 export default function TagTable({ clazzName, tags, height } : TagTableProps) {
     const [rowData, setRowData] = useState<Tag[]>(tags);
+    const [modifiedTags, setModifiedTags] = useState<Set<Tag>>(new Set<Tag>());
     const [edited, setEdited ] = useState<boolean>(false);
 
     useEffect(() => {
@@ -61,11 +39,21 @@ export default function TagTable({ clazzName, tags, height } : TagTableProps) {
     }, [tags])
 
 
-    const saveValue = () => {
-        console.log('rows :', rowData)
+    const saveValue = async () => {
+        const reqBody = {
+            tags: Array.from(modifiedTags)
+        }
+        const response: any = await apiCaller(editTagsApi(reqBody));
+        if(response.status === 1){
+            setEdited(false);
+        }else{
+            setEdited(true);
+        }
+
     }
 
-    const handleCellEditingStopped = () => {
+    const handleCellEditingStopped = (event: any) => {
+        setModifiedTags(modifiedTags?.add(event.data))
         setEdited(true);
       };
 
