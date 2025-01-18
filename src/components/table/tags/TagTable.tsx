@@ -1,4 +1,4 @@
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { AgGridReact } from "ag-grid-react";
@@ -6,11 +6,20 @@ import { Tag } from "../../../api/ApiResponses";
 import TagKeywordsEditor from "./TagKeywordsEditor";
 import { apiCaller } from "../../../api/apicaller";
 import { editTagsApi } from "../../../api/tagApi";
+import DeleteIcon from '@mui/icons-material/Delete';
 
 interface TagTableProps {
     clazzName? : string;
     tags: Tag[];
     height: number | string;
+}
+
+const operationsCellRenderer = (props: any) => {
+    return (
+        <IconButton aria-label="delete-tag" >
+            <DeleteIcon />
+        </IconButton>
+    )
 }
 
 
@@ -24,6 +33,11 @@ const headers: Object[] = [
         field: 'keywords',
         editable: true,
         cellEditor: TagKeywordsEditor,
+    },
+    {
+        field: 'Operations',
+        cellRenderer: operationsCellRenderer,
+        sortable: false
     }
 ];
 
