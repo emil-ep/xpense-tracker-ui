@@ -5,9 +5,10 @@ import { AgGridReact } from "ag-grid-react";
 import { Tag } from "../../../api/ApiResponses";
 import TagKeywordsEditor from "./TagKeywordsEditor";
 import { apiCaller } from "../../../api/apicaller";
-import { editTagsApi } from "../../../api/tagApi";
+import { deleteTagApi, editTagsApi } from "../../../api/tagApi";
 import DeleteIcon from '@mui/icons-material/Delete';
 import './tagTable.css';
+import { showToast } from "../../../utils/ToastUtil";
 
 interface TagTableProps {
     clazzName? : string;
@@ -80,12 +81,13 @@ export default function TagTable({ clazzName, tags, height } : TagTableProps) {
     const confirmDelete = async () => {
         if (!rowToDelete) return;
 
-        // Call the delete API here
-        console.log("Deleting row:", rowToDelete);
-
-        // Update the rowData to remove the deleted row
-        setRowData((prev) => prev.filter((row) => row.id !== rowToDelete.id));
-
+        const apiDeleteResponse: any = await apiCaller(deleteTagApi(rowToDelete.id));
+        if(apiDeleteResponse.status === 1){
+            showToast('Removed tag');
+            setRowData((prev) => prev.filter((row) => row.id !== rowToDelete.id));
+        }else{
+            showToast('Failed to remove tag');
+        }
         // Close the popper
         setPopperAnchor(null);
         setRowToDelete(null);

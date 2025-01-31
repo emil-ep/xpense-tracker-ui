@@ -23,3 +23,8 @@ export const editTagsApi = (body: any): ApiConfig => ({
     method: 'PATCH',
     body: body
 })
+
+export const deleteTagApi = (tagId: string): ApiConfig => ({
+    url: `${TAG_URL}/${tagId}`,
+    method: 'DELETE',
+})
