@@ -1,8 +1,8 @@
-import { Box, Button, IconButton, Paper, Popper, Typography } from "@mui/material";
+import { Box, Button, IconButton, MenuItem, Paper, Popper, Select, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { AgGridReact } from "ag-grid-react";
-import { Tag } from "../../../api/ApiResponses";
+import { Tag, TagCategory } from "../../../api/ApiResponses";
 import TagKeywordsEditor from "./TagKeywordsEditor";
 import { apiCaller } from "../../../api/apicaller";
 import { deleteTagApi, editTagsApi } from "../../../api/tagApi";
@@ -14,9 +14,10 @@ interface TagTableProps {
     clazzName? : string;
     tags: Tag[];
     height: number | string;
+    tagCategories: TagCategory[];
 }
 
-export default function TagTable({ clazzName, tags, height } : TagTableProps) {
+export default function TagTable({ clazzName, tags, height, tagCategories } : TagTableProps) {
     const [rowData, setRowData] = useState<Tag[]>(tags);
     const [modifiedTags, setModifiedTags] = useState<Set<Tag>>(new Set<Tag>());
     const [edited, setEdited ] = useState<boolean>(false);
@@ -54,6 +55,24 @@ export default function TagTable({ clazzName, tags, height } : TagTableProps) {
             </IconButton>
         )
     }
+
+    const tagCategoryCellRenderer = (props: any) => {
+        console.log('props : ', props);
+        return (
+            <Select 
+                labelId="select-tag-categories-label"
+                id="select-tag-categories"
+                value={props.data.category ?? ''}
+                // onChange={}
+                label='Category'
+            >
+                {tagCategories.map(category => {
+                    return <MenuItem value={category.id}>{category.name}</MenuItem>
+                })}
+            </Select>
+        )
+    }
+
     const headers: Object[] = [
         {
             field: "name",
@@ -64,6 +83,11 @@ export default function TagTable({ clazzName, tags, height } : TagTableProps) {
             field: 'keywords',
             editable: true,
             cellEditor: TagKeywordsEditor,
+        },
+        {
+            field: 'Category',
+            cellRenderer: tagCategoryCellRenderer,
+            sortable: false
         },
         {
             field: 'Operations',

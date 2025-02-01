@@ -28,3 +28,8 @@ export const deleteTagApi = (tagId: string): ApiConfig => ({
     url: `${TAG_URL}/${tagId}`,
     method: 'DELETE',
 })
+
+export const fetchTagCategories = (): ApiConfig => ({
+    url: `${TAG_URL}/categories`,
+    method: 'GET'
+})

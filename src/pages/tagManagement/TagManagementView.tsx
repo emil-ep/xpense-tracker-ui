@@ -1,11 +1,11 @@
 import './tagManagementView.css';
 
 import { Box, CssBaseline, ThemeProvider, createTheme } from "@mui/material";
-import { FetchTagsResponse, Tag } from "../../api/ApiResponses"; // Assuming you have a `Tag` type
+import { FetchTagsResponse, Tag, TagCategory, TagCategoryResponse } from "../../api/ApiResponses"; // Assuming you have a `Tag` type
 import React, { useCallback, useEffect, useState } from "react";
 
 import TagTable from "../../components/table/tags/TagTable";
-import { fetchTagsApi } from "../../api/tagApi";
+import { fetchTagCategories, fetchTagsApi } from "../../api/tagApi";
 import { toast } from "react-toastify";
 import { useApi } from "../../api/hook/useApi";
 
@@ -22,17 +22,27 @@ const theme = createTheme({
 
 const TagManagement = () => {
     const [tagData, setTagData] = useState<Tag[]>([]);
+    const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
     const fetchTags = useCallback(() => fetchTagsApi(), []);
 
-    const { responseBody } = useApi<FetchTagsResponse>(fetchTags, []);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
+
+    const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
+
 
     useEffect(() => {
-        if(responseBody && responseBody.data){
-            setTagData(responseBody.data);
+        if(tagsResponse && tagsResponse.data){
+            setTagData(tagsResponse.data);
         }
+        
+    }, [tagsResponse]);
 
-    }, [responseBody]);
+    useEffect(() => {
+        if(tagsCategoryResponse && tagsCategoryResponse.data){
+            setTagCategories(tagsCategoryResponse.data);
+        }
+    }, [tagsCategoryResponse]);
 
 
     return (
@@ -43,6 +53,7 @@ const TagManagement = () => {
                     clazzName="tagTable" 
                     tags={tagData} 
                     height="100%"
+                    tagCategories={tagCategories}
                 />
             </Box>
         </ThemeProvider>

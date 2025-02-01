@@ -33,6 +33,10 @@ export interface FetchTagsResponse extends BaseResponse {
     data: Tag[];
 }
 
+export interface TagCategoryResponse extends BaseResponse {
+    data: TagCategory[];
+}
+
 export interface MetricsV2 {
     timeframe : string;
     debit_aggregate?: number;
@@ -55,6 +59,12 @@ export interface Tag {
     tagType: string;
     keywords: string[];
     editable: boolean;
+}
+
+export interface TagCategory {
+    id: string;
+    name: string;
+    expense: boolean;
 }
 
 export interface ExpenseItemType {
