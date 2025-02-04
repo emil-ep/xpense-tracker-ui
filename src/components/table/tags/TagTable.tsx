@@ -57,18 +57,22 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
     }
 
     const tagCategoryCellRenderer = (props: any) => {
-        console.log('props : ', props);
         return (
-            <Select 
+            <Select
                 labelId="select-tag-categories-label"
                 id="select-tag-categories"
-                value={props.data.category ?? ''}
-                // onChange={}
-                label='Category'
+                value={props.data.category?.name ?? "Select a category"}
+                // onChange={(event) => onCategoryChange(event.target.value as string)}
+                label="Category"
             >
-                {tagCategories.map(category => {
-                    return <MenuItem value={category.id}>{category.name}</MenuItem>
-                })}
+                <MenuItem value="Select a category" disabled>
+                    Select a category
+                </MenuItem>
+                {tagCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.name}>
+                        {category.name}
+                    </MenuItem>
+                ))}
             </Select>
         )
     }
