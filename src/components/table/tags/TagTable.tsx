@@ -56,16 +56,56 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
         )
     }
 
+    const onCategoryChange = (tagId: string, newCategoryName: string) => {
+        const selectedCategory = tagCategories.find((category) => category.name === newCategoryName);
+        const updatedTag = rowData.find((tag) => tag.id === tagId);
+        setRowData((prevData) => 
+            prevData.map((tag) => 
+                tag.id === tagId 
+                            ? { ...tag, category: 
+                                //@ts-expect-error
+                                { id: selectedCategory.id, name: newCategoryName, expense: selectedCategory.expense } 
+                            } 
+                            : tag
+            )
+        );
+
+        setModifiedTags((prevModifiedTags) => {
+            const newSet = new Set(prevModifiedTags);
+            
+            if (updatedTag) {
+                newSet.add(
+                    { ...updatedTag, 
+                        //@ts-expect-error
+                        keywords: updatedTag.keywords.toString(),
+                        category: { 
+                            //@ts-expect-error
+                            id: selectedCategory.id, 
+                            name: newCategoryName, 
+                            //@ts-expect-error
+                            expense: selectedCategory.expense 
+                        } 
+                    });
+            }
+
+            return newSet;
+        });
+        setEdited(true);
+    };
+
+
     const tagCategoryCellRenderer = (props: any) => {
+        const currentCategory = rowData.find(tag => tag.id === props.data.id)?.category?.name || "";
+
         return (
             <Select
                 labelId="select-tag-categories-label"
                 id="select-tag-categories"
-                value={props.data.category?.name ?? "Select a category"}
-                // onChange={(event) => onCategoryChange(event.target.value as string)}
+                value={currentCategory}
+                onChange={(event) => onCategoryChange(props.data.id, event.target.value)}
                 label="Category"
             >
-                <MenuItem value="Select a category" disabled>
+                <MenuItem value="" disabled>
                     Select a category
                 </MenuItem>
                 {tagCategories.map((category) => (
@@ -74,7 +114,7 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
                     </MenuItem>
                 ))}
             </Select>
-        )
+        );
     }
 
     const headers: Object[] = [

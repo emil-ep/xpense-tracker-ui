@@ -58,6 +58,7 @@ export interface Tag {
     name: string;
     tagType: string;
     keywords: string[];
+    category: TagCategory;
     editable: boolean;
 }
 
