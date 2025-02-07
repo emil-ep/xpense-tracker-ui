@@ -145,7 +145,7 @@ export default function ExpenseMapperView({fileName } : { fileName : string}) {
             </button>
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
                 <h2>Your Expense Preview</h2>
-                <ExpenseTable expenses={expensePreviewItems} height={500} isPreview={true} />
+                <ExpenseTable expenses={expensePreviewItems} height={500} isPreview={true} tagCategories={[]}/>
             </ExpensePreviewModal>
         </Stack>
     )

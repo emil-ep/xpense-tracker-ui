@@ -2,7 +2,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './expenseTable.css'
 
-import { ExpenseItemType, Tag } from "../../../api/ApiResponses";
+import { ExpenseItemType, Tag, TagCategory } from "../../../api/ApiResponses";
 import React, { useEffect, useState } from "react";
 import { createTagApi, editTagApi } from "../../../api/tagApi";
 
@@ -21,6 +21,7 @@ interface TableProps {
     pagination?: boolean;
     height: number | string;
     isPreview?: boolean;
+    tagCategories: TagCategory[];
 }
 
 const dummyAnchor = document.createElement('div');
@@ -30,7 +31,8 @@ export default function ExpenseTable(
         expenses, 
         pagination, 
         height,
-        isPreview
+        isPreview,
+        tagCategories
     } : TableProps){
         
     const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
@@ -137,6 +139,7 @@ export default function ExpenseTable(
                         clazzName="popperCentered"
                         expenseId={props.data.id}
                         tag={editingTag}
+                        tagCategories={tagCategories}
                         anchorEl={dummyAnchor}
                         open={openPopperId === props.data.id}
                         onClose={handleClose}

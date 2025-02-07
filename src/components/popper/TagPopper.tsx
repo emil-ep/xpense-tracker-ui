@@ -1,13 +1,14 @@
-import { Button, Checkbox, FormControlLabel, Paper, Popper, Stack, TextField } from "@mui/material";
+import { Button, Checkbox, FormControlLabel, MenuItem, Paper, Popper, Select, Stack, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 import './tagPopper.css'
-import { Tag } from "../../api/ApiResponses";
+import { Tag, TagCategory } from "../../api/ApiResponses";
 
 
 interface TagPopupProps {
   clazzName: string;
   tag?: Tag | null;
   expenseId: string;
+  tagCategories: TagCategory[];
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
@@ -15,7 +16,17 @@ interface TagPopupProps {
   onEdit?: (updatedTag: Tag, expenseId: string) => void; 
 }
 
-const TagPopper: React.FC<TagPopupProps> = ({ clazzName, tag, expenseId, anchorEl, open, onClose, onCreate, onEdit }) => {
+const TagPopper: React.FC<TagPopupProps> = (
+  { clazzName, 
+    tag, 
+    expenseId, 
+    tagCategories, 
+    anchorEl, 
+    open, 
+    onClose, 
+    onCreate, 
+    onEdit 
+  }) => {
 
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
@@ -82,6 +93,22 @@ const TagPopper: React.FC<TagPopupProps> = ({ clazzName, tag, expenseId, anchorE
                     value={keywords}
                     onChange={(e) => setKeywords(e.target.value)}
                 />
+                <Select
+                  labelId="select-tag-categories-label"
+                  id="select-tag-categories"
+                  // value={currentCategory}
+                  // onChange={(event) => onCategoryChange(props.data.id, event.target.value)}
+                  label="Category"
+                >
+                  <MenuItem value="" disabled>
+                      Select a category
+                  </MenuItem>
+                  {tagCategories.map((category) => (
+                      <MenuItem key={category.id} value={category.name}>
+                          {category.name}
+                      </MenuItem>
+                  ))}
+                </Select>
             </Stack>
             <FormControlLabel control={
                 <Checkbox defaultChecked checked={isExpense} onChange={handleCheckboxChange}/>}

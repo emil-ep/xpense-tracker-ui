@@ -1,13 +1,14 @@
 import './expenseView.css'
 
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import { ExpenseItemType, PaginatedExpenseResponse } from '../../api/ApiResponses';
+import { ExpenseItemType, PaginatedExpenseResponse, TagCategory, TagCategoryResponse } from '../../api/ApiResponses';
 import { useCallback, useEffect, useState } from 'react';
 
 import ExpenseTable from '../../components/table/expenses/ExpenseTable';
 import { Stack } from '@mui/material';
 import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
+import { fetchTagCategories } from '../../api/tagApi';
 
 const theme = createTheme({
   palette: {
@@ -23,12 +24,14 @@ const theme = createTheme({
 export const ExpenseView = () => {
 
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
+    const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
 
     const fetchExpenses = useCallback(() => {
         return getExpensesV2(1, 500);
     }, []);
 
     const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+    const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
     useEffect(() => {
 
@@ -45,6 +48,12 @@ export const ExpenseView = () => {
         }
     }, [responseBody]);
 
+    useEffect(() => {
+                if(tagsCategoryResponse && tagsCategoryResponse.data){
+                    setTagCategories(tagsCategoryResponse.data);
+                }
+    }, [tagsCategoryResponse]);
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -54,6 +63,7 @@ export const ExpenseView = () => {
                     height="100%" 
                     pagination={true} 
                     expenses={expenseItems}
+                    tagCategories={tagCategories}
                 />
             </Stack>
         </ThemeProvider>
