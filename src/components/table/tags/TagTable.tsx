@@ -120,23 +120,26 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
     const headers: Object[] = [
         {
             field: "name",
-            editable: true
+            editable: true,
+            flex: 1
         },
-        {field: "tagType"},
         {
             field: 'keywords',
             editable: true,
             cellEditor: TagKeywordsEditor,
+            flex: 2
         },
         {
             field: 'Category',
             cellRenderer: tagCategoryCellRenderer,
-            sortable: false
+            sortable: false,
+            flex: 1
         },
         {
             field: 'Operations',
             cellRenderer: operationsCellRenderer,
-            sortable: false
+            sortable: false,
+            flex: 1
         }
     ];
 

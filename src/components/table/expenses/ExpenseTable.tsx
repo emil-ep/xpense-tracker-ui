@@ -149,15 +149,16 @@ export default function ExpenseTable(
     };
 
     const headers: Object[] = [
-        {field: "id"},
-        {field: "transactionDate"},
-        {field: "description"},
-        {field: "type"},
-        {field: "amount"},
+        {field: "id", flex: 1},
+        {field: "transactionDate", flex: 0.5},
+        {field: "description", flex: 1},
+        {field: "type", flex: 0.5},
+        {field: "amount", flex: 1},
         {
             field: 'tags', 
             cellRenderer: tagCellRenderer, 
             sortable: false, 
+            flex: 2
         }
     ];
 
