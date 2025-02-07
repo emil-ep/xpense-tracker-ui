@@ -12,7 +12,12 @@ interface TagPopupProps {
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
-  onCreate: (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => void;
+  onCreate: (
+    tagName: string, 
+    keywords: string[], 
+    canBeConsideredExpense: boolean, 
+    expenseId: string, 
+    selectedTagCategoryId: string | undefined) => void;
   onEdit?: (updatedTag: Tag, expenseId: string) => void; 
 }
 
@@ -30,6 +35,7 @@ const TagPopper: React.FC<TagPopupProps> = (
 
   const [tagName, setTagName] = useState<string>("");
   const [keywords, setKeywords] = useState<string>("");
+  const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string>();
   const [isExpense, setIsExpense] = useState<boolean>(true);
 
   useEffect(() => {
@@ -68,9 +74,13 @@ const TagPopper: React.FC<TagPopupProps> = (
                 expenseId
             );
         } else {
-            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), isExpense, expenseId);
+            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), isExpense, expenseId, selectedTagCategoryId);
         }
     };
+
+  const onCategoryChange = (value : string) => {
+    setSelectedTagCategoryId(value);
+  }
 
   return (
     <Popper className={clazzName} open={open} anchorEl={anchorEl} placement="bottom-start">
@@ -96,15 +106,15 @@ const TagPopper: React.FC<TagPopupProps> = (
                 <Select
                   labelId="select-tag-categories-label"
                   id="select-tag-categories"
-                  // value={currentCategory}
-                  // onChange={(event) => onCategoryChange(props.data.id, event.target.value)}
+                  value={selectedTagCategoryId}
+                  onChange={(event) => onCategoryChange(event.target.value)}
                   label="Category"
                 >
                   <MenuItem value="" disabled>
                       Select a category
                   </MenuItem>
                   {tagCategories.map((category) => (
-                      <MenuItem key={category.id} value={category.name}>
+                      <MenuItem key={category.id} value={category.id}>
                           {category.name}
                       </MenuItem>
                   ))}
@@ -120,7 +130,7 @@ const TagPopper: React.FC<TagPopupProps> = (
                 fullWidth
                 onClick={handleSave}
                 style={{ marginTop: 8 }}
-                disabled={tagName === '' || keywords === ''}
+                disabled={tagName === '' || keywords === '' || selectedTagCategoryId === undefined}
             >
                 {tag ? "Save Changes" : "Create tag"}
             </Button>

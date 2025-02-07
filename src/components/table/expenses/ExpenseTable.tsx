@@ -14,6 +14,7 @@ import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
 import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
+import { Category } from "@mui/icons-material";
 
 interface TableProps {
     clazzName?: string;
@@ -54,11 +55,18 @@ export default function ExpenseTable(
         setOpenPopperId(id);
     }
 
-    const handleCreateTag = async (tagName: string, keywords: string[], canBeConsideredExpense: boolean, expenseId: string) => {
+    const handleCreateTag = async (
+        tagName: string, 
+        keywords: string[], 
+        canBeConsideredExpense: boolean, 
+        expenseId: string, 
+        selectedTagCategoryId: string | undefined
+    ) => {
         const body = {
             name : tagName,
             keywords : keywords,
-            canBeCountedAsExpense: canBeConsideredExpense
+            canBeCountedAsExpense: canBeConsideredExpense,
+            tagCategoryId: selectedTagCategoryId
     }
 
     try{
