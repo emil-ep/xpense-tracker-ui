@@ -6,7 +6,6 @@ import React, { useCallback, useEffect, useState } from "react";
 
 import TagTable from "../../components/table/tags/TagTable";
 import { fetchTagCategories, fetchTagsApi } from "../../api/tagApi";
-import { toast } from "react-toastify";
 import { useApi } from "../../api/hook/useApi";
 
 const theme = createTheme({

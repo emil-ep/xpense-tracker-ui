@@ -10,7 +10,6 @@ import Stack from "../../components/Stack";
 import { apiCaller } from "../../api/apicaller";
 import { getNavigate } from "../../navigation";
 import { saveExpense } from "../../api/expensesApi";
-import { toast } from 'react-toastify';
 import { useApi } from "../../api/hook/useApi";
 import { showToast } from '../../utils/ToastUtil';
 

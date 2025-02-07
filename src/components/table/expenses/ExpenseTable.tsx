@@ -14,7 +14,6 @@ import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
 import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
-import { Category } from "@mui/icons-material";
 
 interface TableProps {
     clazzName?: string;

@@ -1,4 +1,3 @@
-// src/components/Modal.tsx
 import React, { ReactNode } from 'react';
 import './ExpensePreviewModal.css'; // Optional: Add some CSS for styling
 
