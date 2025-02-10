@@ -1,6 +1,6 @@
 import './expenseView.css'
 
-import { CssBaseline, ThemeProvider, createTheme } from '@mui/material'
+import { Backdrop, CircularProgress, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { ExpenseItemType, PaginatedExpenseResponse, TagCategory, TagCategoryResponse } from '../../api/ApiResponses';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -30,8 +30,8 @@ export const ExpenseView = () => {
         return getExpensesV2(1, 500);
     }, []);
 
-    const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
-    const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
+    const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+    const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
     useEffect(() => {
 
@@ -54,10 +54,15 @@ export const ExpenseView = () => {
                 }
     }, [tagsCategoryResponse]);
 
+    const isLoading = loading || tagLoading;
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Stack className="expenseContainer" direction="column" alignItems="stretch" justifyContent="center">
+                <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={isLoading}>
+                    <CircularProgress color="inherit" />
+                </Backdrop>
                 <ExpenseTable 
                     clazzName="expenseTableContainer" 
                     height="100%" 
