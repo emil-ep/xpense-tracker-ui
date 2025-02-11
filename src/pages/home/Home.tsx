@@ -1,6 +1,6 @@
 import './home.css'
 
-import { ExpenseItemType, PaginatedExpenseResponse, TagCategory, TagCategoryResponse } from "../../api/ApiResponses";
+import { ExpenseItemType, FetchTagsResponse, PaginatedExpenseResponse, Tag, TagCategory, TagCategoryResponse } from "../../api/ApiResponses";
 import React, { useCallback, useEffect, useState } from "react";
 
 import ExpenseTable from "../../components/table/expenses/ExpenseTable";
@@ -8,13 +8,14 @@ import Stack from "../../components/Stack";
 import { getExpensesV2 } from "../../api/expensesApi";
 import { getNavigate } from "../../navigation";
 import { useApi } from "../../api/hook/useApi";
-import { fetchTagCategories } from '../../api/tagApi';
+import { fetchTagCategories, fetchTagsApi } from '../../api/tagApi';
 
 export default function Home(){
 
     const navigate = getNavigate();
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+    const [tags, setTags] = useState<Tag[]>([]);
 
     const fetchExpenses = useCallback(() => {
         return getExpensesV2(1, 50);
@@ -22,7 +23,9 @@ export default function Home(){
 
     const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
-    const { responseBody, error } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+    const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+
+    const { responseBody, error: expensesError } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
 
     useEffect(() => {
 
@@ -45,6 +48,13 @@ export default function Home(){
             }
         }, [tagsCategoryResponse]);
 
+
+    useEffect(() => {
+        if(tagsResponse && tagsResponse.data){
+            setTags(tagsResponse.data);
+        }
+    }, [tagsResponse]);
+
     function navigateToExpense(){
         navigate('/add/expense');
     }
@@ -55,7 +65,13 @@ export default function Home(){
                 <Stack direction="row" justify="flex-end">
                     <button className="addExpenseBtn" onClick={navigateToExpense}> Add Expense</button>
                 </Stack>
-                <ExpenseTable clazzName="expenseTable" height={500} expenses={expenseItems} tagCategories={tagCategories}/>
+                <ExpenseTable 
+                    clazzName="expenseTable" 
+                    height={500} 
+                    expenses={expenseItems} 
+                    tagCategories={tagCategories} 
+                    tags={tags}
+                />
             </Stack>
         </Stack>
     )

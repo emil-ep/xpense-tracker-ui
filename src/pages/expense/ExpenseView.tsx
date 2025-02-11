@@ -1,14 +1,14 @@
 import './expenseView.css'
 
 import { Backdrop, CircularProgress, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
-import { ExpenseItemType, PaginatedExpenseResponse, TagCategory, TagCategoryResponse } from '../../api/ApiResponses';
+import { ExpenseItemType, FetchTagsResponse, PaginatedExpenseResponse, Tag, TagCategory, TagCategoryResponse } from '../../api/ApiResponses';
 import { useCallback, useEffect, useState } from 'react';
 
 import ExpenseTable from '../../components/table/expenses/ExpenseTable';
 import { Stack } from '@mui/material';
 import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
-import { fetchTagCategories } from '../../api/tagApi';
+import { fetchTagCategories, fetchTagsApi } from '../../api/tagApi';
 
 const theme = createTheme({
   palette: {
@@ -25,12 +25,14 @@ export const ExpenseView = () => {
 
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+    const[tags, setTags] = useState<Tag[]>([]);
 
     const fetchExpenses = useCallback(() => {
         return getExpensesV2(1, 500);
     }, []);
 
     const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+     const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
     const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
     useEffect(() => {
@@ -54,6 +56,12 @@ export const ExpenseView = () => {
                 }
     }, [tagsCategoryResponse]);
 
+    useEffect(() => {
+            if(tagsResponse && tagsResponse.data){
+                setTags(tagsResponse.data);
+            }
+        }, [tagsResponse]);
+
     const isLoading = loading || tagLoading;
 
     return (
@@ -69,6 +77,7 @@ export const ExpenseView = () => {
                     pagination={true} 
                     expenses={expenseItems}
                     tagCategories={tagCategories}
+                    tags={tags}
                 />
             </Stack>
         </ThemeProvider>

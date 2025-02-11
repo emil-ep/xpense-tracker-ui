@@ -9,6 +9,7 @@ interface TagPopupProps {
   tag?: Tag | null;
   expenseId: string;
   tagCategories: TagCategory[];
+  tags: Tag[];
   anchorEl: HTMLElement | null; 
   open: boolean;
   onClose: () => void;
@@ -87,8 +88,13 @@ const TagPopper: React.FC<TagPopupProps> = (
       <Paper 
         className="paper"
         style={{ padding: 16, width: 200 }}
-        >
+        > 
+            <Stack>
+                <h4>Choose existing tag</h4>
+            </Stack>
+            <h2>OR</h2>
             <Stack spacing={2}>
+              <h4>Create a new tag</h4>
                 <TextField
                     label="Tag name"
                     variant="outlined"

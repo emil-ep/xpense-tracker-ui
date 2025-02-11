@@ -22,6 +22,7 @@ interface TableProps {
     height: number | string;
     isPreview?: boolean;
     tagCategories: TagCategory[];
+    tags: Tag[];
 }
 
 const dummyAnchor = document.createElement('div');
@@ -32,7 +33,8 @@ export default function ExpenseTable(
         pagination, 
         height,
         isPreview,
-        tagCategories
+        tagCategories,
+        tags
     } : TableProps){
         
     const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
@@ -146,6 +148,7 @@ export default function ExpenseTable(
                         clazzName="popperCentered"
                         expenseId={props.data.id}
                         tag={editingTag}
+                        tags={tags}
                         tagCategories={tagCategories}
                         anchorEl={dummyAnchor}
                         open={openPopperId === props.data.id}
