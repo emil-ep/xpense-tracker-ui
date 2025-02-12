@@ -31,7 +31,8 @@ const TagPopper: React.FC<TagPopupProps> = (
     open, 
     onClose, 
     onCreate, 
-    onEdit 
+    onEdit ,
+    tags
   }) => {
 
   const [tagName, setTagName] = useState<string>("");
@@ -89,58 +90,82 @@ const TagPopper: React.FC<TagPopupProps> = (
         className="paper"
         style={{ padding: 16, width: 200 }}
         > 
-            <Stack>
-                <h4>Choose existing tag</h4>
-            </Stack>
-            <h2>OR</h2>
-            <Stack spacing={2}>
-              <h4>Create a new tag</h4>
-                <TextField
-                    label="Tag name"
-                    variant="outlined"
-                    fullWidth
-                    value={tagName}
-                    onChange={(e) => setTagName(e.target.value)}
-                />
-                <TextField
-                    label="Enter keywords seperated by comma (,)"
-                    variant="outlined"
-                    fullWidth
-                    value={keywords}
-                    onChange={(e) => setKeywords(e.target.value)}
-                />
-                <Select
-                  labelId="select-tag-categories-label"
-                  id="select-tag-categories"
-                  value={selectedTagCategoryId}
-                  onChange={(event) => onCategoryChange(event.target.value)}
-                  label="Category"
-                >
-                  <MenuItem value="" disabled>
-                      Select a category
-                  </MenuItem>
-                  {tagCategories.map((category) => (
-                      <MenuItem key={category.id} value={category.id}>
-                          {category.name}
-                      </MenuItem>
-                  ))}
-                </Select>
-            </Stack>
-            <FormControlLabel control={
-                <Checkbox defaultChecked checked={isExpense} onChange={handleCheckboxChange}/>}
-                 label="Is it an Expense?" 
-            />
-            <Button
-                variant="contained"
-                color="primary"
-                fullWidth
-                onClick={handleSave}
-                style={{ marginTop: 8 }}
-                disabled={tagName === '' || keywords === '' || selectedTagCategoryId === undefined}
+          <Stack spacing={2}>
+            <h4>Choose existing tag</h4>
+            <Select
+              labelId="select-tag-label"
+              id="select-tag"
+              // value={currentCategory}
+              // onChange={(event) => onCategoryChange(props.data.id, event.target.value)}
+              label="Tag"
             >
-                {tag ? "Save Changes" : "Create tag"}
-            </Button>
-            <Button onClick={onClose}>Cancel</Button>
+              <MenuItem value="" disabled>
+                  Select a Tag
+              </MenuItem>
+              {tags.map((tag) => (
+                  <MenuItem key={tag.id} value={tag.name}>
+                      {tag.name}
+                  </MenuItem>
+              ))}
+            </Select>
+            <TextField 
+              label="Tag Keyword to add"
+              variant="outlined"
+              fullWidth
+              value={keywords}
+            />
+          </Stack>
+          <Stack alignItems="center">
+            <h2>OR</h2>
+          </Stack>
+          <Stack spacing={2}>
+            <h4>Create new Tag</h4>
+              <TextField
+                  label="Tag name"
+                  variant="outlined"
+                  fullWidth
+                  value={tagName}
+                  onChange={(e) => setTagName(e.target.value)}
+              />
+              <TextField
+                  label="Enter keywords seperated by comma (,)"
+                  variant="outlined"
+                  fullWidth
+                  value={keywords}
+                  onChange={(e) => setKeywords(e.target.value)}
+              />
+              <Select
+                labelId="select-tag-categories-label"
+                id="select-tag-categories"
+                value={selectedTagCategoryId}
+                onChange={(event) => onCategoryChange(event.target.value)}
+                label="Category"
+              >
+                <MenuItem value="" disabled>
+                    Select a category
+                </MenuItem>
+                {tagCategories.map((category) => (
+                    <MenuItem key={category.id} value={category.id}>
+                        {category.name}
+                    </MenuItem>
+                ))}
+              </Select>
+          </Stack>
+          <FormControlLabel control={
+              <Checkbox defaultChecked checked={isExpense} onChange={handleCheckboxChange}/>}
+                label="Is it an Expense?" 
+          />
+          <Button
+              variant="contained"
+              color="primary"
+              fullWidth
+              onClick={handleSave}
+              style={{ marginTop: 8 }}
+              disabled={tagName === '' || keywords === '' || selectedTagCategoryId === undefined}
+          >
+              {tag ? "Save Changes" : "Create tag"}
+          </Button>
+          <Button onClick={onClose}>Cancel</Button>
       </Paper>
     </Popper>
   );
