@@ -146,7 +146,7 @@ export default function ExpenseTable(
                 {!isPreview && 
                     <TagPopper
                         clazzName="popperCentered"
-                        expenseId={props.data.id}
+                        expense={props.data}
                         tag={editingTag}
                         tags={tags}
                         tagCategories={tagCategories}
