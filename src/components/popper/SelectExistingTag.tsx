@@ -1,4 +1,4 @@
-import { MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Button, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { ExpenseItemType, Tag, TagCategory } from "../../api/ApiResponses";
 import { useState } from "react";
 
@@ -9,13 +9,23 @@ interface SelectExistingTagProps {
 
 export default function SelectExistingTag({tags, expense} : SelectExistingTagProps) {
 
-    const [selectedExistingTag, setSelectedExistingTag] = useState<Tag>();
-
+    const [selectedExistingTag, setSelectedExistingTag] = useState<Tag | null>(null);
+    const [keywordsToAdd, setKeywordsToAdd] = useState<string | undefined>(expense.description);
 
     const onExistingTagChange = (name: string) => {
         const tag = tags.find((tag) => tag.name === name);
         if(tag){
             setSelectedExistingTag(tag);
+        }
+    }
+
+    const handleKeywordsChange = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setKeywordsToAdd(event.target.value);
+    }
+
+    const handleSave = () => {
+        if(selectedExistingTag){
+            console.log(selectedExistingTag);
         }
     }
 
@@ -25,8 +35,7 @@ export default function SelectExistingTag({tags, expense} : SelectExistingTagPro
             <Select
               labelId="select-tag-label"
               id="select-tag"
-              value={selectedExistingTag}
-              //@ts-expect-error
+              value={selectedExistingTag?.name}
               onChange={(event) => onExistingTagChange(event.target.value)}
               label="Tag"
             >
@@ -43,8 +52,21 @@ export default function SelectExistingTag({tags, expense} : SelectExistingTagPro
               label="Tag Keyword to add"
               variant="outlined"
               fullWidth
-              value={expense.description}
+              value={selectedExistingTag === null?"" : selectedExistingTag?.keywords.concat().join(", ") + ", " + expense.description}
+              onChange={(event) => {
+                handleKeywordsChange(event);
+              }}
             />
+            <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                onClick={handleSave}
+                style={{ marginTop: 8 }}
+                disabled={selectedExistingTag === null}
+            >
+              Save
+            </Button>
         </Stack>
     )
 }

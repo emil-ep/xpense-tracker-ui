@@ -83,10 +83,6 @@ export default function CreateNewTag({tagCategories, tag, expense, onEdit, onCre
                 </MenuItem>
             ))}
             </Select>
-            <FormControlLabel control={
-            <Checkbox defaultChecked checked={isExpense} onChange={handleCheckboxChange}/>}
-                label="Is it an Expense?" 
-            />
             <Button
                 variant="contained"
                 color="primary"
