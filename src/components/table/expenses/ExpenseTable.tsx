@@ -59,14 +59,12 @@ export default function ExpenseTable(
     const handleCreateTag = async (
         tagName: string, 
         keywords: string[], 
-        canBeConsideredExpense: boolean, 
         expenseId: string, 
         selectedTagCategoryId: string | undefined
     ) => {
         const body = {
             name : tagName,
             keywords : keywords,
-            canBeCountedAsExpense: canBeConsideredExpense,
             tagCategoryId: selectedTagCategoryId
     }
 

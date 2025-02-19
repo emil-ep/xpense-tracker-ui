@@ -1,4 +1,4 @@
-import { Button, Checkbox, FormControlLabel, MenuItem, Select, Stack, TextField } from "@mui/material";
+import { Button, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { ExpenseItemType, Tag, TagCategory } from "../../api/ApiResponses";
 import { useState } from "react";
 
@@ -11,7 +11,6 @@ interface CreateNewTagProps {
     onCreate: (
         tagName: string, 
         keywords: string[], 
-        canBeConsideredExpense: boolean, 
         expenseId: string, 
         selectedTagCategoryId: string | undefined
     ) => void;
@@ -20,19 +19,13 @@ interface CreateNewTagProps {
 
 export default function CreateNewTag({tagCategories, tag, expense, onEdit, onCreate}: CreateNewTagProps) {
 
-    const [tagName, setTagName] = useState<string>("");
-    const [keywords, setKeywords] = useState<string>("");
-    const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string>();
-    const [isExpense, setIsExpense] = useState<boolean>(true);
+const [tagName, setTagName] = useState<string>("");
+const [keywords, setKeywords] = useState<string>("");
+const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string>();
 
-
-    const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsExpense(event.target.checked);
-  }
-
-    const onCategoryChange = (value : string) => {
+const onCategoryChange = (value : string) => {
     setSelectedTagCategoryId(value);
-  }
+}
 
   const handleSave = () => {
         if (tag) {
@@ -41,12 +34,11 @@ export default function CreateNewTag({tagCategories, tag, expense, onEdit, onCre
                     ...tag,
                     name: tagName,
                     keywords: keywords.split(",").map((kw) => kw.trim()),
-                    // isExpense,
                 },
                 expense.id ?? ''
             );
         } else {
-            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), isExpense, expense.id ?? '', selectedTagCategoryId);
+            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), expense.id ?? '', selectedTagCategoryId);
         }
   };
 

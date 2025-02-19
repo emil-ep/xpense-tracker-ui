@@ -17,7 +17,6 @@ interface TagPopupProps {
   onCreate: (
     tagName: string, 
     keywords: string[], 
-    canBeConsideredExpense: boolean, 
     expenseId: string, 
     selectedTagCategoryId: string | undefined) => void;
   onEdit?: (updatedTag: Tag, expenseId: string) => void; 
