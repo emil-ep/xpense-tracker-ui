@@ -1,5 +1,4 @@
-import { Button, Checkbox, FormControlLabel, MenuItem, Paper, Popper, Select, Stack, TextField } from "@mui/material";
-import { useEffect, useState } from "react";
+import { Button, Paper, Popper, Stack} from "@mui/material";
 import './tagPopper.css'
 import { ExpenseItemType, Tag, TagCategory } from "../../api/ApiResponses";
 import SelectExistingTag from "./SelectExistingTag";
@@ -37,65 +36,6 @@ const TagPopper: React.FC<TagPopupProps> = (
     tags
   }) => {
 
-  const [tagName, setTagName] = useState<string>("");
-  const [keywords, setKeywords] = useState<string>("");
-  const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string>();
-  const [isExpense, setIsExpense] = useState<boolean>(true);
-
-  useEffect(() => {
-    if(tag){
-      setTagName(tag.name);
-      setKeywords(tag.keywords.join(", "));
-      // setCanBeConsideredExpense(tag.canBeCountedAsExpense);
-    }else{
-      setTagName("");
-      setKeywords("");
-    }
-  }, []);
-
-
-  const processKeywords = ()  => {
-    const value : string[] = keywords
-        .split(",") 
-        .map((tag) => tag.trim()) 
-        .filter((tag) => tag !== "");
-    return value;
-  }
-
-  const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setIsExpense(event.target.checked);
-  }
-
-  const handleSave = () => {
-        if (tag) {
-            onEdit?.(
-                {
-                    ...tag,
-                    name: tagName,
-                    keywords: keywords.split(",").map((kw) => kw.trim()),
-                    // isExpense,
-                },
-                expense.id ?? ''
-            );
-        } else {
-            onCreate(tagName, keywords.split(",").map((kw) => kw.trim()), isExpense, expense.id ?? '', selectedTagCategoryId);
-        }
-  };
-
-  const handleExistingTagUpdate = () => {
-
-  }
-
-  
-
-  // const onExistingTagChange = (name: string) => {
-  //   const tag = tags.find((tag) => tag.name === name);
-  //   console.log('tag', tag);
-  //   if(tag){
-  //     setSelectedExistingTag(tag);
-  //   }
-  // }
-
   return (
     <Popper className={clazzName} open={open} anchorEl={anchorEl} placement="bottom-start">
       <Paper 
@@ -105,6 +45,7 @@ const TagPopper: React.FC<TagPopupProps> = (
         <SelectExistingTag 
           tags={tags} 
           expense={expense}
+          onClose={onClose ?? (() => {})}
         />
         <Stack alignItems="center">
           <h2>OR</h2>

@@ -1,21 +1,26 @@
 import { Button, MenuItem, Select, Stack, TextField } from "@mui/material";
 import { ExpenseItemType, Tag, TagCategory } from "../../api/ApiResponses";
 import { useState } from "react";
+import { apiCaller } from "../../api/apicaller";
+import { editTagApi } from "../../api/tagApi";
+import { showToast } from "../../utils/ToastUtil";
 
 interface SelectExistingTagProps {
     tags: Tag[];
     expense: ExpenseItemType;
+    onClose: () => void;
 }
 
-export default function SelectExistingTag({tags, expense} : SelectExistingTagProps) {
+export default function SelectExistingTag({tags, expense, onClose} : SelectExistingTagProps) {
 
     const [selectedExistingTag, setSelectedExistingTag] = useState<Tag | null>(null);
-    const [keywordsToAdd, setKeywordsToAdd] = useState<string | undefined>(expense.description);
+    const [keywordsToAdd, setKeywordsToAdd] = useState<string | undefined>(selectedExistingTag?.keywords.concat().join(", ") + ", " + expense.description);
 
     const onExistingTagChange = (name: string) => {
         const tag = tags.find((tag) => tag.name === name);
         if(tag){
             setSelectedExistingTag(tag);
+            setKeywordsToAdd(tag.keywords.concat().join(", ") + ", " + expense.description);
         }
     }
 
@@ -23,9 +28,19 @@ export default function SelectExistingTag({tags, expense} : SelectExistingTagPro
         setKeywordsToAdd(event.target.value);
     }
 
-    const handleSave = () => {
+    const handleSave = async () => {
         if(selectedExistingTag){
-            console.log(selectedExistingTag);
+            const reqBody = {
+                ...selectedExistingTag,
+                keywords: keywordsToAdd ? keywordsToAdd.split(",").map((kw) => kw.trim()) : selectedExistingTag.keywords
+            }
+            const response: any = await apiCaller(editTagApi(reqBody));
+            if(response.status === 1){
+                showToast('Saved tag');
+                onClose();
+            }else{
+                showToast('Unable to save tag');
+            }
         }
     }
 
@@ -52,7 +67,7 @@ export default function SelectExistingTag({tags, expense} : SelectExistingTagPro
               label="Tag Keyword to add"
               variant="outlined"
               fullWidth
-              value={selectedExistingTag === null?"" : selectedExistingTag?.keywords.concat().join(", ") + ", " + expense.description}
+              value={selectedExistingTag === null ? "" : keywordsToAdd}
               onChange={(event) => {
                 handleKeywordsChange(event);
               }}
