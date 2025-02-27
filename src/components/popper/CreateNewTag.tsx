@@ -20,7 +20,7 @@ interface CreateNewTagProps {
 export default function CreateNewTag({tagCategories, tag, expense, onEdit, onCreate}: CreateNewTagProps) {
 
 const [tagName, setTagName] = useState<string>("");
-const [keywords, setKeywords] = useState<string>("");
+const [keywords, setKeywords] = useState<string>(expense.description ?? "");
 const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string>();
 
 const onCategoryChange = (value : string) => {
