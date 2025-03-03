@@ -1,5 +1,3 @@
-import './home.css'
-
 import {  MetricsV2Response} from "../../api/ApiResponses";
 import React, { useEffect, useState } from "react";
 import { getNavigate } from "../../navigation";
