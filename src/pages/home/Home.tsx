@@ -16,6 +16,8 @@ export default function Home(){
         highest_expense_tag: { label: "Highest Expense Tag", icon: AttachMoney, color: "#33cc33" },
         highest_credit_recorded: { label: "Highest Credit Recorded", icon: TrendingUp, color: "#ff4d4d" },
         highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", icon: AttachMoney, color: "#33cc33" },
+        first_expense_recorded_date: { label: "First Expense Recorded Date", icon: BarChart, color: "#ffa31a" },
+        last_expense_recorded_date: { label: "Last Expense Recorded Date", icon: Category, color: "#1a75ff" },
     };
     const metricNames = Object.keys(metricDetails);
 
