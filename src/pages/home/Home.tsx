@@ -13,7 +13,9 @@ export default function Home(){
         total_expenses_entry: { label: "Total Expenses Entry", icon: BarChart, color: "#ffa31a" },
         total_tagged_expenses_entry: { label: "Total Tagged Expenses Entry", icon: Category, color: "#1a75ff" },
         total_untagged_expenses_entry: { label: "Total Untagged Expenses Entry", icon: PriceCheck, color: "#4db8ff" },
-        highest_expense_tag: { label: "Highest Expense Tag", icon: AttachMoney, color: "#33cc33" }
+        highest_expense_tag: { label: "Highest Expense Tag", icon: AttachMoney, color: "#33cc33" },
+        highest_credit_recorded: { label: "Highest Credit Recorded", icon: TrendingUp, color: "#ff4d4d" },
+        highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", icon: AttachMoney, color: "#33cc33" },
     };
     const metricNames = Object.keys(metricDetails);
 

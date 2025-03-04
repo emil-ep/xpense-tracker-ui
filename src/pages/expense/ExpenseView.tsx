@@ -28,7 +28,7 @@ export const ExpenseView = () => {
     const[tags, setTags] = useState<Tag[]>([]);
 
     const fetchExpenses = useCallback(() => {
-        return getExpensesV2(1, 500);
+        return getExpensesV2(1, 50000);
     }, []);
 
     const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
