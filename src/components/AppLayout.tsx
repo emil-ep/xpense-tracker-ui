@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { AppBar, Toolbar, Box, CssBaseline, IconButton, Typography} from "@mui/material";
+import { AppBar, Toolbar, Box, CssBaseline, IconButton, Typography, Button} from "@mui/material";
 import NavigationDrawer from "./NavigationDrawer";
 import MenuIcon from '@mui/icons-material/Menu';
 import DatePickerMenu from "./DatePickerMenu";
@@ -74,6 +74,9 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             Expense Tracker
           </Typography>
+          <Button onClick={() => window.location.href = "/add/expense"} color="inherit">
+            Add Expense
+          </Button>
           <IconButton
             color="inherit"
             aria-label="sync"
