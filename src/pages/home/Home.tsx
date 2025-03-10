@@ -1,46 +1,47 @@
-import {  MetricsV2Response} from "../../api/ApiResponses";
+import {  MetricsV2Response } from "../../api/ApiResponses";
 import React, { useEffect, useState } from "react";
-import { getNavigate } from "../../navigation";
-import { Stack, Card, CardContent, CircularProgress, Typography, Grid2, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
+import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
-import { AttachMoney, BarChart, Category, PriceCheck, TrendingUp } from '@mui/icons-material';
 
 export default function Home(){
 
-    const metricDetails: Record<string, { label: string; icon: React.ElementType; color: string }> = {
-        highest_expense_recorded: { label: "Highest Expense Recorded", icon: TrendingUp, color: "#ff4d4d" },
-        total_expenses_entry: { label: "Total Expenses Entry", icon: BarChart, color: "#ffa31a" },
-        total_tagged_expenses_entry: { label: "Total Tagged Expenses Entry", icon: Category, color: "#1a75ff" },
-        total_untagged_expenses_entry: { label: "Total Untagged Expenses Entry", icon: PriceCheck, color: "#4db8ff" },
-        highest_expense_tag: { label: "Highest Expense Tag", icon: AttachMoney, color: "#33cc33" },
-        highest_credit_recorded: { label: "Highest Credit Recorded", icon: TrendingUp, color: "#ff4d4d" },
-        highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", icon: AttachMoney, color: "#33cc33" },
-        first_expense_recorded_date: { label: "First Expense Recorded Date", icon: BarChart, color: "#ffa31a" },
-        last_expense_recorded_date: { label: "Last Expense Recorded Date", icon: Category, color: "#1a75ff" },
+    const metricDetails: Record<string, { label: string; description: string }> = {
+        highest_expense_recorded: { label: "Highest Expense Recorded", description: "The maximum amount spent in a single transaction" },
+        total_expenses_entry: { label: "Total Expenses Entry", description: "Total number of expenses recorded" },
+        total_tagged_expenses_entry: { label: "Total Tagged Expenses", description: "Expenses categorized with a tag" },
+        total_untagged_expenses_entry: { label: "Total Untagged Expenses", description: "Expenses without a category tag" },
+        highest_expense_tag: { label: "Highest Expense Tag", description: "The category with the highest spending" },
+        highest_credit_recorded: { label: "Highest Credit Recorded", description: "The maximum credited amount in a single transaction" },
+        highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", description: "The most credited category" },
+        first_expense_recorded_date: { label: "First Expense Recorded", description: "Date when the first expense was recorded" },
+        last_expense_recorded_date: { label: "Last Expense Recorded", description: "Date when the last expense was recorded" },
     };
+
     const metricNames = Object.keys(metricDetails);
 
     const theme = createTheme({
       palette: {
         mode: 'dark',
-        primary: { main: '#669df6' },
+        primary: { main: '#a0c4ff' },
         background: { 
-          default: 'rgb(5, 30, 52)',
-          paper: 'rgb(5, 30, 52)',   
+          default: '#051e34',
+          paper: 'linear-gradient(145deg, #0d1b2a, #152c3e)',  // Subtle gradient
         },
+        text: {
+          primary: '#ffffff',
+          secondary: '#a0c4ff'
+        }
       },
     });
 
-
-    const navigate = getNavigate();
-   const [metrics, setMetrics] = useState<Record<string, any>>({});
+    const [metrics, setMetrics] = useState<Record<string, any>>({});
 
     const fetchMetrics = React.useCallback(() => {
-            return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null});
-        }, []);
+        return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null});
+    }, []);
     
-      const { responseBody, error, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
+    const { responseBody, error, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 
     useEffect(() => {
         if (responseBody && responseBody.data && responseBody.data.length > 0) {
@@ -61,44 +62,47 @@ export default function Home(){
                         <CircularProgress />
                     </Stack>
                 ) : (
-                    <Grid2 container spacing={3}>
+                    <Grid container spacing={3}>
                         {Object.entries(metricDetails)
-                            .filter(([key]) => metrics.hasOwnProperty(key)) // Only include available metrics
-                            .map(([key, { label, icon: Icon, color }]) => {
+                            .filter(([key]) => Object.prototype.hasOwnProperty.call(metrics, key))
+                            .map(([key, { label, description }]) => {
                                 const value = metrics[key];
 
                                 return (
-                                    <Grid2  key={key}>
+                                    <Grid item xs={12} sm={6} md={4} key={key}>
                                         <Card
                                             sx={{
                                                 minWidth: 250,
-                                                p: 3,
-                                                textAlign: "center",
-                                                boxShadow: 4,
+                                                p: 2,
+                                                textAlign: "left",
+                                                boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)",  // Soft shadow
                                                 borderRadius: "12px",
-                                                background: `linear-gradient(135deg, ${color}, #333)`,
-                                                color: "#fff",
-                                                transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                                                background: theme.palette.background.paper,
+                                                border: "1px solid rgba(255, 255, 255, 0.1)",  // Soft border
+                                                mr: 2,  // Right margin
+                                                transition: "transform 0.2s ease-in-out",
                                                 "&:hover": {
-                                                    transform: "scale(1.05)",
-                                                    boxShadow: "0px 4px 20px rgba(0,0,0,0.3)"
+                                                    transform: "scale(1.02)",
+                                                    boxShadow: "0px 8px 20px rgba(0, 0, 0, 0.4)",
                                                 }
                                             }}
                                         >
                                             <CardContent>
-                                                <Icon sx={{ fontSize: 50, color: "white", mb: 1 }} />
-                                                <Typography variant="h6" fontWeight="bold">
+                                                <Typography variant="h6" fontWeight="bold" color="primary">
                                                     {label}
                                                 </Typography>
-                                                <Typography variant="h4" fontWeight="bold">
+                                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                                    {description}
+                                                </Typography>
+                                                <Typography variant="h5" fontWeight="bold" color="text.primary">
                                                     {value !== "" ? value : "N/A"}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
-                                    </Grid2>
+                                    </Grid>
                                 );
                             })}
-                    </Grid2>
+                    </Grid>
                 )}
             </Stack>
         </ThemeProvider>   
