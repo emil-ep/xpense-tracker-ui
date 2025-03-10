@@ -9,6 +9,9 @@ import { Stack } from '@mui/material';
 import { getExpensesV2 } from '../../api/expensesApi';
 import { useApi } from '../../api/hook/useApi';
 import { fetchTagCategories, fetchTagsApi } from '../../api/tagApi';
+import { Timeframe } from '../analytics/AnalyticsView';
+import { useDateRange } from '../../context/DateRangeContext';
+import { format } from 'date-fns';
 
 const theme = createTheme({
   palette: {
@@ -27,11 +30,26 @@ export const ExpenseView = () => {
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
     const[tags, setTags] = useState<Tag[]>([]);
 
-    const fetchExpenses = useCallback(() => {
-        return getExpensesV2(1, 50000);
-    }, []);
+    const [timeframe, setTimeframe] = useState<Timeframe>({ fromDate: '01-01-24', toDate: '01-01-24'});
+    
+    const { fromDate, toDate } = useDateRange();
 
-    const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, []);
+    useEffect(() => {
+        if (fromDate && toDate) {
+            // Fetch analytics data based on the new date range
+            const newTimeframe = {
+                fromDate: format(fromDate, "dd-MM-yy"),
+                toDate: format(toDate, "dd-MM-yy")
+            }
+            setTimeframe(newTimeframe);
+        }
+    }, [fromDate, toDate]);
+
+    const fetchExpenses = useCallback(() => {
+        return getExpensesV2(1, 50000, timeframe.fromDate, timeframe.toDate);
+    }, [timeframe]);
+
+    const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
      const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
     const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 

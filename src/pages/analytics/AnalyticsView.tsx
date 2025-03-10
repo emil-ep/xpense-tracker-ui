@@ -19,8 +19,8 @@ const theme = createTheme({
 });
 
 export interface Timeframe {
-    fromDate: string | null;
-    toDate: string | null;
+    fromDate: string;
+    toDate: string;
 }
 
 export const AnalyticsView = () => {
