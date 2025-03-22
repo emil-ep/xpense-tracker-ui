@@ -19,8 +19,8 @@ const theme = createTheme({
 });
 
 export interface Timeframe {
-    fromDate: string | null;
-    toDate: string | null;
+    fromDate: string;
+    toDate: string;
 }
 
 export const AnalyticsView = () => {
@@ -46,14 +46,6 @@ export const AnalyticsView = () => {
             <CssBaseline />
             <Box sx={{ flexGrow: 1}}>
                 <Grid2 className="gridContainer" container spacing={2}>
-                    {/* <Grid2 size={16}>
-                        <AnalyticCard 
-                            title='Daily Aggregation' 
-                            aggregationMode='daily' 
-                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
-                            timeframe={timeframe}
-                        />
-                    </Grid2> */}
                     <Grid2 size={6}>
                         <AnalyticCard 
                             title='Monthly Aggregation' 

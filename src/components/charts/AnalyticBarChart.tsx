@@ -14,7 +14,10 @@ export default function AnalyticBarChart({metrics} : Metrics) {
   }
 
 
-  const metricKeys: string[] = Object.keys(metrics[0]).filter(key => key !== 'timeframe');
+  const metricKeys: string[] = Array.from(
+    new Set(metrics.flatMap(obj => Object.keys(obj).filter(key => key !== 'timeframe')))
+  );
+
 
     // Create series data for each metric
     const series = metricKeys.map(metricKey => ({

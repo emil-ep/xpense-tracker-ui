@@ -2,15 +2,16 @@ import { EXPENSES_URL } from "./ApiUrl";
 import { ApiConfig } from "./hook/useApi";
 
 
-const fetchExpenseParams = (page: number, size: number) => {
+const fetchExpenseParams = (page: number, size: number, fromDate: string, toDate: string) => {
     const pageParam = page ? `page=${page}` : undefined;
     const sizeParam = size ? `size=${size}` : '';
-    const requestParam = pageParam ? `${pageParam}&${sizeParam}` : sizeParam;
+    const pageAndSizeParam = pageParam ? `${pageParam}&${sizeParam}` : sizeParam;
+    const requestParam = pageAndSizeParam ? `${pageAndSizeParam}&from=${fromDate}&to=${toDate}` : `from=${fromDate}&to=${toDate}`;
     return requestParam;
 }
 
-export const getExpensesV2 = (page: number, size: number): ApiConfig => ({
-    url: `${EXPENSES_URL}?${fetchExpenseParams(page, size)}`,
+export const getExpensesV2 = (page: number, size: number, fromDate: string, toDate: string): ApiConfig => ({
+    url: `${EXPENSES_URL}?${fetchExpenseParams(page, size, fromDate, toDate)}`,
     method: 'GET',
 });
 

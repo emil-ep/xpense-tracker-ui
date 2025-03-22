@@ -1,17 +1,11 @@
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Box, Card, CardContent, Typography, Backdrop, CircularProgress, Stack } from '@mui/material';
 import AnalyticBarChart from '../charts/AnalyticBarChart';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
 import { MetricsV2, MetricsV2Response } from '../../api/ApiResponses';
 import { Timeframe } from '../../pages/analytics/AnalyticsView';
-import { Backdrop, CircularProgress, Stack } from '@mui/material';
 
 export interface AnalyticCardProps {
   title?: string;
@@ -20,60 +14,54 @@ export interface AnalyticCardProps {
   timeframe: Timeframe;
 }
 
-export default function AnalyticCard({title = '', aggregationMode, metricsToFetch, timeframe}: AnalyticCardProps) {
-
+export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
 
-  const card = (
-    <React.Fragment>
-      <CardContent>
-        <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-          {title}
-        </Typography>
-        <Box sx={{ width: "100%" }}>
-            <AnalyticBarChart metrics={metrics} />
-        </Box>
-      </CardContent>
-      <CardActions>
-        <Button size="small">Learn More</Button>
-      </CardActions>
-    </React.Fragment>
-);
-
   const fetchMetrics = React.useCallback(() => {
-        return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
-    }, [timeframe]);
+    return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
+  }, [timeframe]);
 
-  const { responseBody, error, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
+  const { responseBody, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 
   React.useEffect(() => {
-
-        if(responseBody && responseBody.data){
-
-          const results: any[] = [];
-          responseBody.data.forEach((item: MetricsV2) => {
-            const { tags_aggregate, ...otherFields } = item;
-            const resultItem : Record<string, any> = { ...otherFields };
-            if(item.tags_aggregate && typeof item.tags_aggregate === "object"){
-              Object.entries(item.tags_aggregate).forEach(([key, value]) => {
-                resultItem[key] = value;
-              });
-            }
-            results.push(resultItem);
-          });
-          setMetrics(results);
-        }
-    }, [responseBody]);
+    if (responseBody && responseBody.data) {
+      const results = responseBody.data.map((item) => {
+        const { tags_aggregate, ...otherFields } = item;
+        return { ...otherFields, ...tags_aggregate };
+      });
+      setMetrics(results);
+    }
+  }, [responseBody]);
 
   return (
     <Stack>
+      {/* Loading Spinner */}
       <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-          <CircularProgress color="inherit" />
+        <CircularProgress color="inherit" />
       </Backdrop>
+
+      {/* Styled Analytics Card */}
       <Box sx={{ minWidth: 275 }}>
-        <Card variant="outlined">{card}</Card>
+        <Card
+          variant="outlined"
+          sx={{
+            p: 2,
+            boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)",  // Soft shadow
+            borderRadius: "12px",
+            background: "linear-gradient(145deg, #0d1b2a, #152c3e)", // Subtle gradient
+            border: "1px solid rgba(255, 255, 255, 0.1)",  // Soft border
+          }}
+        >
+          <CardContent>
+            <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+              {title}
+            </Typography>
+            <Box sx={{ width: "100%" }}>
+              <AnalyticBarChart metrics={metrics} />
+            </Box>
+          </CardContent>
+        </Card>
       </Box>
     </Stack>
-    
   );
 }
