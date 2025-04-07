@@ -30,7 +30,7 @@ export const ExpenseView = () => {
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
     const[tags, setTags] = useState<Tag[]>([]);
 
-    const [timeframe, setTimeframe] = useState<Timeframe>({ fromDate: '01-01-24', toDate: '01-01-24'});
+    const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
     
     const { fromDate, toDate } = useDateRange();
 
@@ -46,10 +46,13 @@ export const ExpenseView = () => {
     }, [fromDate, toDate]);
 
     const fetchExpenses = useCallback(() => {
-        return getExpensesV2(1, 50000, timeframe.fromDate, timeframe.toDate);
+        if (timeframe && timeframe.fromDate && timeframe.toDate) {
+            return getExpensesV2(1, 50000, timeframe.fromDate, timeframe.toDate);
+        }
+        return { url: '', method: 'GET' as 'GET' };
     }, [timeframe]);
 
-    const { responseBody, error, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
+    const { responseBody, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
     const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
     const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
