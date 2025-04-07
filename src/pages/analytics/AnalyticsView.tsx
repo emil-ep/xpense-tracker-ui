@@ -19,13 +19,13 @@ const theme = createTheme({
 });
 
 export interface Timeframe {
-    fromDate: string;
-    toDate: string;
+    fromDate: string | null;
+    toDate: string | null;
 }
 
 export const AnalyticsView = () => {
 
-    const [timeframe, setTimeframe] = useState<Timeframe>({ fromDate: '01/01/24', toDate: '01/01/24'});
+    const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
 
     const { fromDate, toDate } = useDateRange();
 
@@ -45,40 +45,43 @@ export const AnalyticsView = () => {
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Box sx={{ flexGrow: 1}}>
-                <Grid2 className="gridContainer" container spacing={2}>
-                    <Grid2 size={6}>
-                        <AnalyticCard 
-                            title='Monthly Aggregation' 
-                            aggregationMode='monthly' 
-                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
-                            timeframe={timeframe}
-                        />
+                {timeframe && (
+
+                    <Grid2 className="gridContainer" container spacing={2}>
+                        <Grid2 size={6}>
+                            <AnalyticCard 
+                                title='Monthly Aggregation' 
+                                aggregationMode='monthly' 
+                                metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                                timeframe={timeframe}
+                            />
+                        </Grid2>
+                        <Grid2 size={6}>
+                            <AnalyticCard 
+                                title='Weekly Aggregation' 
+                                aggregationMode='weekly' 
+                                metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                                timeframe={timeframe}
+                            />
+                        </Grid2>
+                        <Grid2 size={4}>/
+                            <AnalyticCard 
+                                title='Yearly Aggregation' 
+                                aggregationMode='yearly' 
+                                metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
+                                timeframe={timeframe}
+                            />
+                        </Grid2>
+                        <Grid2 size={16}>/
+                            <AnalyticCard 
+                                title='Tags Aggregate' 
+                                aggregationMode='monthly' 
+                                metricsToFetch={['tags_aggregate']} 
+                                timeframe={timeframe}
+                            />
+                        </Grid2>
                     </Grid2>
-                    <Grid2 size={6}>
-                        <AnalyticCard 
-                            title='Weekly Aggregation' 
-                            aggregationMode='weekly' 
-                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
-                            timeframe={timeframe}
-                        />
-                    </Grid2>
-                    <Grid2 size={4}>/
-                        <AnalyticCard 
-                            title='Yearly Aggregation' 
-                            aggregationMode='yearly' 
-                            metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
-                            timeframe={timeframe}
-                        />
-                    </Grid2>
-                    <Grid2 size={16}>/
-                        <AnalyticCard 
-                            title='Tags Aggregate' 
-                            aggregationMode='monthly' 
-                            metricsToFetch={['tags_aggregate']} 
-                            timeframe={timeframe}
-                        />
-                    </Grid2>
-                </Grid2>
+                )}
             </Box>
         </ThemeProvider>
     )
