@@ -1,4 +1,4 @@
-import { Box, Card, CardContent, Checkbox, createTheme, CssBaseline, ListItemText, MenuItem, OutlinedInput, Select, Stack, ThemeProvider, Typography } from "@mui/material";
+import { Box, Card, CardContent, Checkbox, createTheme, CssBaseline, ListItemText, MenuItem, OutlinedInput, Select, SelectChangeEvent, Stack, ThemeProvider, Typography } from "@mui/material";
 import { useState } from "react";
 import { MetricsV2 } from "../../api/ApiResponses";
 import AnalyticBarChart from "../charts/AnalyticBarChart";
@@ -20,8 +20,19 @@ export default function CustomAnalyticCard() {
     });
 
     const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
-    const [selectedAggregationModes, setSelectedAggregationModes] = useState<string[]>([]);
+    const [selectedAggregationMode, setSelectedAggregationMode] = useState<string>('');
     const [metrics, setMetrics] = useState<MetricsV2[]>([]);
+
+
+  const onChangeMetrics = (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
+    setSelectedMetrics(typeof value === 'string' ? value.split(',') : (value as string[]));
+  };
+
+   const onChangeAggregationMode = (event: SelectChangeEvent) => {
+    const { value } = event.target;
+    setSelectedAggregationMode(event.target.value);
+  };
 
     return (
       <ThemeProvider theme={theme}>
@@ -42,10 +53,12 @@ export default function CustomAnalyticCard() {
                 <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
                 </Typography>
                 <Box sx={{ width: "100%" }}>
-                  <Select
+                  <Select<string[]>
                       labelId="metric-select-label"
                       multiple
                       value={selectedMetrics}
+                      onChange={onChangeMetrics}
+                      renderValue={(selected) => selected.join(', ')}
                       input={<OutlinedInput label="Select Options" />}
                   > 
                     {expenseMetrics.map((metric) => (
@@ -57,13 +70,13 @@ export default function CustomAnalyticCard() {
                   </Select>
                   <Select
                       labelId="timeframe-select-label"
-                      value={aggregationModes}
+                      value={selectedAggregationMode}
+                      onChange={onChangeAggregationMode}
                       input={<OutlinedInput label="Select Options" />}
                   > 
                     {aggregationModes.map((mode) => (
                       <MenuItem key={mode} value={mode}>
-                        <Checkbox checked={selectedAggregationModes.indexOf(mode) > -1}></Checkbox>
-                        <ListItemText primary={mode} />
+                          <ListItemText primary={mode} />
                       </MenuItem>
                     ))}
                   </Select>
