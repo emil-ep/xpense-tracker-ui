@@ -1,10 +1,10 @@
-import { createTheme, CssBaseline } from "@mui/material";
+import { createTheme, CssBaseline, Stack } from "@mui/material";
 import { ThemeProvider } from "styled-components";
 import CustomAnalyticCard from "../../components/cards/CustomAnalyticCard";
+import './customDashboard.css';
 
 
 export default function CustomDashboard() {
-
 
     const theme = createTheme({
       palette: {
@@ -21,7 +21,9 @@ export default function CustomDashboard() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <CustomAnalyticCard />
+            <Stack className="dashboardContainer" spacing={2} direction="row" >
+                <CustomAnalyticCard />
+            </Stack>
         </ThemeProvider>
     );
 }
