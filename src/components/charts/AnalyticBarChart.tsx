@@ -4,7 +4,7 @@ import { MetricsV2 } from '../../api/ApiResponses';
 import { Box } from '@mui/material';
 
 interface Metrics {
-  metrics: MetricsV2[];
+  metrics: MetricsV2[] | undefined;
 }
 
 export default function AnalyticBarChart({metrics} : Metrics) {

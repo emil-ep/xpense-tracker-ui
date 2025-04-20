@@ -14,7 +14,8 @@ const data = [
   { icon: <Home />, label: 'Home', path: '/home' },
   { icon: <AccountBalanceWalletOutlinedIcon />, label: 'Expenses', path: '/expense' },
   { icon: <BarChart />, label: 'Tags', path: '/tagManagement'},
-  { icon: <BarChart />, label: 'View Analytics', path: '/analytics'}
+  { icon: <BarChart />, label: 'View Analytics', path: '/analytics'},
+  { icon: <BarChart />, label: 'Custom Dashboard', path: '/customDashboard'},
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({

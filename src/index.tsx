@@ -16,6 +16,7 @@ import TagManagement from './pages/tagManagement/TagManagementView';
 import { ToastContainer } from 'react-toastify';
 import { createRoot } from "react-dom/client";
 import { setNavigate } from './navigation';
+import CustomDashboard from './pages/customDashboard/CustomDashboard';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -46,6 +47,7 @@ const AppRoutes: React.FC = () => {
             <Route path="/analytics" element={<ProtectedRoute element={AnalyticsView} />} />
             <Route path="/expense" element={<ProtectedRoute element={ExpenseView}/>} />
             <Route path='/tagManagement' element={<ProtectedRoute element={TagManagement}/>}/>
+            <Route path='/customDashboard' element={<ProtectedRoute element={CustomDashboard}/>}/>
           </Routes>
         </AppLayout>
       )}
