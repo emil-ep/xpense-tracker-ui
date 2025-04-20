@@ -5,6 +5,8 @@ import {
   Checkbox, 
   createTheme, 
   CssBaseline, 
+  FormControl, 
+  InputLabel, 
   ListItemText, 
   MenuItem, 
   OutlinedInput, 
@@ -118,53 +120,65 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
             }}
           >
             <CardContent>
-              <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+              <Typography gutterBottom variant="h6">
+                Choose categories
               </Typography>
               <Box sx={{ width: "100%" }}>
-                <Select<string[]>
-                    labelId="metric-select-label"
-                    multiple
-                    value={selectedMetrics}
-                    onChange={onChangeMetrics}
-                    renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
-                    input={<OutlinedInput label="Select Options" />}
-                > 
-                  {expenseMetrics.map((metric) => (
-                    <MenuItem key={metric} value={metric}>
-                      <Checkbox checked={selectedMetrics.indexOf(metric) > -1}></Checkbox>
-                      <ListItemText primary={metric} />
-                    </MenuItem>
-                  ))}
-                </Select>
-                <Select
-                    labelId="timeframe-select-label"
-                    value={selectedAggregationMode}
-                    onChange={onChangeAggregationMode}
-                    input={<OutlinedInput label="Select Options" />}
-                > 
-                  {aggregationModes.map((mode) => (
-                    <MenuItem key={mode} value={mode}>
-                        <ListItemText primary={mode} />
-                    </MenuItem>
-                  ))}
-                </Select>
-                {selectedMetrics.includes('tags_aggregate') && (
-                  <Select
-                      labelId="tags-select-label"
+                <Stack spacing={3} direction={"row"}>
+                  <FormControl fullWidth>
+                    <InputLabel id='metric-select-label'>Select Metrics</InputLabel>
+                    <Select<string[]>
+                      labelId="metric-select-label"
                       multiple
-                      value={selectedTags}
-                      onChange={onChangeSelectedTags}
+                      value={selectedMetrics}
+                      onChange={onChangeMetrics}
                       renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
                       input={<OutlinedInput label="Select Options" />}
-                  > 
-                    {tags?.map((tag) => (
-                      <MenuItem key={tag.id} value={tag.name}>
-                        <Checkbox checked={selectedTags.indexOf(tag.name) > -1}></Checkbox>
-                        <ListItemText primary={tag.name} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                )}
+                    > 
+                      {expenseMetrics.map((metric) => (
+                        <MenuItem key={metric} value={metric}>
+                          <Checkbox checked={selectedMetrics.indexOf(metric) > -1}></Checkbox>
+                          <ListItemText primary={metric} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <FormControl fullWidth>
+                    <InputLabel id='aggregation-select-label'>Select Aggregation Mode</InputLabel>
+                    <Select
+                      labelId="timeframe-select-label"
+                      value={selectedAggregationMode}
+                      onChange={onChangeAggregationMode}
+                      input={<OutlinedInput label="Select Options" />}
+                    > 
+                      {aggregationModes.map((mode) => (
+                        <MenuItem key={mode} value={mode}>
+                            <ListItemText primary={mode} />
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  {selectedMetrics.includes('tags_aggregate') && (
+                    <FormControl fullWidth>
+                      <InputLabel id='tags-select-label'>Select Tags</InputLabel>
+                      <Select
+                        labelId="tags-select-label"
+                        multiple
+                        value={selectedTags}
+                        onChange={onChangeSelectedTags}
+                        renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
+                        input={<OutlinedInput label="Select Options" />}
+                      > 
+                        {tags?.map((tag) => (
+                          <MenuItem key={tag.id} value={tag.name}>
+                            <Checkbox checked={selectedTags.indexOf(tag.name) > -1}></Checkbox>
+                            <ListItemText primary={tag.name} />
+                          </MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                  )}    
+                </Stack>
               </Box>
               <Box sx={{ width: "100%" }}>
                   <AnalyticBarChart metrics={metrics} />
