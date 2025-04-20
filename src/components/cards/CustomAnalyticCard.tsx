@@ -72,26 +72,21 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     const { value } = event.target;
     const newTags = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedTags(newTags);
-    const metrics = metricsApiResponse?.data;
-    const filteredMetricsV2 = metrics?.map((metric) => {
-      const tagsAggregate = metric.tags_aggregate;
-      //@ts-expect-error
-      const filteredTags = Object.keys(tagsAggregate)
-        .filter((key) => newTags.includes(key)) 
-        .reduce((acc, key) => {
-          //@ts-ignore
-          acc[key] = tagsAggregate[key]; 
-          return acc;
-        }, {} as Record<string, number>);
-      const test = {
-        ...filteredTags,
-      }    
-      return {
-        ...filteredTags, 
-      }; 
+    const results = metricsApiResponse?.data.map((item) => {
+    const { tags_aggregate, ...otherFields } = item;
+    const validTagsAggregate = tags_aggregate && typeof tags_aggregate === 'object'
+      ? tags_aggregate
+      : {};
+    const filteredTags = Object.keys(validTagsAggregate)
+      .filter((key) => newTags.includes(key))
+      .reduce((acc, key) => {
+        //@ts-ignore
+        acc[key] = validTagsAggregate[key];
+        return acc;
+      }, {} as Record<string, number>);
+      return { ...otherFields, ...filteredTags };
     });
-    //@ts-expect-error
-    setMetrics(filteredMetricsV2);
+    setMetrics(results);
   }
 
   useEffect(() => {
