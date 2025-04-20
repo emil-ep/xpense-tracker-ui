@@ -13,8 +13,8 @@ import {
   Stack, 
   ThemeProvider, 
   Typography } from "@mui/material";
-import { useCallback, useEffect, useState } from "react";
-import { MetricsV2, MetricsV2Response } from "../../api/ApiResponses";
+import { useEffect, useState } from "react";
+import { MetricsV2, MetricsV2Response, Tag } from "../../api/ApiResponses";
 import AnalyticBarChart from "../charts/AnalyticBarChart";
 import { fetchMetricsV2 } from "../../api/metricsApi";
 // import { useApi } from "../../api/hook/useApi";
@@ -26,9 +26,10 @@ import { apiCaller } from "../../api/apicaller";
 
 export interface CustomAnalyticCardProps {
   timeframe: Timeframe;
+  tags?: Tag[];
 }
 
-export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProps) {
+export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCardProps) {
 
   const expenseMetrics = ['credit_aggregate', 'debit_aggregate', 'tags_aggregate'];
   const aggregationModes = ['daily','monthly', 'weekly', 'yearly'];
@@ -46,6 +47,7 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [selectedAggregationMode, setSelectedAggregationMode] = useState<MetricAggregatioMode>('yearly');
   const [metrics, setMetrics] = useState<MetricsV2[] | undefined>([]);
+  const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [metricsApiResponse, setMetricsApiResponse] = useState<MetricsV2Response | null>(null);
 
   const onChangeMetrics = async (event: SelectChangeEvent<string[]>) => {
@@ -125,6 +127,23 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
                     </MenuItem>
                   ))}
                 </Select>
+                {selectedMetrics.includes('tags_aggregate') && (
+                  <Select
+                      labelId="tags-select-label"
+                      multiple
+                      value={selectedTags}
+                      // onChange={onChangeMetrics}
+                      renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
+                      input={<OutlinedInput label="Select Options" />}
+                  > 
+                    {tags?.map((tag) => (
+                      <MenuItem key={tag.id} value={tag.name}>
+                        <Checkbox checked={selectedTags.indexOf(tag.name) > -1}></Checkbox>
+                        <ListItemText primary={tag.name} />
+                      </MenuItem>
+                    ))}
+                  </Select>
+                )}
               </Box>
               <Box sx={{ width: "100%" }}>
                   <AnalyticBarChart metrics={metrics} />
