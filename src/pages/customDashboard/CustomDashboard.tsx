@@ -1,4 +1,4 @@
-import { createTheme, CssBaseline, Stack } from "@mui/material";
+import { createTheme, CssBaseline, Grid2 } from "@mui/material";
 import { ThemeProvider } from "styled-components";
 import CustomAnalyticCard from "../../components/cards/CustomAnalyticCard";
 import { useDateRange } from '../../context/DateRangeContext';
@@ -38,11 +38,13 @@ export default function CustomDashboard() {
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Stack className="dashboardContainer" spacing={2} direction="row" >
-                {timeframe && (
-                    <CustomAnalyticCard timeframe={timeframe}/>
-                )}
-            </Stack>
+            <Grid2 className="gridContainer" container spacing={2}>
+                <Grid2 size={12}>
+                    {timeframe && (
+                        <CustomAnalyticCard timeframe={timeframe}/>
+                    )}
+                </Grid2>
+            </Grid2>
         </ThemeProvider>
     );
 }

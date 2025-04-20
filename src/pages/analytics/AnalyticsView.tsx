@@ -1,7 +1,7 @@
 import './analyticsView.css'
 
 import { Box, CssBaseline, Grid2, ThemeProvider, createTheme } from '@mui/material'
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 
 import AnalyticCard from '../../components/cards/AnalyticCard';
 import { format } from "date-fns";
