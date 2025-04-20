@@ -44,15 +44,14 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
 
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [selectedAggregationMode, setSelectedAggregationMode] = useState<MetricAggregatioMode>('yearly');
-  const [metrics, setMetrics] = useState<MetricsV2[]>([]);
-  const [metricsApiResponse, setMetricsApiResponse] = useState<MetricsV2Response | null>(null);
+  const [metrics, setMetrics] = useState<MetricsV2[] | undefined>([]);
 
   const onChangeMetrics = async (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     const newMetrics = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedMetrics(newMetrics);
     responseBody = await apiCaller(fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe));
-    setMetricsApiResponse(responseBody);
+    setMetrics(responseBody?.data);
   };
   
 
@@ -67,19 +66,19 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
     const newAggregationMode = findAggregationModeByValue(value);
     setSelectedAggregationMode(newAggregationMode);
     responseBody = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe));
-    setMetricsApiResponse(responseBody);
+    setMetrics(responseBody?.data);
   };
 
   useEffect(() => {
-    console.log('triggering useEffect');
     if (responseBody && responseBody.data) {
       const results = responseBody.data.map((item) => {
         const { tags_aggregate, ...otherFields } = item;
-        return { ...otherFields, ...tags_aggregate };
+        return { ...otherFields, ...(tags_aggregate || {}) };
       });
+      console.log('results ===>', results)
       setMetrics(results);
     }
-  }, [responseBody, metricsApiResponse]);
+  }, [responseBody]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -129,7 +128,7 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
                 </Select>
               </Box>
               <Box sx={{ width: "100%" }}>
-                  <AnalyticBarChart metrics={metricsApiResponse?.data} />
+                  <AnalyticBarChart metrics={metrics} />
               </Box>
             </CardContent>
           </Card>
