@@ -1,6 +1,10 @@
 import { createTheme, CssBaseline, Stack } from "@mui/material";
 import { ThemeProvider } from "styled-components";
 import CustomAnalyticCard from "../../components/cards/CustomAnalyticCard";
+import { useDateRange } from '../../context/DateRangeContext';
+import { format } from "date-fns";
+import { useEffect, useState } from "react";
+import { Timeframe } from "../analytics/AnalyticsView";
 import './customDashboard.css';
 
 
@@ -16,13 +20,28 @@ export default function CustomDashboard() {
         },
       },
     });
+    const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
 
+    const { fromDate, toDate } = useDateRange();
+
+    useEffect(() => {
+        if (fromDate && toDate) {
+            // Fetch analytics data based on the new date range
+            const newTimeframe = {
+                fromDate: format(fromDate, "dd/MM/yy"),
+                toDate: format(toDate, "dd/MM/yy")
+            }
+            setTimeframe(newTimeframe);
+        }
+    }, [fromDate, toDate]);
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Stack className="dashboardContainer" spacing={2} direction="row" >
-                <CustomAnalyticCard />
+                {timeframe && (
+                    <CustomAnalyticCard timeframe={timeframe}/>
+                )}
             </Stack>
         </ThemeProvider>
     );
