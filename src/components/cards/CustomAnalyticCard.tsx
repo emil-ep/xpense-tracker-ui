@@ -17,10 +17,11 @@ import { useCallback, useEffect, useState } from "react";
 import { MetricsV2, MetricsV2Response } from "../../api/ApiResponses";
 import AnalyticBarChart from "../charts/AnalyticBarChart";
 import { fetchMetricsV2 } from "../../api/metricsApi";
-import { useApi } from "../../api/hook/useApi";
+// import { useApi } from "../../api/hook/useApi";
 import { findAggregationModeByValue, MetricAggregatioMode } from "../../api/ApiRequests";
 import { Timeframe } from "../../pages/analytics/AnalyticsView";
 import { apiCaller } from "../../api/apicaller";
+// import { set } from "date-fns";
 
 
 export interface CustomAnalyticCardProps {
@@ -45,40 +46,38 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
   const [selectedMetrics, setSelectedMetrics] = useState<string[]>([]);
   const [selectedAggregationMode, setSelectedAggregationMode] = useState<MetricAggregatioMode>('yearly');
   const [metrics, setMetrics] = useState<MetricsV2[] | undefined>([]);
+  const [metricsApiResponse, setMetricsApiResponse] = useState<MetricsV2Response | null>(null);
 
   const onChangeMetrics = async (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     const newMetrics = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedMetrics(newMetrics);
-    responseBody = await apiCaller(fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe));
-    setMetrics(responseBody?.data);
+    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(selectedAggregationMode, newMetrics, timeframe));
+    setMetricsApiResponse(responseBody);
   };
   
 
-  const fetchMetrics = useCallback(() => {
-    return fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe);
-  }, [timeframe]);
   
-  let { responseBody, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
-
   const onChangeAggregationMode = async (event: SelectChangeEvent) => {
     const { value } = event.target;
     const newAggregationMode = findAggregationModeByValue(value);
     setSelectedAggregationMode(newAggregationMode);
-    responseBody = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe));
-    setMetrics(responseBody?.data);
+    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe));
+    setMetricsApiResponse(responseBody);
   };
 
   useEffect(() => {
-    if (responseBody && responseBody.data) {
-      const results = responseBody.data.map((item) => {
+    if (metricsApiResponse && metricsApiResponse.data) {
+      const results = metricsApiResponse.data.map((item) => {
         const { tags_aggregate, ...otherFields } = item;
-        return { ...otherFields, ...(tags_aggregate || {}) };
+        const validTagsAggregate = tags_aggregate && typeof tags_aggregate === 'object'
+          ? tags_aggregate
+          : {};
+         return { ...otherFields, ...validTagsAggregate };
       });
-      console.log('results ===>', results)
       setMetrics(results);
     }
-  }, [responseBody]);
+  }, [metricsApiResponse]);
 
   return (
     <ThemeProvider theme={theme}>
@@ -104,7 +103,7 @@ export default function CustomAnalyticCard({ timeframe} : CustomAnalyticCardProp
                     multiple
                     value={selectedMetrics}
                     onChange={onChangeMetrics}
-                    renderValue={(selected) => selected.join(', ')}
+                    renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
                     input={<OutlinedInput label="Select Options" />}
                 > 
                   {expenseMetrics.map((metric) => (
