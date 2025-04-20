@@ -68,6 +68,32 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     setMetricsApiResponse(responseBody);
   };
 
+  const onChangeSelectedTags = (event: SelectChangeEvent<string[]>) => {
+    const { value } = event.target;
+    const newTags = typeof value === 'string' ? value.split(',') : (value as string[]);
+    setSelectedTags(newTags);
+    const metrics = metricsApiResponse?.data;
+    const filteredMetricsV2 = metrics?.map((metric) => {
+      const tagsAggregate = metric.tags_aggregate;
+      //@ts-expect-error
+      const filteredTags = Object.keys(tagsAggregate)
+        .filter((key) => newTags.includes(key)) 
+        .reduce((acc, key) => {
+          //@ts-ignore
+          acc[key] = tagsAggregate[key]; 
+          return acc;
+        }, {} as Record<string, number>);
+      const test = {
+        ...filteredTags,
+      }    
+      return {
+        ...filteredTags, 
+      }; 
+    });
+    //@ts-expect-error
+    setMetrics(filteredMetricsV2);
+  }
+
   useEffect(() => {
     if (metricsApiResponse && metricsApiResponse.data) {
       const results = metricsApiResponse.data.map((item) => {
@@ -132,7 +158,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
                       labelId="tags-select-label"
                       multiple
                       value={selectedTags}
-                      // onChange={onChangeMetrics}
+                      onChange={onChangeSelectedTags}
                       renderValue={(selected) => selected.length > 0 ? `${selected.length} selected` : 'Select Options'}
                       input={<OutlinedInput label="Select Options" />}
                   > 
