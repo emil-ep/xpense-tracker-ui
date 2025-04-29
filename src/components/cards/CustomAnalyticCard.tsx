@@ -98,7 +98,14 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
         const validTagsAggregate = tags_aggregate && typeof tags_aggregate === 'object'
           ? tags_aggregate
           : {};
-         return { ...otherFields, ...validTagsAggregate };
+        const filteredTags = Object.keys(validTagsAggregate)
+          .filter((key) => selectedTags.includes(key))
+          .reduce((acc, key) => {
+            //@ts-ignore
+            acc[key] = validTagsAggregate[key];
+            return acc;
+          }, {} as Record<string, number>);
+        return { ...otherFields, ...filteredTags };
       });
       setMetrics(results);
     }
