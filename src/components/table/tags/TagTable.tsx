@@ -93,6 +93,36 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
         setEdited(true);
     };
 
+    const colorCellRenderer = (props: any) => {
+        const currentColor = props.data.color || '#ffffff';
+
+        const handleColorChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+            const newColor = event.target.value;
+            setRowData((prevData) =>
+                prevData.map((tag) =>
+                    tag.id === props.data.id ? { ...tag, color: newColor } : tag
+                )
+            );
+
+            setModifiedTags((prevModifiedTags) => {
+                const newSet = new Set(prevModifiedTags);
+                newSet.add({ ...props.data, color: newColor });
+                return newSet;
+            });
+
+            setEdited(true);
+        };
+
+        return (
+            <input
+                type="color"
+                value={currentColor}
+                onChange={handleColorChange}
+                style={{ width: '100%', height: '2rem', border: 'none', background: 'transparent' }}
+            />
+        );
+    };
+
 
     const tagCategoryCellRenderer = (props: any) => {
         const currentCategory = rowData.find(tag => tag.id === props.data.id)?.category?.name || "";
@@ -134,6 +164,12 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
             cellRenderer: tagCategoryCellRenderer,
             sortable: false,
             flex: 1
+        },
+        {
+            field: 'Color',
+            sortable: false,
+            flex: 1,
+            cellRenderer: colorCellRenderer,
         },
         {
             field: 'Operations',
