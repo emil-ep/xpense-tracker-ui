@@ -188,7 +188,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
                 </Stack>
               </Box>
               <Box sx={{ width: "100%" }}>
-                  <AnalyticBarChart metrics={metrics} />
+                  <AnalyticBarChart metrics={metrics} tags={tags}/>
               </Box>
             </CardContent>
           </Card>

@@ -4,7 +4,7 @@ import AnalyticBarChart from '../charts/AnalyticBarChart';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
-import { MetricsV2, MetricsV2Response } from '../../api/ApiResponses';
+import { MetricsV2, MetricsV2Response, Tag } from '../../api/ApiResponses';
 import { Timeframe } from '../../pages/analytics/AnalyticsView';
 
 export interface AnalyticCardProps {
@@ -12,11 +12,11 @@ export interface AnalyticCardProps {
   aggregationMode: MetricAggregatioMode;
   metricsToFetch: Metrics[];
   timeframe: Timeframe;
+  tags?: Tag[];
 }
 
-export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe }: AnalyticCardProps) {
+export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
-
   const fetchMetrics = React.useCallback(() => {
     return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
   }, [timeframe]);
@@ -57,7 +57,7 @@ export default function AnalyticCard({ title = '', aggregationMode, metricsToFet
               {title}
             </Typography>
             <Box sx={{ width: "100%" }}>
-              <AnalyticBarChart metrics={metrics} />
+              <AnalyticBarChart metrics={metrics} tags={tags}/>
             </Box>
           </CardContent>
         </Card>
