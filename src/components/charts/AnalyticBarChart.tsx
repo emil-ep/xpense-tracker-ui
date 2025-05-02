@@ -6,17 +6,13 @@ import { Box } from '@mui/material';
 interface Metrics {
   metrics: MetricsV2[] | undefined;
   tags?: Tag[];
+  loading?: boolean;
 }
 
-export default function AnalyticBarChart({metrics, tags} : Metrics) {
-
-  if (!metrics || metrics.length === 0) {
-    return <div>Loading chart data...</div>;
-  }
-
+export default function AnalyticBarChart({metrics, tags, loading = false} : Metrics) {
 
   const metricKeys: string[] = Array.from(
-    new Set(metrics.flatMap(obj => Object.keys(obj).filter(key => key !== 'timeframe')))
+    new Set(metrics?.flatMap(obj => Object.keys(obj).filter(key => key !== 'timeframe')))
   );
 
   function generateRandomHexColor(): string {
@@ -51,6 +47,7 @@ export default function AnalyticBarChart({metrics, tags} : Metrics) {
           paddingBlockStart: "1rem"
         }}
         height={300}
+        loading={loading}
       />
     </Box>
   );
