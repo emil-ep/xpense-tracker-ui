@@ -101,22 +101,22 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
       {
         id: '1',
         name: 'UnTagged Credit',
-        color: '#ffffff',
+        color: '#518260',
         tagType: 'credit',
-        keywords: ['credit', 'debit'],
+        keywords: ['nil'],
         category: {
           id: '1',
           name: 'UnTagged',
-          expense: true,
+          expense: false,
         },
         editable: false
       },
       {
         id: '2',
         name: 'UnTagged Debit',
-        color: '#ffffff',
-        tagType: 'credit',
-        keywords: ['credit', 'debit'],
+        color: '#775182',
+        tagType: 'debit',
+        keywords: ['nil'],
         category: {
           id: '1',
           name: 'UnTagged',
