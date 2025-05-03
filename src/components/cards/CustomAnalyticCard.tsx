@@ -97,6 +97,38 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
   }
 
   useEffect(() => {
+    const tag: Tag[] = [
+      {
+        id: '1',
+        name: 'UnTagged Credit',
+        color: '#ffffff',
+        tagType: 'credit',
+        keywords: ['credit', 'debit'],
+        category: {
+          id: '1',
+          name: 'UnTagged',
+          expense: true,
+        },
+        editable: false
+      },
+      {
+        id: '2',
+        name: 'UnTagged Debit',
+        color: '#ffffff',
+        tagType: 'credit',
+        keywords: ['credit', 'debit'],
+        category: {
+          id: '1',
+          name: 'UnTagged',
+          expense: true,
+        },
+        editable: false
+      },]
+      tags?.push(tag[0]);
+      tags?.push(tag[1]);
+  }, [tags]);
+
+  useEffect(() => {
     if (metricsApiResponse && metricsApiResponse.data) {
       const results = metricsApiResponse.data.map((item) => {
         const { tags_aggregate, ...otherFields } = item;
