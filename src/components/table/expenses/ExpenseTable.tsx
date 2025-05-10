@@ -15,6 +15,7 @@ import { toast } from "react-toastify";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
+import AttachmentUploadDialog from "../../popper/AttachmentUploadDialog";
 
 interface TableProps {
     clazzName?: string;
@@ -42,6 +43,8 @@ export default function ExpenseTable(
     const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
     const [openPopperId, setOpenPopperId] = useState<string | null>(null);
     const [editingTag, setEditingTag] = useState<Tag | null>();
+    const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
+    const [showUploadDialog, setShowUploadDialog] = useState(false);
 
     useEffect(() => {
         setRowData(expenses);
@@ -95,10 +98,30 @@ export default function ExpenseTable(
         }
     }
 
+    const openUploadDialog = (expenseId: string) => {
+        setSelectedExpenseId(expenseId);
+        setShowUploadDialog(true);
+    };
+
+    const closeUploadDialog = () => {
+        setSelectedExpenseId(null);
+        setShowUploadDialog(false);
+    };
+
     const handleEditTag = (event: React.MouseEvent<HTMLElement>, expenseId: string, tag: Tag) => {
         setAnchorEl(dummyAnchor); // Keep the popper aligned
         setOpenPopperId(expenseId);
         setEditingTag(tag); // Set the tag to edit
+    };
+
+    const handleAttachmentUpload = async (file: File | null) => {
+        if (!file || !selectedExpenseId) return;
+        
+        // TODO: Implement your API call to upload file here
+        console.log("Uploading", file, "for expense:", selectedExpenseId);
+        showToast("Attachment uploaded successfully!");
+    
+    // Optionally update rowData if you want to reflect the new attachment
     };
 
     const handleEditTagSave = async (updatedTag: Tag, expenseId: string) => {
@@ -134,12 +157,15 @@ export default function ExpenseTable(
     const actionCellRenderer = (props: any) => {
         return (
             <div>
-                <IconButton aria-label="upload-attachment" onClick={() => {}}>
+                <IconButton 
+                aria-label="upload-attachment" 
+                onClick={() => openUploadDialog(props.data.id)}
+                >
                     <FileUploadIcon />
                 </IconButton>
             </div>
-        )
-    }
+        );
+    };
 
     const tagCellRenderer = (props: any) => {
         return (
@@ -205,6 +231,11 @@ export default function ExpenseTable(
                     onClick={handleClose}
                 />
             )}
+            <AttachmentUploadDialog
+                open={showUploadDialog}
+                onClose={closeUploadDialog}
+                onUpload={handleAttachmentUpload}
+            />
         </div>
 )
 }
