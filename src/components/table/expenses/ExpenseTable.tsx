@@ -12,6 +12,7 @@ import { IconButton } from "@mui/material";
 import TagPopper from "../../popper/TagPopper";
 import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
+import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
 
@@ -130,6 +131,16 @@ export default function ExpenseTable(
         handleClose();
     };
 
+    const actionCellRenderer = (props: any) => {
+        return (
+            <div>
+                <IconButton aria-label="upload-attachment" onClick={() => {}}>
+                    <FileUploadIcon />
+                </IconButton>
+            </div>
+        )
+    }
+
     const tagCellRenderer = (props: any) => {
         return (
             <div>
@@ -168,9 +179,11 @@ export default function ExpenseTable(
         {
             field: 'tags', 
             cellRenderer: tagCellRenderer, 
-            sortable: false, 
+            sortable: true, 
             flex: 2
-        }
+        },
+        {field: "attachment", flex: 0.5},
+        {field: "actions", flex: 1, cellRenderer: actionCellRenderer}
     ];
 
     
