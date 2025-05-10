@@ -60,6 +60,7 @@ export interface Tag {
     keywords: string[];
     category: TagCategory;
     editable: boolean;
+    color?: string;
 }
 
 export interface TagCategory {

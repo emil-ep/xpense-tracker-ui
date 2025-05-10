@@ -19,11 +19,9 @@ import { useEffect, useState } from "react";
 import { MetricsV2, MetricsV2Response, Tag } from "../../api/ApiResponses";
 import AnalyticBarChart from "../charts/AnalyticBarChart";
 import { fetchMetricsV2 } from "../../api/metricsApi";
-// import { useApi } from "../../api/hook/useApi";
 import { findAggregationModeByValue, MetricAggregatioMode } from "../../api/ApiRequests";
 import { Timeframe } from "../../pages/analytics/AnalyticsView";
 import { apiCaller } from "../../api/apicaller";
-// import { set } from "date-fns";
 
 
 export interface CustomAnalyticCardProps {
@@ -51,13 +49,16 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
   const [metrics, setMetrics] = useState<MetricsV2[] | undefined>([]);
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [metricsApiResponse, setMetricsApiResponse] = useState<MetricsV2Response | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const onChangeMetrics = async (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     const newMetrics = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedMetrics(newMetrics);
+    setLoading(true);
     const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(selectedAggregationMode, newMetrics, timeframe));
     setMetricsApiResponse(responseBody);
+    setLoading(false);
   };
   
 
@@ -66,14 +67,17 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     const { value } = event.target;
     const newAggregationMode = findAggregationModeByValue(value);
     setSelectedAggregationMode(newAggregationMode);
+    setLoading(true);
     const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe));
     setMetricsApiResponse(responseBody);
+    setLoading(false);
   };
 
   const onChangeSelectedTags = (event: SelectChangeEvent<string[]>) => {
     const { value } = event.target;
     const newTags = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedTags(newTags);
+    setLoading(true);
     const results = metricsApiResponse?.data.map((item) => {
     const { tags_aggregate, ...otherFields } = item;
     const validTagsAggregate = tags_aggregate && typeof tags_aggregate === 'object'
@@ -89,7 +93,40 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
       return { ...otherFields, ...filteredTags };
     });
     setMetrics(results);
+    setLoading(false);
   }
+
+  useEffect(() => {
+    const tag: Tag[] = [
+      {
+        id: '1',
+        name: 'UnTagged Credit',
+        color: '#518260',
+        tagType: 'credit',
+        keywords: ['nil'],
+        category: {
+          id: '1',
+          name: 'UnTagged',
+          expense: false,
+        },
+        editable: false
+      },
+      {
+        id: '2',
+        name: 'UnTagged Debit',
+        color: '#775182',
+        tagType: 'debit',
+        keywords: ['nil'],
+        category: {
+          id: '1',
+          name: 'UnTagged',
+          expense: true,
+        },
+        editable: false
+      },]
+      tags?.push(tag[0]);
+      tags?.push(tag[1]);
+  }, [tags]);
 
   useEffect(() => {
     if (metricsApiResponse && metricsApiResponse.data) {
@@ -188,7 +225,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
                 </Stack>
               </Box>
               <Box sx={{ width: "100%" }}>
-                  <AnalyticBarChart metrics={metrics} />
+                  <AnalyticBarChart metrics={metrics} tags={tags} loading={loading}/>
               </Box>
             </CardContent>
           </Card>

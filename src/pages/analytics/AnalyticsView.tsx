@@ -6,6 +6,9 @@ import { useEffect, useState } from 'react'
 import AnalyticCard from '../../components/cards/AnalyticCard';
 import { format } from "date-fns";
 import { useDateRange } from '../../context/DateRangeContext';
+import { useApi } from '../../api/hook/useApi';
+import { FetchTagsResponse, Tag } from '../../api/ApiResponses';
+import { fetchTagsApi } from '../../api/tagApi';
 
 const theme = createTheme({
   palette: {
@@ -26,8 +29,17 @@ export interface Timeframe {
 export const AnalyticsView = () => {
 
     const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
+    const[tags, setTags] = useState<Tag[]>([]);
 
     const { fromDate, toDate } = useDateRange();
+
+    const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+
+    useEffect(() => {
+        if(tagsResponse && tagsResponse.data){
+            setTags(tagsResponse.data);
+        }
+    }, [tagsResponse]);
 
     useEffect(() => {
         if (fromDate && toDate) {
@@ -78,6 +90,7 @@ export const AnalyticsView = () => {
                                 aggregationMode='monthly' 
                                 metricsToFetch={['tags_aggregate']} 
                                 timeframe={timeframe}
+                                tags={tags}
                             />
                         </Grid2>
                     </Grid2>
