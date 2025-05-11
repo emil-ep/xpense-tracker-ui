@@ -2,7 +2,7 @@ import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-quartz.css";
 import './expenseTable.css'
 
-import { ExpenseItemType, Tag, TagCategory } from "../../../api/ApiResponses";
+import { ExpenseItemType, Tag, TagCategory, UploadResponse } from "../../../api/ApiResponses";
 import React, { useEffect, useState } from "react";
 import { createTagApi, editTagApi } from "../../../api/tagApi";
 
@@ -16,6 +16,7 @@ import FileUploadIcon from '@mui/icons-material/FileUpload';
 import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
 import AttachmentUploadDialog from "../../popper/AttachmentUploadDialog";
+import { uploadAttachment } from "../../../api/fileApi";
 
 interface TableProps {
     clazzName?: string;
@@ -117,9 +118,28 @@ export default function ExpenseTable(
     const handleAttachmentUpload = async (file: File | null) => {
         if (!file || !selectedExpenseId) return;
         
-        // TODO: Implement your API call to upload file here
         console.log("Uploading", file, "for expense:", selectedExpenseId);
-        showToast("Attachment uploaded successfully!");
+        // const uploadAttachmentResponse: any = await apiCaller(uploadAttachment(file));
+        const uploadAttachmentResponse: UploadResponse = await uploadAttachment(file);
+        if(uploadAttachmentResponse.status === 1) {
+            const updateExpenseResponse: any = await apiCaller(updateExpense(selectedExpenseId, {attachment: uploadAttachmentResponse.data.fileName}));
+            if(updateExpenseResponse.status !== 1){
+                showToast("Expense update failed!");
+            }else{
+                showToast("Attachment uploaded!");
+                setRowData((prevRowData) =>
+                    prevRowData.map((expense) =>
+                        expense.id === selectedExpenseId
+                            ? { ...expense, attachment: uploadAttachmentResponse.data.fileName }
+                            : expense
+                    )
+                );
+                closeUploadDialog();
+            }
+        }else{
+            showToast("Attachment upload failed");
+            return;
+        }
     
     // Optionally update rowData if you want to reflect the new attachment
     };
