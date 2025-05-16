@@ -42,3 +42,8 @@ export const uploadAttachment = async (selectedFile : File) : Promise<UploadResp
     const responseData: UploadResponse = await response.json();
     return responseData;
 }
+
+export const fetchAttachment = (fileId: string): ApiConfig => ({
+    url: `${FILE_URL}?id=${fileId}`,
+    method: 'GET'
+})

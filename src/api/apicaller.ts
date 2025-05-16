@@ -31,3 +31,19 @@ export const apiCaller = async <T>(config: ApiConfig): Promise<T> => {
 
   return (await response.json()) as T;
 };
+
+export const fileDownloader = async <T>(config: ApiConfig): Promise<Blob> => {
+  const response = await fetch(config.url, {
+    method: 'GET',
+    headers: {
+      'Authorization': `Bearer ${localStorage.getItem('authToken')}`,
+    },
+    credentials: 'include',
+  });
+
+  if (!response.ok) {
+    const errorMessage = await getErrorMessage(response);
+    throw new Error(errorMessage);
+  }
+  return response.blob();
+}

@@ -17,6 +17,7 @@ import { updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
 import AttachmentUploadDialog from "../../popper/AttachmentUploadDialog";
 import { uploadAttachment } from "../../../api/fileApi";
+import AttachmentPreviewDialog from "../../popper/AttachmentPreviewDialog";
 
 interface TableProps {
     clazzName?: string;
@@ -46,6 +47,8 @@ export default function ExpenseTable(
     const [editingTag, setEditingTag] = useState<Tag | null>();
     const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
     const [showUploadDialog, setShowUploadDialog] = useState(false);
+    const [previewFileId, setPreviewFileId] = useState<string | null>(null);
+    const [showPreviewDialog, setShowPreviewDialog] = useState<boolean>(false);
 
     useEffect(() => {
         setRowData(expenses);
@@ -72,6 +75,7 @@ export default function ExpenseTable(
             keywords : keywords,
             tagCategoryId: selectedTagCategoryId
     }
+
 
     try{
             const createTagResponse: any = await apiCaller(createTagApi(body));
@@ -186,6 +190,27 @@ export default function ExpenseTable(
             </div>
         );
     };
+    const openAttachmentPreview = (fileId: string) => {
+        setPreviewFileId(fileId);
+        setShowPreviewDialog(true);
+    };
+
+    const closePreviewDialog = () => {
+        setShowPreviewDialog(false);
+        setPreviewFileId(null);
+    };
+
+    const attachmentCellRenderer = (props: any) => {
+        const attachmentUrl = props.value;
+        const handleViewClick = () => {
+            openAttachmentPreview(attachmentUrl);
+        };
+        return attachmentUrl ? (
+            <button className="view-button" onClick={handleViewClick}>
+                View
+            </button>
+        ) : null;
+    };
 
     const tagCellRenderer = (props: any) => {
         return (
@@ -228,7 +253,7 @@ export default function ExpenseTable(
             sortable: true, 
             flex: 2
         },
-        {field: "attachment", flex: 0.5},
+        {field: "attachment", flex: 0.5, cellRenderer: attachmentCellRenderer},
         {field: "actions", flex: 1, cellRenderer: actionCellRenderer}
     ];
 
@@ -256,6 +281,11 @@ export default function ExpenseTable(
                 onClose={closeUploadDialog}
                 onUpload={handleAttachmentUpload}
             />
+            <AttachmentPreviewDialog
+                open={showPreviewDialog}
+                onClose={closePreviewDialog}
+                fileId={previewFileId}
+            />
         </div>
-)
+    )
 }
