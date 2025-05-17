@@ -13,7 +13,8 @@ export type Metrics =
 'highest_expense_recorded' |
 'highest_expense_tag' |
 'highest_credit_recorded' |
-'highest_credit_recorded_tag';
+'highest_credit_recorded_tag' |
+'expense_aggregate';
 
 export interface MetricBody {
     fromDate: string | null;
