@@ -84,6 +84,14 @@ export const AnalyticsView = () => {
                                 timeframe={timeframe}
                             />
                         </Grid2>
+                        <Grid2 size={4}>/
+                            <AnalyticCard 
+                                title='Expense aggregation' 
+                                aggregationMode='monthly' 
+                                metricsToFetch={['expense_aggregate']} 
+                                timeframe={timeframe}
+                            />
+                        </Grid2>
                         <Grid2 size={16}>/
                             <AnalyticCard 
                                 title='Tags Aggregate' 
