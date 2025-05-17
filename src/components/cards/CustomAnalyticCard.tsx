@@ -31,7 +31,7 @@ export interface CustomAnalyticCardProps {
 
 export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCardProps) {
 
-  const expenseMetrics = ['credit_aggregate', 'debit_aggregate', 'tags_aggregate'];
+  const expenseMetrics = ['credit_aggregate', 'debit_aggregate', 'tags_aggregate', 'expense_aggregate'];
   const aggregationModes = ['daily','monthly', 'weekly', 'yearly'];
   const theme = createTheme({
     palette: {
