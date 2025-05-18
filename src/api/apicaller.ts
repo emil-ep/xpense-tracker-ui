@@ -1,4 +1,5 @@
 import { getNavigate } from "../navigation";
+import { showToast } from "../utils/ToastUtil";
 import { getErrorMessage } from "./ApiUtil";
 import { ApiConfig } from "./hook/useApi";
 
@@ -21,7 +22,8 @@ export const apiCaller = async <T>(config: ApiConfig): Promise<T> => {
     if (navigate) {
       navigate('/login'); // Redirect to login page
     }
-    return Promise.reject(new Error('Unauthorized')); // Reject the promise
+    showToast("Unauthorized. Please sign-in again");
+    return new Promise(() => {}); 
   }
 
   if (!response.ok) {

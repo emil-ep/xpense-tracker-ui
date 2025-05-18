@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { getNavigate } from '../../navigation';
+import { showToast } from '../../utils/ToastUtil';
 
 export interface ApiConfig {
   url: string;
@@ -38,7 +39,8 @@ export const useApi = <T>(fetchConfig: FetchFunction, dependencies: any[] = []) 
         if (navigate) {
           navigate('/login'); // Redirect to login page
         }
-        return Promise.reject(new Error('Unauthorized')); // Reject the promise
+        showToast("Unauthorized. Please sign-in again");
+        return new Promise(() => {}); 
       }
 
       if (!response.ok) {
