@@ -6,6 +6,8 @@ import { fetchMetricsV2 } from '../../api/metricsApi';
 import { MetricAggregatioMode, Metrics } from '../../api/ApiRequests';
 import { MetricsV2, MetricsV2Response, Tag } from '../../api/ApiResponses';
 import { Timeframe } from '../../pages/analytics/AnalyticsView';
+import { Tooltip, IconButton } from '@mui/material';
+import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export interface AnalyticCardProps {
   title?: string;
@@ -13,9 +15,10 @@ export interface AnalyticCardProps {
   metricsToFetch: Metrics[];
   timeframe: Timeframe;
   tags?: Tag[];
+  tooltipText?: string;
 }
 
-export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags }: AnalyticCardProps) {
+export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
   const fetchMetrics = React.useCallback(() => {
     return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
@@ -53,11 +56,20 @@ export default function AnalyticCard({ title = '', aggregationMode, metricsToFet
           }}
         >
           <CardContent>
-            <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-              {title}
-            </Typography>
+            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
+                {title}
+              </Typography>
+
+              <Tooltip title={tooltipText} arrow placement="left">
+                <IconButton size="small" sx={{ color: 'rgba(255,255,255,0.6)' }}>
+                  <InfoOutlinedIcon fontSize="small" />
+                </IconButton>
+              </Tooltip>
+            </Box>
+
             <Box sx={{ width: "100%" }}>
-              <AnalyticBarChart metrics={metrics} tags={tags}/>
+              <AnalyticBarChart metrics={metrics} tags={tags} />
             </Box>
           </CardContent>
         </Card>
