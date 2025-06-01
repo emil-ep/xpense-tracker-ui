@@ -90,6 +90,7 @@ export const AnalyticsView = () => {
                                 aggregationMode='monthly' 
                                 metricsToFetch={['expense_aggregate']} 
                                 timeframe={timeframe}
+                                tooltipText='Expense is calculated as the sum of all debits - any expense having tag category "Mutual Fund Savings, Salary, Own Account, Other Savings"'
                             />
                         </Grid2>
                         <Grid2 size={16}>/
