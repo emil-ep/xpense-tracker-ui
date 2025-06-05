@@ -24,7 +24,7 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
 
   const data = metricKeys.map(metricKey => {
     //@ts-expect-error
-    const total = metrics?.reduce((acc, metric) => acc + (metric[metricKey] || 0), 0) ?? 0;
+    const total = metrics?.reduce((acc, metric) => acc + Math.abs(metric[metricKey] || 0), 0) ?? 0;
     const matchingTag = tags?.find(tag => tag.name === metricKey);
     const color = matchingTag?.color || generateRandomHexColor(metricKey);
     const label = metricKey.replace('_aggregate', '').toUpperCase();
