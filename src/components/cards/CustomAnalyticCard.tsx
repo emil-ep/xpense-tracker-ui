@@ -22,6 +22,7 @@ import { fetchMetricsV2 } from "../../api/metricsApi";
 import { findAggregationModeByValue, MetricAggregatioMode } from "../../api/ApiRequests";
 import { Timeframe } from "../../pages/analytics/AnalyticsView";
 import { apiCaller } from "../../api/apicaller";
+import AnalyticPieChart from "../charts/AnalyticPieChart";
 
 
 export interface CustomAnalyticCardProps {
@@ -226,6 +227,9 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
               </Box>
               <Box sx={{ width: "100%" }}>
                   <AnalyticBarChart metrics={metrics} tags={tags} loading={loading}/>
+              </Box>
+              <Box sx={{ width: "100%" }}>
+                  <AnalyticPieChart metrics={metrics} tags={tags} loading={loading}/>
               </Box>
             </CardContent>
           </Card>

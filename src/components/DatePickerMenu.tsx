@@ -2,7 +2,7 @@ import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { Box, Button, Menu, MenuItem } from "@mui/material";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useEffect, useState } from "react";
-import { subMonths, format } from 'date-fns';
+import { subMonths, format, startOfMonth, endOfMonth } from 'date-fns';
 import { useDateRange } from "../context/DateRangeContext";
 
 export default function DatePickerMenu() {
@@ -29,12 +29,24 @@ const handleClose = () => {
 };
 
 const handlePresetRange = (months: number, label: string) => {
-    const to = new Date();
-    const from = subMonths(to, months);
-    updateDateRange(from, to);
-    setSelectedRange(label);
-    handleClose();
-  };
+  const today = new Date();
+  let from: Date;
+  let to: Date;
+
+  if (months === 0) {
+    // Current Month: 1st of this month to today
+    from = startOfMonth(today);
+    to = today;
+  } else {
+    // Past N months: start of N months ago to end of last month
+    from = startOfMonth(subMonths(today, months));
+    to = endOfMonth(subMonths(today, 1));
+  }
+
+  updateDateRange(from, to);
+  setSelectedRange(label);
+  handleClose();
+};
 
 const handleCustomDateSelect = () => {
     if (fromDate && toDate) {
@@ -58,8 +70,10 @@ return (
             open={Boolean(anchorEl)}
             onClose={handleClose}
         >
+            <MenuItem onClick={() => handlePresetRange(0, 'Current Month')}>Current Month</MenuItem>
             <MenuItem onClick={() => handlePresetRange(1, 'Last 1 month')}>Last 1 Month</MenuItem>
             <MenuItem onClick={() => handlePresetRange(2, 'Last 2 month')}>Last 2 Months</MenuItem>
+            <MenuItem onClick={() => handlePresetRange(3, 'Last 3 month')}>Last 3 Months</MenuItem>
             <MenuItem onClick={() => handlePresetRange(6, 'Last 6 month')}>Last 6 Months</MenuItem>
             <MenuItem onClick={() => handlePresetRange(12, 'Last 1 year')}>Last 1 Year</MenuItem>
             <MenuItem
