@@ -43,9 +43,18 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
     }
 
     const handleCellEditingStopped = (event: any) => {
-        setModifiedTags(modifiedTags?.add(event.data))
+        const editedData = { ...event.data };
+
+        if (typeof editedData.keywords === "string") {
+            editedData.keywords = editedData.keywords
+            .split(',')
+            .map((kw: string) => kw.trim())
+            .filter((kw: string) => kw.length > 0);
+        }
+
+        setModifiedTags((prev) => new Set(prev).add(editedData));
         setEdited(true);
-      };
+    };
 
 
     const operationsCellRenderer = (props: any) => {
@@ -75,9 +84,8 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
             
             if (updatedTag) {
                 newSet.add(
-                    { ...updatedTag, 
-                        //@ts-expect-error
-                        keywords: updatedTag.keywords.toString(),
+                    { ...updatedTag,
+                        keywords: updatedTag.keywords,
                         category: { 
                             //@ts-expect-error
                             id: selectedCategory.id, 
