@@ -1,6 +1,8 @@
 import './navigationDrawer.css'
 
 import { BarChart, Home, KeyboardArrowDown } from "@mui/icons-material";
+import StyleIcon from '@mui/icons-material/Style';
+import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React, { useState } from "react";
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
@@ -13,9 +15,9 @@ const drawerWidth = 240;
 const data = [
   { icon: <Home />, label: 'Home', path: '/home' },
   { icon: <AccountBalanceWalletOutlinedIcon />, label: 'Expenses', path: '/expense' },
-  { icon: <BarChart />, label: 'Tags', path: '/tagManagement'},
+  { icon: <StyleIcon />, label: 'Tags', path: '/tagManagement'},
   { icon: <BarChart />, label: 'View Analytics', path: '/analytics'},
-  { icon: <BarChart />, label: 'Custom Dashboard', path: '/customDashboard'},
+  { icon: <DashboardCustomizeIcon />, label: 'Custom Dashboard', path: '/customDashboard'},
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({

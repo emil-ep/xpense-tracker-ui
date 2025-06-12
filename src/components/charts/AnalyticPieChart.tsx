@@ -1,6 +1,6 @@
 import { PieChart } from '@mui/x-charts/PieChart';
 import { MetricsV2, Tag } from '../../api/ApiResponses';
-import { Box, CircularProgress, Backdrop, Stack, Typography } from '@mui/material';
+import { Box, Stack, Typography } from '@mui/material';
 import { CREDIT_AGGREGATE_COLOR, DEBIT_AGGREGATE_COLOR } from '../../utils/MetricUtil';
 
 interface Metrics {
@@ -39,10 +39,6 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
 
   return (
     <Box sx={{ width: '100%', position: 'relative', minHeight: 300 }}>
-      <Backdrop open={loading} sx={{ position: 'absolute', zIndex: 1 }}>
-        <CircularProgress />
-      </Backdrop>
-
       <Stack direction="row" spacing={4} alignItems="center" justifyContent="center">
         <PieChart
           series={[
@@ -61,6 +57,7 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
           colors={data.map(d => d.color)}
           margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
           legend={{ hidden: true }}
+          loading={loading}
         />
 
         {/* Custom Legend */}
