@@ -100,6 +100,7 @@ export const AnalyticsView = () => {
                                 metricsToFetch={['tags_aggregate']} 
                                 timeframe={timeframe}
                                 tags={tags}
+                                tooltipText={'Tags aggregation is calculated as the difference between credit and debits of expenses in the same timeframe'}
                             />
                         </Grid2>
                     </Grid2>
