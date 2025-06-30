@@ -36,3 +36,8 @@ export const fetchSyncStatus = (requestId: string) : ApiConfig => ({
     url: `${EXPENSES_URL}/sync/status/${requestId}`,
     method: 'GET'
 });
+
+export const deleteExpense = (expenseId: string): ApiConfig => ({
+    url: `${EXPENSES_URL}/${expenseId}`,
+    method: 'DELETE'
+});
