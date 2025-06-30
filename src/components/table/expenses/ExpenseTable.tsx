@@ -9,15 +9,17 @@ import { createTagApi, editTagApi } from "../../../api/tagApi";
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton } from "@mui/material";
+import DeleteIcon from '@mui/icons-material/Delete';
 import TagPopper from "../../popper/TagPopper";
 import { apiCaller } from "../../../api/apicaller";
 import { toast } from "react-toastify";
 import FileUploadIcon from '@mui/icons-material/FileUpload';
-import { updateExpense } from "../../../api/expensesApi";
+import { deleteExpense, updateExpense } from "../../../api/expensesApi";
 import { showToast } from "../../../utils/ToastUtil";
 import AttachmentUploadDialog from "../../popper/AttachmentUploadDialog";
 import { uploadAttachment } from "../../../api/fileApi";
 import AttachmentPreviewDialog from "../../popper/AttachmentPreviewDialog";
+import DeleteExpenseDialog from "../../popper/DeleteExpenseDialog";
 
 interface TableProps {
     clazzName?: string;
@@ -49,6 +51,7 @@ export default function ExpenseTable(
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const [previewFileId, setPreviewFileId] = useState<string | null>(null);
     const [showPreviewDialog, setShowPreviewDialog] = useState<boolean>(false);
+    const [showDeleteExpenseDialog, setShowDeleteExpenseDialog] = useState<boolean>(false);
 
     useEffect(() => {
         setRowData(expenses);
@@ -112,6 +115,16 @@ export default function ExpenseTable(
         setSelectedExpenseId(null);
         setShowUploadDialog(false);
     };
+
+    const openDeleteExpenseDialog = (expenseId: string) => {
+        setSelectedExpenseId(expenseId);
+        setShowDeleteExpenseDialog(true);
+    };
+
+    const closeDeleteExpenseDialog = () => {
+        setSelectedExpenseId(null);
+        setShowDeleteExpenseDialog(false);
+    }
 
     const handleEditTag = (event: React.MouseEvent<HTMLElement>, expenseId: string, tag: Tag) => {
         setAnchorEl(dummyAnchor); // Keep the popper aligned
@@ -187,6 +200,12 @@ export default function ExpenseTable(
                 >
                     <FileUploadIcon />
                 </IconButton>
+                <IconButton
+                    aria-label="delete-expense"
+                    onClick={() => openDeleteExpenseDialog(props.data.id)}
+                >
+                    <DeleteIcon />
+                </IconButton>
             </div>
         );
     };
@@ -211,6 +230,19 @@ export default function ExpenseTable(
             </button>
         ) : null;
     };
+
+    const handleDelete = async () => {
+        const deleteApiResponse: any = await apiCaller(deleteExpense(selectedExpenseId ?? ""));
+        if (deleteApiResponse.status === 1) {
+            showToast("Expense deleted successfully");
+            setRowData((prevRowData) =>
+                    prevRowData.filter((expense) => expense.id !== selectedExpenseId)
+                );
+            closeDeleteExpenseDialog();
+        } else {
+            showToast(`Failed to delete expense: ${deleteApiResponse.message}`);
+        }
+    }
 
     const tagCellRenderer = (props: any) => {
         return (
@@ -285,6 +317,11 @@ export default function ExpenseTable(
                 open={showPreviewDialog}
                 onClose={closePreviewDialog}
                 fileId={previewFileId}
+            />
+            <DeleteExpenseDialog
+                open={showDeleteExpenseDialog}
+                onClose={closeDeleteExpenseDialog}
+                onDelete={handleDelete}
             />
         </div>
     )
