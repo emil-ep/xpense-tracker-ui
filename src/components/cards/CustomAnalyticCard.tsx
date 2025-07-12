@@ -149,6 +149,21 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     }
   }, [metricsApiResponse]);
 
+  useEffect(() => {
+    if (timeframe) {
+      setLoading(true);
+      apiCaller(fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe))
+        .then((responseBody: any) => {
+          setMetricsApiResponse(responseBody);
+          setLoading(false);
+        })
+        .catch((error) => {
+          console.error("Failed to fetch metrics:", error);
+          setLoading(false);
+        });
+    }
+  }, [timeframe]);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
