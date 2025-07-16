@@ -34,7 +34,7 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
 
     return {
       // @ts-expect-error metrics key would be same type
-      data: metrics.map(metric => metric[metricKey]),
+      data: metrics.map(metric => Math.abs(metric[metricKey])),
       label: metricKey.replace('_aggregate', '').toUpperCase(),
       color,
     };
