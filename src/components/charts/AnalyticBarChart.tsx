@@ -32,12 +32,13 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
     const matchingTag = tags?.find(tag => tag.name === metricKey);
     const color = matchingTag?.color || generateRandomHexColor(metricKey);
 
-    return {
+    const data = {
       // @ts-expect-error metrics key would be same type
-      data: metrics.map(metric => Math.abs(metric[metricKey])),
+      data: metrics.map(metric => Math.abs(metric[metricKey]) || 0),
       label: metricKey.replace('_aggregate', '').toUpperCase(),
       color,
-    };
+    }
+    return data;
   });
   return (
     <Box

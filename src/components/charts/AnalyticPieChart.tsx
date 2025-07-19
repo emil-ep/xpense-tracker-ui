@@ -24,14 +24,19 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
 
   const data = metricKeys.map(metricKey => {
     //@ts-expect-error
-    const total = metrics?.reduce((acc, metric) => acc + metric[metricKey], 0) ?? 0;
+    const total = metrics?.reduce((acc, metric) => acc + metric[metricKey] || 0, 0) || 0;
     const matchingTag = tags?.find(tag => tag.name === metricKey);
     const color = matchingTag?.color || generateRandomHexColor(metricKey);
     const label = metricKey.replace('_aggregate', '').toUpperCase();
-
+    const bingo = {
+      id: metricKey,
+      value: Math.abs(total) || 0, 
+      label,
+      color,
+    }
     return {
       id: metricKey,
-      value: Math.abs(total),
+      value: Math.abs(total) || 0, 
       label,
       color,
     };
