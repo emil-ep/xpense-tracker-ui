@@ -28,12 +28,6 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
     const matchingTag = tags?.find(tag => tag.name === metricKey);
     const color = matchingTag?.color || generateRandomHexColor(metricKey);
     const label = metricKey.replace('_aggregate', '').toUpperCase();
-    const bingo = {
-      id: metricKey,
-      value: Math.abs(total) || 0, 
-      label,
-      color,
-    }
     return {
       id: metricKey,
       value: Math.abs(total) || 0, 
