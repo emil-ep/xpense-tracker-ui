@@ -6,6 +6,7 @@ import DashboardCustomizeIcon from '@mui/icons-material/DashboardCustomize';
 import { Box, Divider, Drawer, List, ListItem, ListItemButton, ListItemIcon, ListItemText } from "@mui/material";
 import React, { useState } from "react";
 import { ThemeProvider, createTheme, styled } from '@mui/material/styles';
+import SettingsIcon from '@mui/icons-material/Settings';
 
 import AccountBalanceWalletOutlinedIcon from '@mui/icons-material/AccountBalanceWalletOutlined';
 import { Link } from "react-router-dom";
@@ -18,6 +19,7 @@ const data = [
   { icon: <StyleIcon />, label: 'Tags', path: '/tagManagement'},
   { icon: <BarChart />, label: 'View Analytics', path: '/analytics'},
   { icon: <DashboardCustomizeIcon />, label: 'Custom Dashboard', path: '/customDashboard'},
+  { icon: <SettingsIcon />, label: 'Settings', path: '/settings' }
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
