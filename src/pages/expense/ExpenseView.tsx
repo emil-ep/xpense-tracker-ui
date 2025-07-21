@@ -3,7 +3,7 @@ import './expenseView.css'
 import { Backdrop, CircularProgress, CssBaseline, ThemeProvider, createTheme } from '@mui/material'
 import { ExpenseItemType, FetchTagsResponse, PaginatedExpenseResponse, Tag, TagCategory, TagCategoryResponse } from '../../api/ApiResponses';
 import { useCallback, useEffect, useState } from 'react';
-
+import { useSearchParams } from "react-router-dom";
 import ExpenseTable from '../../components/table/expenses/ExpenseTable';
 import { Stack } from '@mui/material';
 import { getExpensesV2 } from '../../api/expensesApi';
@@ -12,6 +12,7 @@ import { fetchTagCategories, fetchTagsApi } from '../../api/tagApi';
 import { Timeframe } from '../analytics/AnalyticsView';
 import { useDateRange } from '../../context/DateRangeContext';
 import { format } from 'date-fns';
+
 
 const theme = createTheme({
   palette: {
@@ -25,7 +26,7 @@ const theme = createTheme({
 });
 
 export const ExpenseView = () => {
-
+    const [searchParams, setSearchParams] = useSearchParams();
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
     const[tags, setTags] = useState<Tag[]>([]);
@@ -34,6 +35,14 @@ export const ExpenseView = () => {
     
     const { fromDate, toDate } = useDateRange();
 
+    const updateParams = (newParams: Record<string, string | number>) => {
+        const updatedParams = new URLSearchParams(searchParams.toString());
+        Object.entries(newParams).forEach(([key, value]) => {
+        updatedParams.set(key, String(value));
+        });
+        setSearchParams(updatedParams);
+    };
+
     useEffect(() => {
         if (fromDate && toDate) {
             // Fetch analytics data based on the new date range
@@ -41,6 +50,7 @@ export const ExpenseView = () => {
                 fromDate: format(fromDate, "dd-MM-yy"),
                 toDate: format(toDate, "dd-MM-yy")
             }
+            updateParams({ fromDate: newTimeframe.fromDate, toDate: newTimeframe.toDate });
             setTimeframe(newTimeframe);
         }
     }, [fromDate, toDate]);
