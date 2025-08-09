@@ -1,5 +1,9 @@
 import { Box, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, ThemeProvider, Typography } from "@mui/material";
-import { useState } from "react";
+import { useCallback, useEffect, useState } from "react";
+import { fetchTagsApi } from "../../api/tagApi";
+import { useApi } from "../../api/hook/useApi";
+import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
+import { fetchUserSettingsApi } from "../../api/userSettingsApi";
 
 const theme = createTheme({
   palette: {
@@ -13,12 +17,37 @@ const theme = createTheme({
 });
 
 const currencies = ['USD', 'EUR', 'INR', 'JPY', 'GBP'];
-const allTags = ['Travel', 'Groceries', 'Rent', 'Utilities', 'Savings'];
 
 export default function Settings() {
     
     const [currency, setCurrency] = useState('USD');
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
+    const [tagData, setTagData] = useState<Tag[]>([]);
+    const fetchTags = useCallback(() => fetchTagsApi(), []);
+    const userSettings = useCallback(() => fetchUserSettingsApi(), []);
+
+    const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(userSettings, []);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
+
+    useEffect(() => {
+        if(tagsResponse && tagsResponse.data){
+            setTagData(tagsResponse.data);
+        }
+            
+    }, [tagsResponse]);
+
+    useEffect(() => {
+        if(userSettingsResponse && userSettingsResponse.data){
+            const savingsTagSetting = userSettingsResponse.data.find(item => item.type === 'SAVINGS_TAGS');
+            if (savingsTagSetting) {
+                setSavingsTags(savingsTagSetting.payload.tags || []);
+            }
+            const currencySetting = userSettingsResponse.data.find(item => item.type === 'CURRENCY');
+            if (currencySetting) {
+                setCurrency(currencySetting.payload.userCurrency);
+            }
+        }
+    }, [userSettingsResponse]);
 
     return (
         <ThemeProvider theme={theme}>
@@ -32,9 +61,9 @@ export default function Settings() {
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Select your currency</InputLabel>
                     <Select
-                    value={currency}
-                    onChange={(e) => setCurrency(e.target.value)}
-                    label="Select your currency"
+                        value={currency}
+                        onChange={(e) => setCurrency(e.target.value)}
+                        label="Select your currency"
                     >
                     {currencies.map((cur) => (
                         <MenuItem key={cur} value={cur}>
@@ -60,9 +89,9 @@ export default function Settings() {
                         </Box>
                     )}
                     >
-                    {allTags.map((tag) => (
-                        <MenuItem key={tag} value={tag}>
-                        {tag}
+                    {tagData.map((tag) => (
+                        <MenuItem key={tag.id} value={tag.name}>
+                        {tag.name}
                         </MenuItem>
                     ))}
                     </Select>

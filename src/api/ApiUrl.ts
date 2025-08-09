@@ -6,3 +6,4 @@ export const FILE_URL = `${API_BASE_URL}/v1/file`;
 export const FILE_MAPPER_URL = `${API_BASE_URL}/v1/expenses/statement`;
 export const METRICS_URL = `${API_BASE_URL}/v1/metrics`;
 export const TAG_URL = `${API_BASE_URL}/v1/tag`;
+export const USER_SETTINGS_URL = `${API_BASE_URL}/v1/user/settings`;
