@@ -1,4 +1,4 @@
-import {  FetchUserSettingsResponse, MetricsV2Response } from "../../api/ApiResponses";
+import { MetricsV2Response } from "../../api/ApiResponses";
 import React, { useCallback, useEffect, useState } from "react";
 import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
@@ -37,31 +37,6 @@ export default function Home(){
     });
 
     const userSettings = useCallback(() => fetchUserSettingsApi(), []);
-    
-    const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(userSettings, []);
-    
-    useEffect(() => {
-      if (userSettingsResponse && userSettingsResponse.data) {
-        const savingsTagSetting = userSettingsResponse.data.find(item => item.type === 'SAVINGS_TAGS');
-        if (savingsTagSetting) {
-          //@ts-expect-error
-          window.tracker = window.tracker || {};
-          //@ts-expect-error
-          window.tracker.settings = window.tracker.settings || {};
-          //@ts-expect-error
-          window.tracker.settings.savingsTags = savingsTagSetting.payload.tags || [];
-        }
-        const currencySetting = userSettingsResponse.data.find(item => item.type === 'CURRENCY');
-        if (currencySetting) {
-          //@ts-expect-error
-          window.tracker = window.tracker || {};
-          //@ts-expect-error
-          window.tracker.settings = window.tracker.settings || {};
-          //@ts-expect-error
-          window.tracker.settings.currency = currencySetting.payload.userCurrency;
-        }
-      }
-    }, [userSettingsResponse]);
 
     const [metrics, setMetrics] = useState<Record<string, any>>({});
 

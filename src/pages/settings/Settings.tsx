@@ -1,8 +1,9 @@
-import { Box, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, ThemeProvider, Typography } from "@mui/material";
+import { Box, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, ThemeProvider, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagsApi } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
-import { FetchTagsResponse, Tag } from "../../api/ApiResponses";
+import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
+import { fetchUserSettingsApi } from "../../api/userSettingsApi";
 
 const theme = createTheme({
   palette: {
@@ -23,15 +24,34 @@ export default function Settings() {
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
     const [tagData, setTagData] = useState<Tag[]>([]);
     const fetchTags = useCallback(() => fetchTagsApi(), []);
+    const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
     const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
+    const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
 
     useEffect(() => {
         if(tagsResponse && tagsResponse.data){
             setTagData(tagsResponse.data);
-        }
-            
+        }    
     }, [tagsResponse]);
 
+    useEffect(() => {
+        if(userSettingsResponse && userSettingsResponse.data) {
+            const currencySetting = userSettingsResponse.data.find(item => item.type === 'CURRENCY');
+            if (currencySetting) {
+                setCurrency(currencySetting.payload.userCurrency);
+            }
+            const savingsTagSetting = userSettingsResponse.data.find(item => item.type === 'SAVINGS_TAGS');
+            if (savingsTagSetting) {
+                setSavingsTags(savingsTagSetting.payload.tags || []);
+            }
+        }
+
+    }, [userSettingsResponse]);
+
+    const handleSavingsTagsChange = (event: SelectChangeEvent<string[]>) => {
+        const { value } = event.target;
+        setSavingsTags(typeof value === 'string' ? value.split(',') : value as string[]);
+    }
 
     return (
         <ThemeProvider theme={theme}>
@@ -45,8 +65,7 @@ export default function Settings() {
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Select your currency</InputLabel>
                     <Select
-                        //@ts-expect-error
-                        value={window.tracker?.settings?.currency || ''}
+                        value={currency}
                         onChange={(e) => setCurrency(e.target.value)}
                         label="Select your currency"
                     >
@@ -63,9 +82,8 @@ export default function Settings() {
                     <InputLabel>Select your savings tags</InputLabel>
                     <Select
                         multiple
-                        //@ts-expect-error
-                        value={window.tracker?.settings?.savingsTags || []}
-                        onChange={(e) => setSavingsTags(e.target.value as string[])}
+                        value={savingsTags}
+                        onChange={(e) => handleSavingsTagsChange(e)}
                         input={<OutlinedInput label="Select your savings tags" />}
                         renderValue={(selected) => (
                             <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
@@ -76,7 +94,7 @@ export default function Settings() {
                         )}
                     >
                     {tagData.map((tag) => (
-                        <MenuItem key={tag.id} value={tag.name}>
+                        <MenuItem key={tag.id} value={tag.name} >
                         {tag.name}
                         </MenuItem>
                     ))}
