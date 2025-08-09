@@ -2,8 +2,7 @@ import { Box, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem,
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagsApi } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
-import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
-import { fetchUserSettingsApi } from "../../api/userSettingsApi";
+import { FetchTagsResponse, Tag } from "../../api/ApiResponses";
 
 const theme = createTheme({
   palette: {
@@ -20,13 +19,10 @@ const currencies = ['USD', 'EUR', 'INR', 'JPY', 'GBP'];
 
 export default function Settings() {
     
-    const [currency, setCurrency] = useState('USD');
+    const [currency, setCurrency] = useState('');
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
     const [tagData, setTagData] = useState<Tag[]>([]);
     const fetchTags = useCallback(() => fetchTagsApi(), []);
-    const userSettings = useCallback(() => fetchUserSettingsApi(), []);
-
-    const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(userSettings, []);
     const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
 
     useEffect(() => {
@@ -36,18 +32,6 @@ export default function Settings() {
             
     }, [tagsResponse]);
 
-    useEffect(() => {
-        if(userSettingsResponse && userSettingsResponse.data){
-            const savingsTagSetting = userSettingsResponse.data.find(item => item.type === 'SAVINGS_TAGS');
-            if (savingsTagSetting) {
-                setSavingsTags(savingsTagSetting.payload.tags || []);
-            }
-            const currencySetting = userSettingsResponse.data.find(item => item.type === 'CURRENCY');
-            if (currencySetting) {
-                setCurrency(currencySetting.payload.userCurrency);
-            }
-        }
-    }, [userSettingsResponse]);
 
     return (
         <ThemeProvider theme={theme}>
@@ -61,7 +45,8 @@ export default function Settings() {
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Select your currency</InputLabel>
                     <Select
-                        value={currency}
+                        //@ts-expect-error
+                        value={window.tracker?.settings?.currency || ''}
                         onChange={(e) => setCurrency(e.target.value)}
                         label="Select your currency"
                     >
@@ -77,17 +62,18 @@ export default function Settings() {
                 <FormControl fullWidth margin="normal">
                     <InputLabel>Select your savings tags</InputLabel>
                     <Select
-                    multiple
-                    value={savingsTags}
-                    onChange={(e) => setSavingsTags(e.target.value as string[])}
-                    input={<OutlinedInput label="Select your savings tags" />}
-                    renderValue={(selected) => (
-                        <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                        {selected.map((tag) => (
-                            <Chip key={tag} label={tag} />
-                        ))}
-                        </Box>
-                    )}
+                        multiple
+                        //@ts-expect-error
+                        value={window.tracker?.settings?.savingsTags || []}
+                        onChange={(e) => setSavingsTags(e.target.value as string[])}
+                        input={<OutlinedInput label="Select your savings tags" />}
+                        renderValue={(selected) => (
+                            <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                            {selected.map((tag: string) => (
+                                <Chip key={tag} label={tag} />
+                            ))}
+                            </Box>
+                        )}
                     >
                     {tagData.map((tag) => (
                         <MenuItem key={tag.id} value={tag.name}>
