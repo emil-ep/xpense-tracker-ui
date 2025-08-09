@@ -33,6 +33,10 @@ export interface FetchTagsResponse extends BaseResponse {
     data: Tag[];
 }
 
+export interface FetchUserSettingsResponse extends BaseResponse {
+    data : UserSettings[];
+}
+
 export interface TagCategoryResponse extends BaseResponse {
     data: TagCategory[];
 }
@@ -61,6 +65,12 @@ export interface Tag {
     category: TagCategory;
     editable: boolean;
     color?: string;
+}
+
+export interface UserSettings {
+    id: string;
+    type: string;
+    payload: any;
 }
 
 export interface TagCategory {

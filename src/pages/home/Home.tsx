@@ -1,8 +1,9 @@
-import {  MetricsV2Response } from "../../api/ApiResponses";
-import React, { useEffect, useState } from "react";
+import { MetricsV2Response } from "../../api/ApiResponses";
+import React, { useCallback, useEffect, useState } from "react";
 import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
+import { fetchUserSettingsApi } from "../../api/userSettingsApi";
 
 export default function Home(){
 
@@ -34,6 +35,8 @@ export default function Home(){
         }
       },
     });
+
+    const userSettings = useCallback(() => fetchUserSettingsApi(), []);
 
     const [metrics, setMetrics] = useState<Record<string, any>>({});
 
