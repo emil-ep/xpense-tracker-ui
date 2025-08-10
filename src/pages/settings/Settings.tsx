@@ -5,6 +5,7 @@ import { useApi } from "../../api/hook/useApi";
 import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
 import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
 import { apiCaller } from "../../api/apicaller";
+import { showToast } from "../../utils/ToastUtil";
 
 const theme = createTheme({
   palette: {
@@ -62,8 +63,12 @@ export default function Settings() {
                 { type: 'savingsTags', payload: { tags: savingsTags } }
             ]
         };
-        await apiCaller(updateUserSettingsApi(reqBody));
-        // console.log("Settings saved:", reqBody);
+        const createTagResponse: any = await apiCaller(updateUserSettingsApi(reqBody));
+        if(createTagResponse.status === 1){
+            showToast("Settings saved successfully");
+        }else{
+            showToast("Failed to save settings");
+        }
     };
 
     return (
