@@ -1,7 +1,4 @@
 import { Button, Dialog, DialogActions, DialogTitle } from "@mui/material";
-import { apiCaller } from "../../api/apicaller";
-import { deleteExpense } from "../../api/expensesApi";
-import { showToast } from "../../utils/ToastUtil";
 
 interface DeleteExpenseDialogProps {
     open: boolean;

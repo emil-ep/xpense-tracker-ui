@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Dialog, DialogTitle, IconButton, DialogContent, CircularProgress, Box } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
-import { apiCaller, fileDownloader } from "../../api/apicaller";
+import { fileDownloader } from "../../api/apicaller";
 import { fetchAttachment } from "../../api/fileApi";
 
 interface AttachmentPreviewDialogProps {

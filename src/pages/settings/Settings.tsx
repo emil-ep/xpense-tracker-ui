@@ -1,9 +1,11 @@
-import { Box, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, ThemeProvider, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagsApi } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
 import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
-import { fetchUserSettingsApi } from "../../api/userSettingsApi";
+import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
+import { apiCaller } from "../../api/apicaller";
+import { showToast } from "../../utils/ToastUtil";
 
 const theme = createTheme({
   palette: {
@@ -53,10 +55,26 @@ export default function Settings() {
         setSavingsTags(typeof value === 'string' ? value.split(',') : value as string[]);
     }
 
+
+    const saveValue = async () => {
+        const reqBody = {
+            items: [
+                { type: 'currency', payload: { userCurrency: currency } },
+                { type: 'savingsTags', payload: { tags: savingsTags } }
+            ]
+        };
+        const createTagResponse: any = await apiCaller(updateUserSettingsApi(reqBody));
+        if(createTagResponse.status === 1){
+            showToast("Settings saved successfully");
+        }else{
+            showToast("Failed to save settings");
+        }
+    };
+
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Box p={4} maxWidth={600}>
+            <Box p={4} maxWidth={600} display={'flex'} flexDirection='column'>
                 <Typography variant="h5" mb={4}>
                     Settings
                 </Typography>
@@ -100,6 +118,14 @@ export default function Settings() {
                     ))}
                     </Select>
                 </FormControl>
+                <Button 
+                    sx={{ mt : "0.5rem", alignSelf: 'flex-end' }} 
+                    variant="contained" 
+                    // disabled={!edited} 
+                    onClick={saveValue}
+                    >
+                    Save Settings
+                </Button>
             </Box>
         </ThemeProvider>
     )
