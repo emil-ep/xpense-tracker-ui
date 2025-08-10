@@ -112,8 +112,8 @@ export default function Settings() {
                         )}
                     >
                     {tagData.map((tag) => (
-                        <MenuItem key={tag.id} value={tag.name} >
-                        {tag.name}
+                        <MenuItem key={tag.id} value={tag.name} selected={savingsTags.indexOf(tag.name) > -1}>
+                            {tag.name}
                         </MenuItem>
                     ))}
                     </Select>
