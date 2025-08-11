@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { AppBar, Toolbar, Box, CssBaseline, IconButton, Typography, Button} from "@mui/material";
 import NavigationDrawer from "./NavigationDrawer";
 import MenuIcon from '@mui/icons-material/Menu';
@@ -7,10 +7,15 @@ import SyncIcon from '@mui/icons-material/Sync';
 import { apiCaller } from "../api/apicaller";
 import { fetchSyncStatus, syncExpense } from "../api/expensesApi";
 import { showToast } from "../utils/ToastUtil";
+import { useApi } from "../api/hook/useApi";
+import { FetchUserSettingsResponse } from "../api/ApiResponses";
+import { fetchUserSettingsApi } from "../api/userSettingsApi";
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
+  const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
+  const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -56,6 +61,27 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       }
     }, 10000);
   }
+
+  useEffect(() => {
+    (window as any).tracker = (window as any).tracker ?? {};
+
+    if (userSettingsResponse && userSettingsResponse.data) {
+      const currencySetting = userSettingsResponse.data.find(item => item.type === 'CURRENCY');
+      if (currencySetting) {
+        (window as any).tracker.userCurrency = currencySetting.payload.userCurrency;
+      }
+
+      const savingsTagSetting = userSettingsResponse.data.find(item => item.type === 'SAVINGS_TAGS');
+      if (savingsTagSetting) {
+        (window as any).tracker.savingsTags = savingsTagSetting.payload.tags || [];
+      }
+
+      const usernameSetting = userSettingsResponse.data.find(item => item.type === 'USERNAME');
+      if (usernameSetting) {
+        (window as any).tracker.username = usernameSetting.payload.username || '';
+      }
+    }
+  }, [userSettingsResponse]);
 
   return (
     <Box sx={{ display: "flex" }}>
