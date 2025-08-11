@@ -1,4 +1,7 @@
-import { Box, Button, Chip, createTheme, CssBaseline, FormControl, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, ThemeProvider, Typography } from "@mui/material";
+import { Box, Button, Chip, createTheme, 
+    CssBaseline, FormControl, InputLabel, 
+    MenuItem, OutlinedInput, Select, 
+    SelectChangeEvent, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagsApi } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
@@ -24,6 +27,7 @@ export default function Settings() {
     
     const [currency, setCurrency] = useState('');
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
+    const [username, setUsername] = useState('');
     const [tagData, setTagData] = useState<Tag[]>([]);
     const fetchTags = useCallback(() => fetchTagsApi(), []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
@@ -46,6 +50,10 @@ export default function Settings() {
             if (savingsTagSetting) {
                 setSavingsTags(savingsTagSetting.payload.tags || []);
             }
+            const usernameSetting = userSettingsResponse.data.find(item => item.type === 'USERNAME');
+            if (usernameSetting) {
+                setUsername(usernameSetting.payload.username || '');
+            }
         }
 
     }, [userSettingsResponse]);
@@ -60,7 +68,8 @@ export default function Settings() {
         const reqBody = {
             items: [
                 { type: 'currency', payload: { userCurrency: currency } },
-                { type: 'savingsTags', payload: { tags: savingsTags } }
+                { type: 'savingsTags', payload: { tags: savingsTags } },
+                { type: 'username', payload: { username: username } }
             ]
         };
         const createTagResponse: any = await apiCaller(updateUserSettingsApi(reqBody));
@@ -117,6 +126,15 @@ export default function Settings() {
                         </MenuItem>
                     ))}
                     </Select>
+                </FormControl>
+                <FormControl fullWidth margin="normal">
+                    <TextField 
+                    id="username" 
+                    label="Username" 
+                    variant="outlined" 
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                />
                 </FormControl>
                 <Button 
                     sx={{ mt : "0.5rem", alignSelf: 'flex-end' }} 
