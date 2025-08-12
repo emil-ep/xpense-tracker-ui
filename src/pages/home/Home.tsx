@@ -3,20 +3,19 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
-import { fetchUserSettingsApi } from "../../api/userSettingsApi";
 
 export default function Home(){
 
-    const metricDetails: Record<string, { label: string; description: string }> = {
-        highest_expense_recorded: { label: "Highest Expense Recorded", description: "The maximum amount spent in a single transaction" },
-        total_expenses_entry: { label: "Total Expenses Entry", description: "Total number of expenses recorded" },
-        total_tagged_expenses_entry: { label: "Total Tagged Expenses", description: "Expenses categorized with a tag" },
-        total_untagged_expenses_entry: { label: "Total Untagged Expenses", description: "Expenses without a category tag" },
-        highest_expense_tag: { label: "Highest Expense Tag", description: "The category with the highest spending" },
-        highest_credit_recorded: { label: "Highest Credit Recorded", description: "The maximum credited amount in a single transaction" },
-        highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", description: "The most credited category" },
-        first_expense_recorded_date: { label: "First Expense Recorded", description: "Date when the first expense was recorded" },
-        last_expense_recorded_date: { label: "Last Expense Recorded", description: "Date when the last expense was recorded" },
+    const metricDetails: Record<string, { label: string; description: string; type: string }> = {
+        highest_expense_recorded: { label: "Highest Expense Recorded", description: "The maximum amount spent in a single transaction", type: 'AMOUNT' },
+        total_expenses_entry: { label: "Total Expenses Entry", description: "Total number of expenses recorded", type : 'COUNT' },
+        total_tagged_expenses_entry: { label: "Total Tagged Expenses", description: "Expenses categorized with a tag", type: 'COUNT' },
+        total_untagged_expenses_entry: { label: "Total Untagged Expenses", description: "Expenses without a category tag", type: 'COUNT' },
+        highest_expense_tag: { label: "Highest Expense Tag", description: "The category with the highest spending", type: 'TAG' },
+        highest_credit_recorded: { label: "Highest Credit Recorded", description: "The maximum credited amount in a single transaction", type: 'AMOUNT' },
+        highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", description: "The most credited category", type: 'TAG' },
+        first_expense_recorded_date: { label: "First Expense Recorded", description: "Date when the first expense was recorded", type: 'DATE' },
+        last_expense_recorded_date: { label: "Last Expense Recorded", description: "Date when the last expense was recorded", type: 'DATE' },
     };
 
     const metricNames = Object.keys(metricDetails);
@@ -36,9 +35,8 @@ export default function Home(){
       },
     });
 
-    const userSettings = useCallback(() => fetchUserSettingsApi(), []);
-
     const [metrics, setMetrics] = useState<Record<string, any>>({});
+    const [currency, setCurrency] = useState("");
 
     const fetchMetrics = React.useCallback(() => {
         return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null});
@@ -47,11 +45,16 @@ export default function Home(){
     const { responseBody, error, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 
     useEffect(() => {
+        if (window.tracker?.userCurrency) {
+            setCurrency(window.tracker.userCurrency);
+        }
+    }, []);
+
+    useEffect(() => {
         if (responseBody && responseBody.data && responseBody.data.length > 0) {
             setMetrics(responseBody.data[0]); 
         }
     }, [responseBody]);
-
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
@@ -68,7 +71,7 @@ export default function Home(){
                     <Grid container spacing={3}>
                         {Object.entries(metricDetails)
                             .filter(([key]) => Object.prototype.hasOwnProperty.call(metrics, key))
-                            .map(([key, { label, description }]) => {
+                            .map(([key, { label, description, type }]) => {
                                 const value = metrics[key];
 
                                 return (
@@ -98,7 +101,7 @@ export default function Home(){
                                                     {description}
                                                 </Typography>
                                                 <Typography variant="h5" fontWeight="bold" color="text.primary">
-                                                    {value !== "" ? value : "N/A"}
+                                                    {value !== "" ? type === 'AMOUNT' ? `${currency} ${value}`: value : "N/A"}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
