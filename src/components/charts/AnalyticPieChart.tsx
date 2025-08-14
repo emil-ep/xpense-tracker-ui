@@ -2,6 +2,7 @@ import { PieChart } from '@mui/x-charts/PieChart';
 import { MetricsV2, Tag } from '../../api/ApiResponses';
 import { Box, Stack, Typography } from '@mui/material';
 import { CREDIT_AGGREGATE_COLOR, DEBIT_AGGREGATE_COLOR } from '../../utils/MetricUtil';
+import { findCurrency } from '../../utils/CurrencyUtil';
 
 interface Metrics {
   metrics: MetricsV2[] | undefined;
@@ -65,7 +66,7 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
             <Stack key={item.id} direction="row" spacing={1} alignItems="center">
               <Box sx={{ width: 12, height: 12, bgcolor: item.color, borderRadius: '50%' }} />
               <Typography variant="body2">
-                {item.label}: ₹{item.value.toLocaleString()}
+                {item.label}: {findCurrency(window.tracker?.userCurrency ?? 'USD')} {item.value.toLocaleString()}
               </Typography>
             </Stack>
           ))}

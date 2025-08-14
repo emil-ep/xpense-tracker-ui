@@ -3,6 +3,7 @@ import { BarChart } from '@mui/x-charts/BarChart';
 import { MetricsV2, Tag } from '../../api/ApiResponses';
 import { Box } from '@mui/material';
 import { CREDIT_AGGREGATE_COLOR, DEBIT_AGGREGATE_COLOR } from '../../utils/MetricUtil';
+import { findCurrency } from '../../utils/CurrencyUtil';
 
 interface Metrics {
   metrics: MetricsV2[] | undefined;
@@ -35,7 +36,7 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
     const data = {
       // @ts-expect-error metrics key would be same type
       data: metrics.map(metric => Math.abs(metric[metricKey]) || 0),
-      label: metricKey.replace('_aggregate', '').toUpperCase(),
+      label: `${metricKey.replace('_aggregate', '').toUpperCase()} (${findCurrency(window.tracker?.userCurrency ?? 'USD')})`,
       color,
     }
     return data;
@@ -46,9 +47,12 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
         width: "100%",
         height: 300,
       }}
-    >
+        >
       <BarChart
         xAxis={[{ scaleType: 'band', data: metrics?.map(metric => metric.timeframe) }]}
+        yAxis={[{
+          valueFormatter: (value) => `₹${value.toLocaleString()}`
+        }]}
         series={series}
         sx={{
           paddingBlockStart: "1rem"
@@ -56,6 +60,6 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
         height={300}
         loading={loading}
       />
-    </Box>
+        </Box>
   );
 }
