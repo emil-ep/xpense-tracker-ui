@@ -102,7 +102,7 @@ export default function Home(){
                                                     {description}
                                                 </Typography>
                                                 <Typography variant="h5" fontWeight="bold" color="text.primary">
-                                                    {value !== "" ? type === 'AMOUNT' ? `${findCurrency(window.tracker?.userCurrency ?? 'USD')} ${value}`: value : "N/A"}
+                                                    {value !== "" ? type === 'AMOUNT' ? `${findCurrency(window.tracker?.userCurrency ?? '')} ${value}`: value : "N/A"}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
