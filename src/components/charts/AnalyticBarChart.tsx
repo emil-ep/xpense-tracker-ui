@@ -9,9 +9,10 @@ interface Metrics {
   metrics: MetricsV2[] | undefined;
   tags?: Tag[];
   loading?: boolean;
+  showLegend?: boolean;
 }
 
-export default function AnalyticBarChart({metrics, tags, loading = false} : Metrics) {
+export default function AnalyticBarChart({metrics, tags, loading = false, showLegend = true} : Metrics) {
 
   const metricKeys: string[] = Array.from(
     new Set(metrics?.flatMap(obj => Object.keys(obj).filter(key => key !== 'timeframe')))
@@ -53,6 +54,9 @@ export default function AnalyticBarChart({metrics, tags, loading = false} : Metr
         yAxis={[{
           valueFormatter: (value) => `₹${value.toLocaleString()}`
         }]}
+        slotProps={{
+          legend: { hidden: !showLegend }
+        }}
         series={series}
         sx={{
           paddingBlockStart: "1rem"
