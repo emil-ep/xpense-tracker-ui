@@ -122,9 +122,10 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         </Toolbar>
       </AppBar>
       <NavigationDrawer isOpen={drawerOpen} toggleDrawer={toggleDrawer} />
-      <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
+      {userSettingsResponse && 
+        <Box component="main" sx={{ flexGrow: 1, p: 0 }}>
         {children}
-      </Box>
+      </Box> }
     </Box>
   );
 };

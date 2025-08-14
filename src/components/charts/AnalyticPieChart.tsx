@@ -66,7 +66,7 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
             <Stack key={item.id} direction="row" spacing={1} alignItems="center">
               <Box sx={{ width: 12, height: 12, bgcolor: item.color, borderRadius: '50%' }} />
               <Typography variant="body2">
-                {item.label}: {findCurrency(window.tracker?.userCurrency ?? 'USD')} {item.value.toLocaleString()}
+                {item.label}: {findCurrency(window.tracker?.userCurrency ?? '')} {item.value.toLocaleString()}
               </Typography>
             </Stack>
           ))}
