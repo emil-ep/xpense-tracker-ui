@@ -3,6 +3,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
+import { findCurrency } from "../../utils/CurrencyUtil";
 
 export default function Home(){
 
@@ -101,7 +102,7 @@ export default function Home(){
                                                     {description}
                                                 </Typography>
                                                 <Typography variant="h5" fontWeight="bold" color="text.primary">
-                                                    {value !== "" ? type === 'AMOUNT' ? `${currency} ${value}`: value : "N/A"}
+                                                    {value !== "" ? type === 'AMOUNT' ? `${findCurrency(window.tracker?.userCurrency ?? 'USD')} ${value}`: value : "N/A"}
                                                 </Typography>
                                             </CardContent>
                                         </Card>
