@@ -16,9 +16,10 @@ export interface AnalyticCardProps {
   timeframe: Timeframe;
   tags?: Tag[];
   tooltipText?: string;
+  showLegend?: boolean;
 }
 
-export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText }: AnalyticCardProps) {
+export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText, showLegend }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
   const fetchMetrics = React.useCallback(() => {
     return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
@@ -69,7 +70,7 @@ export default function AnalyticCard({ title = '', aggregationMode, metricsToFet
             </Box>
 
             <Box sx={{ width: "100%" }}>
-              <AnalyticBarChart metrics={metrics} tags={tags} />
+              <AnalyticBarChart metrics={metrics} tags={tags} showLegend={showLegend}/>
             </Box>
           </CardContent>
         </Card>
