@@ -34,6 +34,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const [selectedHeaders, setSelectedHeaders] = useState<{ [key: string]: string }>({});
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [expensePreviewItems, setExpensePreviewItems] = useState<ExpenseItemType[]>([]);
+    const [possibleMatches, setPossibleMatches] = useState<{ [key: string]: string }>({});
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
 
@@ -101,6 +102,9 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
         if (responseBody) {
             setHeaderIndexMap(responseBody.data.header);
             setSystemHeaders(responseBody.data.entityMap);
+            setPossibleMatches(responseBody.data.possibleMatches);
+            // Initialize selectedHeaders with possibleMatches
+            setSelectedHeaders(responseBody.data.possibleMatches || {});
         }
         if (error) {
             showToast("Fetching expense mapping failed");
@@ -123,7 +127,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
         >
             {/* Title */}
             <Typography variant="h5" sx={{ color: "#fff", marginBottom: 3 }}>
-                Map Your Statement Headers with Xpense Tracker
+                Map System Header with your statement header
             </Typography>
 
             {/* Buttons - Moved to Top for Better Visibility */}
@@ -143,8 +147,11 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                     Submit Expense
                 </Button>
             </Stack>
-
-            {/* Table Container */}
+            {possibleMatches && Object.keys(possibleMatches).length > 0 && (
+                <Typography sx={{ color: "lightgreen", marginBottom: 2 }}>
+                    Hurray! our AI engine auto matched {Object.keys(possibleMatches).length} headers!
+                </Typography>
+            )}
             <TableContainer
                 component={Paper}
                 sx={{
