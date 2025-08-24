@@ -35,6 +35,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [expensePreviewItems, setExpensePreviewItems] = useState<ExpenseItemType[]>([]);
     const [possibleMatches, setPossibleMatches] = useState<{ [key: string]: string }>({});
+    const [headerStartIndex, setHeaderRowIndex] = useState<number>(0);
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
 
@@ -62,11 +63,12 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                 result[systemHeader] = index;
             }
         }
+        result.headerStartIndex = headerStartIndex;
         try {
             const expensePreviewResponse: ExpensePreviewResponse = await apiCaller(getPreviewApi(fileName, result));
             if (expensePreviewResponse.status === 1) {
                 const items = expensePreviewResponse.data;
-                items.forEach((element: ExpenseItemType) => {
+                items.forEach((element: ExpenseItemType) => { 
                     element.amount = element.type === "CREDIT" ? element.credit : element.debit;
                 });
                 setExpensePreviewItems(items);
@@ -85,6 +87,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                 result[systemHeader] = index;
             }
         }
+        result.headerStartIndex = headerStartIndex;
         try {
             const expenseSaveResponse: ExpenseSaveResponse = await apiCaller(saveExpense(fileName, result));
             if (expenseSaveResponse.status === 1) {
@@ -105,6 +108,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             setPossibleMatches(responseBody.data.possibleMatches);
             // Initialize selectedHeaders with possibleMatches
             setSelectedHeaders(responseBody.data.possibleMatches || {});
+            setHeaderRowIndex(responseBody.data.headerStartIndex || 0);
         }
         if (error) {
             showToast("Fetching expense mapping failed");
