@@ -89,7 +89,7 @@ export default function AddExpense() {
                 {/* Hidden File Input */}
                 <input 
                     type="file" 
-                    accept=".csv, .xlsx, .delimited, .pdf, .txt"
+                    accept=".csv, .xlsx, .delimited, .pdf, .txt, .xls"
                     onChange={handleFileChange} 
                     style={{ display: "none" }} 
                     id="file-input"
