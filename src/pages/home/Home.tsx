@@ -1,5 +1,5 @@
 import { MetricsV2Response } from "../../api/ApiResponses";
-import React, { useCallback, useEffect, useState } from "react";
+import {  useCallback, useEffect, useState } from "react";
 import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createTheme, ThemeProvider, CssBaseline } from '@mui/material';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
@@ -37,19 +37,12 @@ export default function Home(){
     });
 
     const [metrics, setMetrics] = useState<Record<string, any>>({});
-    const [currency, setCurrency] = useState("");
 
-    const fetchMetrics = React.useCallback(() => {
+    const fetchMetrics = useCallback(() => {
         return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null});
     }, []);
     
-    const { responseBody, error, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
-
-    useEffect(() => {
-        if (window.tracker?.userCurrency) {
-            setCurrency(window.tracker.userCurrency);
-        }
-    }, []);
+    const { responseBody, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 
     useEffect(() => {
         if (responseBody && responseBody.data && responseBody.data.length > 0) {

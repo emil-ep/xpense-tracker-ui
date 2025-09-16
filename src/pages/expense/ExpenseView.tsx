@@ -63,7 +63,7 @@ export const ExpenseView = () => {
     }, [timeframe]);
 
     const { responseBody, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
-    const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
     const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
     useEffect(() => {
