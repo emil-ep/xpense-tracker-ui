@@ -3,9 +3,9 @@ import { Box, Button, Chip, createTheme,
     MenuItem, OutlinedInput, Select, 
     SelectChangeEvent, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
-import { fetchTagsApi } from "../../api/tagApi";
+import { fetchTagCategories } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
-import { FetchTagsResponse, FetchUserSettingsResponse, Tag } from "../../api/ApiResponses";
+import { FetchUserSettingsResponse, TagCategory, TagCategoryResponse } from "../../api/ApiResponses";
 import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
 import { apiCaller } from "../../api/apicaller";
 import { showToast } from "../../utils/ToastUtil";
@@ -28,17 +28,16 @@ export default function Settings() {
     const [currency, setCurrency] = useState('');
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
     const [username, setUsername] = useState('');
-    const [tagData, setTagData] = useState<Tag[]>([]);
-    const fetchTags = useCallback(() => fetchTagsApi(), []);
+    const [tagCateoryData, setTagCategoryData] = useState<TagCategory[]>([]);
+    const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
-    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
     const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
 
     useEffect(() => {
-        if(tagsResponse && tagsResponse.data){
-            setTagData(tagsResponse.data);
+        if(tagsCategoryResponse && tagsCategoryResponse.data){
+            setTagCategoryData(tagsCategoryResponse.data);
         }    
-    }, [tagsResponse]);
+    }, [tagsCategoryResponse]);
 
     useEffect(() => {
         if(userSettingsResponse && userSettingsResponse.data) {
@@ -120,9 +119,9 @@ export default function Settings() {
                             </Box>
                         )}
                     >
-                    {tagData.map((tag) => (
-                        <MenuItem key={tag.id} value={tag.name} selected={savingsTags.indexOf(tag.name) > -1}>
-                            {tag.name}
+                    {tagCateoryData.map((tagCategory) => (
+                        <MenuItem key={tagCategory.id} value={tagCategory.name} selected={savingsTags.indexOf(tagCategory.name) > -1}>
+                            {tagCategory.name}
                         </MenuItem>
                     ))}
                     </Select>
