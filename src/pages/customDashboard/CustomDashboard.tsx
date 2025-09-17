@@ -27,7 +27,7 @@ export default function CustomDashboard() {
 
     const { fromDate, toDate } = useDateRange();
 
-    const { responseBody: tagsResponse, error: tagsError } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
 
     useEffect(() => {
         if (fromDate && toDate) {
