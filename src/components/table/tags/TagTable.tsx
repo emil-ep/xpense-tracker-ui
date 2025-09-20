@@ -176,7 +176,7 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
         {
             field: 'Color',
             sortable: false,
-            flex: 1,
+            flex: 0.25,
             cellRenderer: colorCellRenderer,
         },
         {
