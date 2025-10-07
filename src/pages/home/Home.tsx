@@ -52,7 +52,7 @@ export default function Home(){
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Stack spacing={3} sx={{ p: 3 }}>
+            <Stack spacing={3} sx={{ p: 3, mt: 8 }}>
                 <Typography variant="h4" gutterBottom fontWeight="bold" color="primary">
                     💰 Expense Dashboard
                 </Typography>
