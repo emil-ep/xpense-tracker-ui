@@ -17,6 +17,7 @@ export default function Home(){
         highest_credit_recorded_tag: { label: "Highest Credit Recorded Tag", description: "The most credited category", type: 'TAG' },
         first_expense_recorded_date: { label: "First Expense Recorded", description: "Date when the first expense was recorded", type: 'DATE' },
         last_expense_recorded_date: { label: "Last Expense Recorded", description: "Date when the last expense was recorded", type: 'DATE' },
+        mean_daily_expense: { label: "Mean Expense Daily", description: "Average daily expense amount", type: 'AMOUNT' },
     };
 
     const metricNames = Object.keys(metricDetails);
