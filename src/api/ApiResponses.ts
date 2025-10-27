@@ -91,3 +91,18 @@ export interface ExpenseItemType {
     amount?: number; //derived value from credit or debit based on type
     tags: Tag[];
 }
+
+export interface MutualFundSchemeDetail {
+    code: string;
+    category: string;
+    fundHouse: string;
+    name: string;
+    payload?: MutualFundPayloadItem[];
+    type: string;
+}
+
+
+interface MutualFundPayloadItem {
+    nav: string;
+    date: string;
+}
