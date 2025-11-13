@@ -41,6 +41,14 @@ export interface TagCategoryResponse extends BaseResponse {
     data: TagCategory[];
 }
 
+export interface MutualFundSchemeDetailWrapperResponse extends BaseResponse {
+    content: MutualFundSchemeDetail[];
+}
+
+export interface MutualFundSearchResponse extends BaseResponse {
+    data: MutualFundSchemeDetailWrapperResponse;
+}
+
 export interface MetricsV2 {
     timeframe : string;
     debit_aggregate?: number;
