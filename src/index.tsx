@@ -18,6 +18,7 @@ import { createRoot } from "react-dom/client";
 import { setNavigate } from './navigation';
 import CustomDashboard from './pages/customDashboard/CustomDashboard';
 import Settings from './pages/settings/Settings';
+import MfHome from './pages/mf/MfHome';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -50,6 +51,7 @@ const AppRoutes: React.FC = () => {
             <Route path='/tagManagement' element={<ProtectedRoute element={TagManagement}/>}/>
             <Route path='/customDashboard' element={<ProtectedRoute element={CustomDashboard}/>}/>
             <Route path='/settings' element={<ProtectedRoute element={Settings} />}/>
+            <Route path="/mutualFunds" element={<ProtectedRoute element={MfHome} />} />
           </Routes>
         </AppLayout>
       )}

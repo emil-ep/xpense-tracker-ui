@@ -19,7 +19,8 @@ const data = [
   { icon: <StyleIcon />, label: 'Tags', path: '/tagManagement'},
   { icon: <BarChart />, label: 'View Analytics', path: '/analytics'},
   { icon: <DashboardCustomizeIcon />, label: 'Custom Dashboard', path: '/customDashboard'},
-  { icon: <SettingsIcon />, label: 'Settings', path: '/settings' }
+  { icon: <SettingsIcon />, label: 'Settings', path: '/settings' },
+  { icon: <AccountBalanceWalletOutlinedIcon />, label: 'Mutual Funds', path: '/mutualFunds' },
 ];
 
 const FireNav = styled(List)<{ component?: React.ElementType }>({
