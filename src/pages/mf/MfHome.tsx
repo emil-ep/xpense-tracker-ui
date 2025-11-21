@@ -1,13 +1,25 @@
-import { Card, CardContent, createTheme, CssBaseline, Grid, Stack, Typography, ThemeProvider } from "@mui/material";
+import { Card, 
+  CardContent, 
+  createTheme, 
+  CssBaseline, 
+  Grid, 
+  Stack, 
+  Typography, 
+  ThemeProvider, 
+  TextField } 
+  from "@mui/material";
 
 import './mfHome.css'
 import { MutualFundSearchResponse } from "../../api/ApiResponses";
 import { useApi } from "../../api/hook/useApi";
 import { searchMutualFundApi } from "../../api/mutualFundApi";
-import { useCallback } from "react";
+import { useCallback, useState } from "react";
+import debounce from "lodash.debounce";
 
 
 export default function MfHome(){
+
+  const [search, setSearch] = useState<string>('');
 
     const theme = createTheme({
       palette: {
@@ -23,17 +35,31 @@ export default function MfHome(){
         }
       },
     });
+    //A debounced function to handle search input, to reduce API calls
+    const debouncedSetSearch = useCallback(
+      debounce((value: string) => {
+        setSearch(value);
+      }, 400),
+      []
+    );
 
     const fetchMutualFunds = useCallback(() => {
-        return searchMutualFundApi(1, 20, '');
-    }, []);
+        return searchMutualFundApi(1, 20, search);
+    }, [search]);
 
-    const {responseBody, loading } = useApi<MutualFundSearchResponse>(fetchMutualFunds, []);
+    const {responseBody, loading } = useApi<MutualFundSearchResponse>(fetchMutualFunds);
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
             <Stack spacing={3} sx={{ p: 3, mt: 8 }}>
+                <TextField 
+                  fullWidth
+                  label="Search Mutual Funds"
+                  variant="outlined"
+                  sx={{mb: 2}}
+                  onChange={(e) => debouncedSetSearch(e.target.value)}
+                />
                 <Grid container spacing={3}>
                   {Object.entries(responseBody?.data?.content || {})
                 .map(([key, { code, name }]) => {
@@ -42,6 +68,7 @@ export default function MfHome(){
                         <Card
                             sx={{
                                 minWidth: 250,
+                                maxHeight: 150,
                                 p: 2,
                                 textAlign: "left",
                                 boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)",  // Soft shadow
@@ -56,10 +83,10 @@ export default function MfHome(){
                                 }
                             }}>
                             <CardContent>
-                              <Typography variant="h6" fontWeight="bold" color="primary">
+                              <Typography variant="h6" fontWeight="bold" color="primary" noWrap={true}>
                                   {name}
                               </Typography>
-                              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                              <Typography variant="body2" color="text.secondary" noWrap={true} sx={{ mb: 1 }}>
                                   {name}
                               </Typography>
                             </CardContent>
