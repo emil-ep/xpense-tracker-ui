@@ -43,6 +43,11 @@ export interface TagCategoryResponse extends BaseResponse {
 
 export interface MutualFundSchemeDetailWrapperResponse extends BaseResponse {
     content: MutualFundSchemeDetail[];
+    totalPages: number;
+    totalElements: number;
+    first: boolean;
+    last: boolean;
+    size: number;
 }
 
 export interface MutualFundSearchResponse extends BaseResponse {

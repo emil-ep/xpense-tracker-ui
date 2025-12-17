@@ -22,6 +22,7 @@ export const apiCaller = async <T>(config: ApiConfig): Promise<T> => {
     if (navigate) {
       navigate('/login'); // Redirect to login page
     }
+    window.location.href = "/login";
     showToast("Unauthorized. Please sign-in again");
     return new Promise(() => {}); 
   }
