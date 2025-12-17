@@ -1,7 +1,7 @@
 import { Box, Button, Chip, createTheme, 
     CssBaseline, FormControl, InputLabel, 
     MenuItem, OutlinedInput, Select, 
-    SelectChangeEvent, TextField, ThemeProvider, Typography } from "@mui/material";
+    SelectChangeEvent, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagCategories } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
@@ -9,6 +9,7 @@ import { FetchUserSettingsResponse, TagCategory, TagCategoryResponse } from "../
 import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
 import { apiCaller } from "../../api/apicaller";
 import { showToast } from "../../utils/ToastUtil";
+import { logoutApi } from "../../api/authApi";
 
 const theme = createTheme({
   palette: {
@@ -60,6 +61,17 @@ export default function Settings() {
     const handleSavingsTagsChange = (event: SelectChangeEvent<string[]>) => {
         const { value } = event.target;
         setSavingsTags(typeof value === 'string' ? value.split(',') : value as string[]);
+    }
+
+    const logout = async () => {
+        const response: any = await apiCaller(logoutApi());
+        if(response.status === 1){
+            localStorage.removeItem("authToken");
+            window.location.href = "/login";
+            showToast("Logged out successfully");
+        }else{
+            showToast("Logout failed");
+        }
     }
 
 
@@ -135,14 +147,26 @@ export default function Settings() {
                     onChange={(e) => setUsername(e.target.value)}
                 />
                 </FormControl>
-                <Button 
-                    sx={{ mt : "0.5rem", alignSelf: 'flex-end' }} 
-                    variant="contained" 
-                    // disabled={!edited} 
-                    onClick={saveValue}
-                    >
-                    Save Settings
-                </Button>
+                <Stack direction={"row"} spacing={2}>
+                    <Button 
+                        sx={{ mt : "0.5rem", alignSelf: 'flex-start' }} 
+                        variant="contained" 
+                        color="error"
+                        // disabled={!edited} 
+                        onClick={logout}
+                        >
+                        Logout
+                    </Button>
+                    <Button 
+                        sx={{ mt : "0.5rem", alignSelf: 'flex-end' }} 
+                        variant="contained" 
+                        // disabled={!edited} 
+                        onClick={saveValue}
+                        >
+                        Save Settings
+                    </Button>
+                </Stack>
+                
             </Box>
         </ThemeProvider>
     )

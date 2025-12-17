@@ -60,7 +60,7 @@ export default function MfHome(){
                   sx={{mb: 2}}
                   onChange={(e) => debouncedSetSearch(e.target.value)}
                 />
-                <Grid container spacing={3}>
+                <Grid container rowSpacing={2}>
                   {Object.entries(responseBody?.data?.content || {})
                 .map(([key, { code, name }]) => {
                     return (

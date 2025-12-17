@@ -8,3 +8,4 @@ export const METRICS_URL = `${API_BASE_URL}/v1/metrics`;
 export const TAG_URL = `${API_BASE_URL}/v1/tag`;
 export const USER_SETTINGS_URL = `${API_BASE_URL}/v1/user/settings`;
 export const MUTUAL_FUND_URL = `${API_BASE_URL}/v1/mf`;
+export const LOGOUT_URL = `${API_BASE_URL}/v1/logout`;
