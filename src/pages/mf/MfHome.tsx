@@ -6,7 +6,8 @@ import { Card,
   Stack, 
   Typography, 
   ThemeProvider, 
-  TextField } 
+  TextField, 
+  Pagination} 
   from "@mui/material";
 
 import './mfHome.css'
@@ -20,7 +21,8 @@ import debounce from "lodash.debounce";
 export default function MfHome(){
 
   const [search, setSearch] = useState<string>('');
-
+  const [page, setPage] = useState<number>(1);
+  
     const theme = createTheme({
       palette: {
         mode: 'dark',
@@ -44,15 +46,19 @@ export default function MfHome(){
     );
 
     const fetchMutualFunds = useCallback(() => {
-        return searchMutualFundApi(1, 20, search);
-    }, [search]);
+        return searchMutualFundApi(page, 20, search);
+    }, [search, page]);
 
     const {responseBody, loading } = useApi<MutualFundSearchResponse>(fetchMutualFunds);
+
+    const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
+      setPage(value);
+    }
 
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline />
-            <Stack spacing={3} sx={{ p: 3, mt: 8 }}>
+            <Stack spacing={3} sx={{ p: 3, mt: 8 }} alignItems="center">
                 <TextField 
                   fullWidth
                   label="Search Mutual Funds"
@@ -95,6 +101,7 @@ export default function MfHome(){
                       );
                       })}
                   </Grid>
+                  <Pagination count={responseBody?.data?.totalPages} onChange={handlePageChange}/>
               </Stack>
         </ThemeProvider>
     )

@@ -7,8 +7,10 @@ import React, { useEffect, useState } from "react";
 import { createTagApi, editTagApi } from "../../../api/tagApi";
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import DoneIcon from '@mui/icons-material/Done';
+
 import { AgGridReact } from 'ag-grid-react';
-import { IconButton } from "@mui/material";
+import { IconButton, Stack, TextField } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import TagPopper from "../../popper/TagPopper";
 import { apiCaller } from "../../../api/apicaller";
@@ -244,6 +246,19 @@ export default function ExpenseTable(
         }
     }
 
+    const notesCellRenderer = (props: any) => {
+        return(
+            <div>
+                <Stack  sx={{ pb: 10 }} direction="row" alignItems="center">
+                    <TextField id="standard-basic" variant="standard" />
+                    <IconButton aria-label="save-notes" onClick={() => showToast("Save notes feature coming soon!")}>
+                        <DoneIcon />
+                    </IconButton>
+                </Stack>
+            </div>
+        )
+    }
+
     const tagCellRenderer = (props: any) => {
         return (
             <div>
@@ -279,6 +294,12 @@ export default function ExpenseTable(
         {field: "description", flex: 1, filter: "agTextColumnFilter", floatingFilter: true},
         {field: "type", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
         {field: "amount", flex: 1, filter: "agTextColumnFilter", floatingFilter: true},
+        {
+            field: 'notes',
+            cellRenderer: notesCellRenderer,
+            sortable: true,
+            flex: 1
+        },
         {
             field: 'tags', 
             cellRenderer: tagCellRenderer, 

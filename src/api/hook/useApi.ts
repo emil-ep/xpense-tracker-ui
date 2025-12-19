@@ -39,6 +39,7 @@ export const useApi = <T>(fetchConfig: FetchFunction, dependencies: any[] = []) 
         if (navigate) {
           navigate('/login'); // Redirect to login page
         }
+        window.location.href = "/login";
         showToast("Unauthorized. Please sign-in again");
         return new Promise(() => {}); 
       }
