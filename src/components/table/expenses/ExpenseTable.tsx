@@ -7,7 +7,9 @@ import React, { useEffect, useState } from "react";
 import { createTagApi, editTagApi } from "../../../api/tagApi";
 
 import AddCircleIcon from '@mui/icons-material/AddCircle';
-import DoneIcon from '@mui/icons-material/Done';
+import SaveIcon from '@mui/icons-material/Save';
+import RotateRightTwoToneIcon from '@mui/icons-material/RotateRightTwoTone';
+
 
 import { AgGridReact } from 'ag-grid-react';
 import { IconButton, Stack, TextField } from "@mui/material";
@@ -246,18 +248,69 @@ export default function ExpenseTable(
         }
     }
 
-    const notesCellRenderer = (props: any) => {
-        return(
+    const NotesCellRenderer: React.FC<any> = (props) => {
+        const [localNotes, setLocalNotes] = useState<string>(props.data.notes ?? "");
+        const [isSaving, setIsSaving] = useState<boolean>(false);
+
+        useEffect(() => {
+            // keep localNotes in sync if external data changes
+            setLocalNotes(props.data.notes ?? "");
+        }, [props.data.notes]);
+
+        const handleNoteChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+            setLocalNotes(e.target.value);
+        };
+
+        const handleSave = async (e: React.MouseEvent<HTMLElement>) => {
+            e.stopPropagation();
+            const expenseId = props.data.id;
+            setIsSaving(true);
+            try {
+                const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, { notes: localNotes }));
+                if (updateExpenseResponse.status === 1) {
+                    showToast("Notes saved!");
+                    // update the grid data once on save (prevents re-renders on every keystroke)
+                    setRowData(prevRowData =>
+                        prevRowData.map(e => e.id === expenseId ? { ...e, notes: localNotes } : e)
+                    );
+                } else {
+                    showToast(`Failed to save notes: ${updateExpenseResponse.message ?? "unknown error"}`);
+                }
+            } catch (err) {
+                showToast("Saving notes failed");
+            } finally {
+                setIsSaving(false);
+            }
+        };
+
+        return (
             <div>
-                <Stack  sx={{ pb: 10 }} direction="row" alignItems="center">
-                    <TextField id="standard-basic" variant="standard" />
-                    <IconButton aria-label="save-notes" onClick={() => showToast("Save notes feature coming soon!")}>
-                        <DoneIcon />
+                <Stack sx={{ pb: 10 }} direction="row" alignItems="center">
+                    <TextField
+                        id={`notes-${props.data.id}`}
+                        value={localNotes}
+                        variant="standard"
+                        onChange={handleNoteChange}
+                        disabled={isSaving}
+                        fullWidth={true}
+                    />
+                    <IconButton aria-label="save-notes" onClick={handleSave} disabled={isSaving}>
+                        <SaveIcon />
                     </IconButton>
+                    {isSaving && (
+                        <>
+                            <style>{`@keyframes spinRight { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }`}</style>
+                            <RotateRightTwoToneIcon style={{ animation: 'spinRight 1s linear infinite', transformOrigin: '50% 50%' }} />
+                        </>
+                    )}
                 </Stack>
             </div>
-        )
-    }
+        );
+    };
+
+    const notesCellRenderer = (props: any) => {
+        return <NotesCellRenderer {...props} />;
+    };
 
     const tagCellRenderer = (props: any) => {
         return (
@@ -293,12 +346,14 @@ export default function ExpenseTable(
         {field: "transactionDate", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
         {field: "description", flex: 1, filter: "agTextColumnFilter", floatingFilter: true},
         {field: "type", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
-        {field: "amount", flex: 1, filter: "agTextColumnFilter", floatingFilter: true},
+        {field: "amount", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
         {
             field: 'notes',
             cellRenderer: notesCellRenderer,
+            filter: "agTextColumnFilter",
             sortable: true,
-            flex: 1
+            floatingFilter: true,
+            flex: 2
         },
         {
             field: 'tags', 

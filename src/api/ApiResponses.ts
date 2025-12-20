@@ -103,6 +103,7 @@ export interface ExpenseItemType {
     type?: string;
     amount?: number; //derived value from credit or debit based on type
     tags: Tag[];
+    notes?: string;
 }
 
 export interface MutualFundSchemeDetail {
