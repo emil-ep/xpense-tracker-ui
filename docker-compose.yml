@@ -9,6 +9,7 @@ services:
       POSTGRES_PASSWORD: xpenseTracker1234
     volumes:
       - pgdata:/var/lib/postgresql/data
+      - ./db/init.sql:/docker-entrypoint-initdb.d/init.sql
 
   backend:
     image: ghcr.io/emil-ep/xpense-backend:latest
@@ -20,7 +21,7 @@ services:
       - postgres
 
   ui:
-    image: ghcr.io/emil-ep/xpense-ui:1.0.2
+    image: ghcr.io/emil-ep/xpense-ui:1.0.3
     ports:
       - "3000:80"
     depends_on:
