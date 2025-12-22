@@ -11,7 +11,7 @@ services:
       - pgdata:/var/lib/postgresql/data
 
   backend:
-    image: ghcr.io/emilpradeep/xpense-backend:latest
+    image: ghcr.io/emil-ep/xpense-backend:latest
     ports:
       - "8080:8080"
     environment:
@@ -20,7 +20,7 @@ services:
       - db
 
   ui:
-    image: ghcr.io/emilpradeep/xpense-ui:1.0.0
+    image: ghcr.io/emil-ep/xpense-ui:1.0.0
     ports:
       - "3000:80"
     depends_on:
