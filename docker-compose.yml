@@ -4,9 +4,9 @@ services:
   db:
     image: postgres:16
     environment:
-      POSTGRES_DB: expense
-      POSTGRES_USER: expense
-      POSTGRES_PASSWORD: expense
+      POSTGRES_DB: xpense_tracker
+      POSTGRES_USER: xpense_admin
+      POSTGRES_PASSWORD: xpenseTracker1234
     volumes:
       - pgdata:/var/lib/postgresql/data
 
