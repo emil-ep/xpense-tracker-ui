@@ -20,7 +20,7 @@ services:
       - db
 
   ui:
-    image: ghcr.io/emil-ep/xpense-ui:1.0.0
+    image: ghcr.io/emil-ep/xpense-ui:1.0.1
     ports:
       - "3000:80"
     depends_on:
