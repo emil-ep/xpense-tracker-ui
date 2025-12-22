@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Box, Typography, TextField, Button, Stack, Link } from "@mui/material";
-import { signInV2 } from "../../api/authApi";
+import { signInV2, signUpApi } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { apiCaller } from "../../api/apicaller";
@@ -37,7 +37,7 @@ export default function Login() {
 
     // Call the signup API
     try {
-      await apiCaller({ method: "POST", url: "http://localhost:8080/v1/auth/signUp", body: { name, email, password } });
+      await apiCaller(signUpApi({ name, email, password }));
       showToast("Signup Success. Please log in");
       setIsSignUp(false);
     } catch (error) {
