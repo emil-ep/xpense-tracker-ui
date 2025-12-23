@@ -30,4 +30,4 @@ jobs:
           context: .
           file: ./Dockerfile
           push: true
-          tags: ghcr.io/emil-ep/xpense-ui:1.0.6
+          tags: ghcr.io/emil-ep/xpense-ui:1.0.7
