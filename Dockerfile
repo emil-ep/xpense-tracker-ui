@@ -13,6 +13,9 @@ RUN npm install
 # Copy the entire project directory into the container
 COPY . .
 
+# Remove specific source files before building (we only have tsx files)
+RUN rm -f src/index.js src/App.js
+
 # Build the React application
 RUN npm run build
 
