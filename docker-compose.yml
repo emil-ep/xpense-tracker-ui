@@ -15,7 +15,7 @@ services:
     image: ghcr.io/emil-ep/xpense-backend:latest
     pull_policy: always
     ports:
-      - "8085:8080"
+      - "8085:8085"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
