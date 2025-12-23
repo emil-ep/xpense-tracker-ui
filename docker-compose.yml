@@ -15,14 +15,14 @@ services:
     image: ghcr.io/emil-ep/xpense-backend:latest
     pull_policy: always
     ports:
-      - "8080:8080"
+      - "8085:8080"
     environment:
       SPRING_PROFILES_ACTIVE: docker
     depends_on:
       - postgres
 
   ui:
-    image: ghcr.io/emil-ep/xpense-ui:1.0.10
+    image: ghcr.io/emil-ep/xpense-ui:1.0.11
     pull_policy: always
     ports:
       - "3000:80"
