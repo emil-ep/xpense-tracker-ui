@@ -1,24 +1,24 @@
 import './index.css';
 import 'react-toastify/dist/ReactToastify.css';
 
+import { Navigate, Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
 import React, { useEffect } from 'react';
-import { Route, BrowserRouter as Router, Routes, useLocation, useNavigate } from "react-router-dom";
 
 import AddExpense from './pages/expense/AddExpense';
 import { AnalyticsView } from './pages/analytics/AnalyticsView';
 import AppLayout from './components/AppLayout';
+import CustomDashboard from './pages/customDashboard/CustomDashboard';
 import { DateRangeProvider } from './context/DateRangeContext';
 import { ExpenseView } from './pages/expense/ExpenseView';
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
+import MfHome from './pages/mf/MfHome';
 import ProtectedRoute from "./components/ProtectedRoute";
+import Settings from './pages/settings/Settings';
 import TagManagement from './pages/tagManagement/TagManagementView';
 import { ToastContainer } from 'react-toastify';
 import { createRoot } from "react-dom/client";
 import { setNavigate } from './navigation';
-import CustomDashboard from './pages/customDashboard/CustomDashboard';
-import Settings from './pages/settings/Settings';
-import MfHome from './pages/mf/MfHome';
 
 const container = document.getElementById("root");
 if (!container) throw new Error("Failed to find the root element");
@@ -44,6 +44,7 @@ const AppRoutes: React.FC = () => {
       ) : (
         <AppLayout>
           <Routes>
+            <Route path="/" element={<Navigate to="/home" replace />} />
             <Route path="/home" element={<ProtectedRoute element={Home} />} />
             <Route path="/add/expense" element={<ProtectedRoute element={AddExpense} />} />
             <Route path="/analytics" element={<ProtectedRoute element={AnalyticsView} />} />

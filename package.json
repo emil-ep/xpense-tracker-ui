@@ -1,6 +1,6 @@
 {
   "name": "xpense-tracker-ui",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": false,
   "dependencies": {
     "@emotion/react": "^11.13.3",
@@ -23,7 +23,6 @@
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",
     "styled-components": "^6.1.13",
-    "typescript": "4.1.6",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
@@ -51,6 +50,7 @@
     ]
   },
   "devDependencies": {
-    "@types/lodash.debounce": "^4.0.9"
+    "@types/lodash.debounce": "^4.0.9",
+    "typescript": "^4.9.5"
   }
 }
