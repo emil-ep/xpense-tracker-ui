@@ -22,7 +22,7 @@ services:
       - postgres
 
   ui:
-    image: ghcr.io/emil-ep/xpense-ui:1.0.9
+    image: ghcr.io/emil-ep/xpense-ui:1.0.10
     pull_policy: always
     ports:
       - "3000:80"
