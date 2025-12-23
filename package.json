@@ -1,6 +1,6 @@
 {
   "name": "xpense-tracker-ui",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "private": false,
   "dependencies": {
     "@emotion/react": "^11.13.3",
