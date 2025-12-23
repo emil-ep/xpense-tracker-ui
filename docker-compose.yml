@@ -24,8 +24,6 @@ services:
   ui:
     image: ghcr.io/emil-ep/xpense-ui:1.0.7
     pull_policy: always
-    context: ./xpense-tracker-ui
-    dockerfile: Dockerfile
     ports:
       - "3000:80"
     depends_on:
