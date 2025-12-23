@@ -23,4 +23,4 @@ jobs:
       - uses: docker/build-push-action@v5
         with:
           push: true
-          tags: ghcr.io/emil-ep/xpense-ui:1.0.3
+          tags: ghcr.io/emil-ep/xpense-ui:1.0.4
