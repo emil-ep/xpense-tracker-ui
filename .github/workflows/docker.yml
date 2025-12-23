@@ -31,4 +31,4 @@ jobs:
           file: ./Dockerfile
           no-cache: true
           push: true
-          tags: ghcr.io/emil-ep/xpense-ui:1.0.7
+          tags: ghcr.io/emil-ep/xpense-ui:1.0.8
