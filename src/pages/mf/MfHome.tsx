@@ -22,7 +22,7 @@ export default function MfHome(){
 
   const [search, setSearch] = useState<string>('');
   const [page, setPage] = useState<number>(1);
-  
+
     const theme = createTheme({
       palette: {
         mode: 'dark',
@@ -49,7 +49,7 @@ export default function MfHome(){
         return searchMutualFundApi(page, 20, search);
     }, [search, page]);
 
-    const {responseBody, loading } = useApi<MutualFundSearchResponse>(fetchMutualFunds);
+    const {responseBody } = useApi<MutualFundSearchResponse>(fetchMutualFunds);
 
     const handlePageChange = (event: React.ChangeEvent<unknown>, value: number) => {
       setPage(value);

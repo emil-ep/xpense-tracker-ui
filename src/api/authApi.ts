@@ -6,14 +6,6 @@ interface SignInRequest {
     password: string;
 }
 
-interface SignInResponse {
-    data: SignInData;
-}
-
-interface SignInData{
-    token: string;
-}
-
 export const signInV2 = (body: SignInRequest): ApiConfig => ({
     url: SIGN_IN_URL,
     method: 'POST',

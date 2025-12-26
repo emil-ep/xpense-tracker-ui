@@ -30,7 +30,7 @@ export default function Settings() {
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
     const [username, setUsername] = useState('');
     const [tagCateoryData, setTagCategoryData] = useState<TagCategory[]>([]);
-    const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
+    const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
     const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
 
