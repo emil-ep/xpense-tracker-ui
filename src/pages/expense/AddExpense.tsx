@@ -3,7 +3,6 @@ import React, { ChangeEvent, useState } from "react";
 import ExpenseMapperView from "./ExpenseMapperView";
 import { UploadResponse } from "../../api/ApiResponses";
 import { uploadStatement } from "../../api/fileApi";
-import { useSearchParams } from "react-router-dom";
 import { showToast } from "../../utils/ToastUtil";
 import { 
     Box, 
@@ -17,7 +16,6 @@ import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 import ErrorIcon from "@mui/icons-material/Error";
 
 export default function AddExpense() {
-    const [searchParams, setSearchParams] = useSearchParams();
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [isUploading, setUploading] = useState(false);
     const [isUploadComplete, setUploadComplete] = useState(false);
@@ -42,7 +40,6 @@ export default function AddExpense() {
             const uploadResponse: UploadResponse = await uploadStatement(selectedFile);
             if (uploadResponse.status === 1) {
                 setFileName(uploadResponse.data.fileName);
-                setSearchParams({ file: selectedFile.name });
                 setUploadComplete(true);
             } else {
                 throw new Error("Upload failed unexpectedly.");
