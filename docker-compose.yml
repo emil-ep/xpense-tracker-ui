@@ -18,6 +18,8 @@ services:
       - "8085:8085"
     environment:
       SPRING_PROFILES_ACTIVE: docker
+    volumes:
+      - ./uploads:/data/uploads
     depends_on:
       - postgres
 
