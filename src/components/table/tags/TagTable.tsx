@@ -174,6 +174,12 @@ export default function TagTable({ clazzName, tags, height, tagCategories } : Ta
             flex: 1
         },
         {
+            field: 'expenseCount',
+            sortable: true,
+            flex: 0.75,
+            editable: false,
+        },
+        {
             field: 'Color',
             sortable: false,
             flex: 0.25,
