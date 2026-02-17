@@ -10,12 +10,30 @@ import { showToast } from "../utils/ToastUtil";
 import { useApi } from "../api/hook/useApi";
 import { FetchUserSettingsResponse } from "../api/ApiResponses";
 import { fetchUserSettingsApi } from "../api/userSettingsApi";
+import { fetchUserBankAccountsApi } from "../api/userBankAccountApi";
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [drawerOpen, setDrawerOpen] = useState(false);
   const [isSyncing, setIsSyncing] = useState(false);
   const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
   const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
+  const [selectedUserBankAccount, setSelectedUserBankAccount] = useState<string>("");
+  const { 
+          responseBody : userBankAccountResponse, 
+          error: userBankAccountError 
+      } = useApi<any>(fetchUserBankAccountsApi, []);
+
+  
+   useEffect(() => {
+          if (userBankAccountResponse) {
+              // Handle user bank account data if needed
+              setSelectedUserBankAccount(userBankAccountResponse.data[0]?.id || ""); // Example: select the first bank account by default
+              console.log("User bank accounts fetched successfully", userBankAccountResponse);
+          }
+          if (userBankAccountError) {
+              showToast("Fetching user bank accounts failed");
+          }
+      }, [userBankAccountResponse, userBankAccountError]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -24,7 +42,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const handleSyncClick = async () => {
     setIsSyncing(true);
     try{
-      const syncExpenseResponse: any = await apiCaller(syncExpense());
+      const syncExpenseResponse: any = await apiCaller(syncExpense(selectedUserBankAccount));
       if(syncExpenseResponse.status === 0){
         showToast("Sync Failed");
         setIsSyncing(false);
