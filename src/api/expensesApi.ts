@@ -27,8 +27,8 @@ export const updateExpense = (expenseId: string, body: any): ApiConfig => ({
     body: body
 });
 
-export const syncExpense = () : ApiConfig => ({
-    url: `${EXPENSES_URL}/sync`,
+export const syncExpense = (bankAccountId: string) : ApiConfig => ({
+    url: `${EXPENSES_URL}/sync?bank=${bankAccountId}`,
     method: 'POST'
 })
 

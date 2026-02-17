@@ -26,6 +26,8 @@ import {
     TableRow,
     Typography
 } from "@mui/material";
+import { fetchUserBankAccountsApi } from "../../api/userBankAccountApi";
+import { set } from "date-fns";
 
 export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const navigate = getNavigate();
@@ -36,10 +38,16 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const [expensePreviewItems, setExpensePreviewItems] = useState<ExpenseItemType[]>([]);
     const [possibleMatches, setPossibleMatches] = useState<{ [key: string]: string }>({});
     const [headerStartIndex, setHeaderRowIndex] = useState<number>(0);
+    const [selectedUserBankAccount, setSelectedUserBankAccount] = useState<string>("");
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
 
     const { responseBody, error } = useApi<any>(headerMapperGetApi, [fileName]);
+
+    const { 
+        responseBody : userBankAccountResponse, 
+        error: userBankAccountError 
+    } = useApi<any>(fetchUserBankAccountsApi, []);
 
     const handleSelectionChange = (systemHeader: string, selectedHeader: string) => {
         setSelectedHeaders((prev) => ({
@@ -55,7 +63,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     };
 
     const handleVerifyExpense = async () => {
-        const result: { [key: string]: number | null | undefined } = {};
+        const result: { [key: string]: number | null | undefined | string } = {};
 
         for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
             const index = headerIndexMap?.indexOf(selectedHeader);
@@ -64,6 +72,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             }
         }
         result.headerStartIndex = headerStartIndex;
+        result.bankAccountId = selectedUserBankAccount;
         try {
             const expensePreviewResponse: ExpensePreviewResponse = await apiCaller(getPreviewApi(fileName, result));
             if (expensePreviewResponse.status === 1) {
@@ -80,7 +89,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     };
 
     const handleSaveExpense = async () => {
-        const result: { [key: string]: number | null | undefined } = {};
+        const result: { [key: string]: number | null | undefined | string } = {};
         for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
             const index = headerIndexMap?.indexOf(selectedHeader);
             if (index !== -1) {
@@ -88,6 +97,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             }
         }
         result.headerStartIndex = headerStartIndex;
+        result.bankAccountId = selectedUserBankAccount;
         try {
             const expenseSaveResponse: ExpenseSaveResponse = await apiCaller(saveExpense(fileName, result));
             if (expenseSaveResponse.status === 1) {
@@ -114,6 +124,17 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             showToast("Fetching expense mapping failed");
         }
     }, [responseBody, error]);
+
+    useEffect(() => {
+        if (userBankAccountResponse) {
+            // Handle user bank account data if needed
+            setSelectedUserBankAccount(userBankAccountResponse.data[0]?.id || ""); // Example: select the first bank account by default
+            console.log("User bank accounts fetched successfully", userBankAccountResponse);
+        }
+        if (userBankAccountError) {
+            showToast("Fetching user bank accounts failed");
+        }
+    }, [userBankAccountResponse, userBankAccountError]);
 
     return (
         <Box
