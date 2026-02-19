@@ -273,18 +273,38 @@ export default function Settings() {
                                 </Box>
                             ) : (
                                 <Box>
-                                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={1}>
-                                        <Typography><strong>Name:</strong> {account.name}</Typography>
+                                    <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
+                                        <Box flex={1}>
+                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                Account Name
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5, mb: 1.5 }}>
+                                                {account.name}
+                                            </Typography>
+                                            
+                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                Account Number
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5, mb: 1.5 }}>
+                                                {account.accountNumber}
+                                            </Typography>
+                                            
+                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
+                                                Account Type
+                                            </Typography>
+                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
+                                                {account.type}
+                                            </Typography>
+                                        </Box>
                                         <Button 
-                                            variant="outlined" 
+                                            variant="contained" 
                                             size="small"
+                                            sx={{ ml: 2 }}
                                             onClick={() => handleEditBankAccount(index)}
                                         >
                                             Edit
                                         </Button>
                                     </Box>
-                                    <Typography><strong>Account Number:</strong> {account.accountNumber}</Typography>
-                                    <Typography><strong>Account Type:</strong> {account.type}</Typography>
                                 </Box>
                             )}
                         </Box>
