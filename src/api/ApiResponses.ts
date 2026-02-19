@@ -41,6 +41,11 @@ export interface TagCategoryResponse extends BaseResponse {
     data: TagCategory[];
 }
 
+export interface UserBankAccountResponse extends BaseResponse {
+    data: BankAccount[]
+}
+
+
 export interface MutualFundSchemeDetailWrapperResponse extends BaseResponse {
     content: MutualFundSchemeDetail[];
     totalPages: number;
@@ -52,6 +57,13 @@ export interface MutualFundSchemeDetailWrapperResponse extends BaseResponse {
 
 export interface MutualFundSearchResponse extends BaseResponse {
     data: MutualFundSchemeDetailWrapperResponse;
+}
+
+export interface BankAccount{
+    id?: string;
+    name: string;
+    type: string;
+    accountNumber: string;
 }
 
 export interface MetricsV2 {
