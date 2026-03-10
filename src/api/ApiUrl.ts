@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || 'http://9.20.198.82:8085';
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || '';
 
 export const SIGN_IN_URL = `${API_BASE_URL}/v1/auth/signIn`;
 export const SIGN_UP_URL = `${API_BASE_URL}/v1/auth/signUp`;
