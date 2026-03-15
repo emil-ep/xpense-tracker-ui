@@ -27,7 +27,6 @@ import {
     Typography
 } from "@mui/material";
 import { fetchUserBankAccountsApi } from "../../api/userBankAccountApi";
-import { set } from "date-fns";
 
 export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const navigate = getNavigate();
@@ -63,6 +62,11 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     };
 
     const handleVerifyExpense = async () => {
+        if (!selectedUserBankAccount) {
+            showToast("Please select a bank account before verifying expenses");
+            return;
+        }
+
         const result: { [key: string]: number | null | undefined | string } = {};
 
         for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
@@ -89,6 +93,11 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     };
 
     const handleSaveExpense = async () => {
+        if (!selectedUserBankAccount) {
+            showToast("Please select a bank account before submitting expenses");
+            return;
+        }
+
         const result: { [key: string]: number | null | undefined | string } = {};
         for (const [systemHeader, selectedHeader] of Object.entries(selectedHeaders)) {
             const index = headerIndexMap?.indexOf(selectedHeader);
@@ -126,15 +135,10 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     }, [responseBody, error]);
 
     useEffect(() => {
-        if (userBankAccountResponse) {
-            // Handle user bank account data if needed
-            setSelectedUserBankAccount(userBankAccountResponse.data[0]?.id || ""); // Example: select the first bank account by default
-            console.log("User bank accounts fetched successfully", userBankAccountResponse);
-        }
         if (userBankAccountError) {
             showToast("Fetching user bank accounts failed");
         }
-    }, [userBankAccountResponse, userBankAccountError]);
+    }, [userBankAccountError]);
 
     return (
         <Box
@@ -154,6 +158,42 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             <Typography variant="h5" sx={{ color: "#fff", marginBottom: 3 }}>
                 Map System Header with your statement header
             </Typography>
+
+            {/* Bank Account Selection */}
+            <Box sx={{ marginBottom: 3, width: "90%", maxWidth: "900px" }}>
+                <Typography variant="body1" sx={{ color: "#fff", marginBottom: 1 }}>
+                    Select Bank Account *
+                </Typography>
+                <Select
+                    fullWidth
+                    value={selectedUserBankAccount}
+                    onChange={(e) => setSelectedUserBankAccount(e.target.value)}
+                    displayEmpty
+                    sx={{
+                        backgroundColor: "#1B3A57",
+                        color: "white",
+                        borderRadius: 1,
+                        '& .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#0288d1',
+                        },
+                        '&:hover .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#0277bd',
+                        },
+                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                            borderColor: '#0288d1',
+                        }
+                    }}
+                >
+                    <MenuItem value="">
+                        <em style={{ color: "#aaa" }}>Select a bank account</em>
+                    </MenuItem>
+                    {userBankAccountResponse?.data?.map((account: any) => (
+                        <MenuItem key={account.id} value={account.id}>
+                            {account.name} - {account.accountNumber}
+                        </MenuItem>
+                    ))}
+                </Select>
+            </Box>
 
             {/* Buttons - Moved to Top for Better Visibility */}
             <Stack direction="row" spacing={2} sx={{ marginBottom: 2 }}>
