@@ -21,6 +21,13 @@ export interface MetricBody {
     toDate: string | null;
 }
 
+export interface UpsertUserBankAccountRequest {
+    id?: string;
+    name: string;
+    type: string;
+    accountNumber: string;
+}
+
 export const findAggregationModeByValue = (value: string): MetricAggregatioMode => {
     switch (value) {
         case 'daily':

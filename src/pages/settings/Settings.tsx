@@ -10,7 +10,7 @@ import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSetti
 import { apiCaller } from "../../api/apicaller";
 import { showToast } from "../../utils/ToastUtil";
 import { logoutApi } from "../../api/authApi";
-import { fetchUserBankAccountsApi } from "../../api/userBankAccountApi";
+import { fetchBankAccountTypes, fetchUserBankAccountsApi, upsertUserBankAccountApi } from "../../api/userBankAccountApi";
 
 const theme = createTheme({
   palette: {
@@ -35,12 +35,21 @@ export default function Settings() {
     const [newBankAccountFormVisible, setNewBankAccountFormVisible] = useState(false);
     const [tempBankAccount, setTempBankAccount] = useState<BankAccount>({ name: '', accountNumber: '', type: '' });
     const [tagCateoryData, setTagCategoryData] = useState<TagCategory[]>([]);
+    const [bankAccountTypes, setBankAccountTypes] = useState<string[]>([]);
     
     
     const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
+    const { responseBody: bankAccountTypeResponse, error: bankAccountTypeError } = useApi<any>(fetchBankAccountTypes, []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
     const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
     const { responseBody: bankAccountsResponse } = useApi<UserBankAccountResponse>(fetchUserBankAccountsApi, []);
+
+
+    useEffect(() => {
+        if(bankAccountTypeResponse && bankAccountTypeResponse.data){
+            setBankAccountTypes(bankAccountTypeResponse.data);
+        }    
+    }, [bankAccountTypeResponse]);
 
     useEffect(() => {
         if(tagsCategoryResponse && tagsCategoryResponse.data){
@@ -91,6 +100,13 @@ export default function Settings() {
     const handleSaveBankAccount = async () => {
         if (!tempBankAccount.name || !tempBankAccount.accountNumber || !tempBankAccount.type) {
             showToast("Please fill all bank account fields");
+            return;
+        }
+
+        console.log("Saving bank account:", tempBankAccount);
+        const upsertBankAccountResponse: any = await apiCaller(upsertUserBankAccountApi(tempBankAccount));
+        if(upsertBankAccountResponse.status !== 1){
+            showToast("Failed to save bank account");
             return;
         }
 
@@ -247,9 +263,9 @@ export default function Settings() {
                                             onChange={(e) => setTempBankAccount({ ...tempBankAccount, type: e.target.value })}
                                             label="Account Type"
                                         >
-                                        {tagCateoryData.map((tag) => (
-                                            <MenuItem key={tag.id} value={tag.name}>
-                                                {tag.name}
+                                        {bankAccountTypes.map((type) => (
+                                            <MenuItem key={type} value={type}>
+                                                {type}
                                             </MenuItem>
                                         ))}
                                         </Select>
@@ -336,9 +352,9 @@ export default function Settings() {
                                     onChange={(e) => setTempBankAccount({ ...tempBankAccount, type: e.target.value })}
                                     label="Account Type"
                                 >
-                                {tagCateoryData.map((tag) => (
-                                    <MenuItem key={tag.id} value={tag.name}>
-                                        {tag.name}
+                                {bankAccountTypes.map((type) => (
+                                    <MenuItem key={type} value={type}>
+                                        {type}
                                     </MenuItem>
                                 ))}
                                 </Select>
