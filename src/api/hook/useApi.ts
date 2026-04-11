@@ -20,6 +20,13 @@ export const useApi = <T>(fetchConfig: FetchFunction, dependencies: any[] = []) 
   const fetchData = useCallback(async () => {
     const { url, method, headers = {}, body } = fetchConfig();
 
+    if (!url) {
+      setLoading(false);
+      setError(null);
+      setResponseBody(null);
+      return;
+    }
+
     setLoading(true);
     setError(null);
 
