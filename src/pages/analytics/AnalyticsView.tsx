@@ -1,11 +1,12 @@
 import './analyticsView.css'
 
 import { Box, CssBaseline, Grid2, ThemeProvider, createTheme } from '@mui/material'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback } from 'react'
 
 import AnalyticCard from '../../components/cards/AnalyticCard';
 import { format } from "date-fns";
 import { useDateRange } from '../../context/DateRangeContext';
+import { useBankAccount } from '../../context/BankAccountContext';
 import { useApi } from '../../api/hook/useApi';
 import { FetchTagsResponse, Tag } from '../../api/ApiResponses';
 import { fetchTagsApi } from '../../api/tagApi';
@@ -32,8 +33,16 @@ export const AnalyticsView = () => {
     const[tags, setTags] = useState<Tag[]>([]);
 
     const { fromDate, toDate } = useDateRange();
+    const { selectedBankAccountId } = useBankAccount();
 
-    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+    const fetchTags = useCallback(() => {
+        if (!selectedBankAccountId) {
+            return { url: '', method: 'GET' as 'GET' };
+        }
+        return fetchTagsApi(selectedBankAccountId);
+    }, [selectedBankAccountId]);
+
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, [selectedBankAccountId]);
 
     useEffect(() => {
         if(tagsResponse && tagsResponse.data){

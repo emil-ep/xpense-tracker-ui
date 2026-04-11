@@ -7,6 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import TagTable from "../../components/table/tags/TagTable";
 import { fetchTagCategories, fetchTagsApi } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
+import { useBankAccount } from "../../context/BankAccountContext";
 
 const theme = createTheme({
     palette: {
@@ -22,10 +23,16 @@ const theme = createTheme({
 const TagManagement = () => {
     const [tagData, setTagData] = useState<Tag[]>([]);
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
+    const { selectedBankAccountId } = useBankAccount();
 
-    const fetchTags = useCallback(() => fetchTagsApi(), []);
+    const fetchTags = useCallback(() => {
+        if (!selectedBankAccountId) {
+            return { url: '', method: 'GET' as 'GET' };
+        }
+        return fetchTagsApi(selectedBankAccountId);
+    }, [selectedBankAccountId]);
 
-    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, []);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, [selectedBankAccountId]);
 
     const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 

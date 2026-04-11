@@ -3,7 +3,8 @@ import { ThemeProvider } from "styled-components";
 import CustomAnalyticCard from "../../components/cards/CustomAnalyticCard";
 import { useDateRange } from '../../context/DateRangeContext';
 import { format } from "date-fns";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
+import { useBankAccount } from '../../context/BankAccountContext';
 import { Timeframe } from "../analytics/AnalyticsView";
 import './customDashboard.css';
 import { useApi } from "../../api/hook/useApi";
@@ -26,8 +27,16 @@ export default function CustomDashboard() {
     const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
 
     const { fromDate, toDate } = useDateRange();
+    const { selectedBankAccountId } = useBankAccount();
 
-    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+    const fetchTags = useCallback(() => {
+        if (!selectedBankAccountId) {
+            return { url: '', method: 'GET' as 'GET' };
+        }
+        return fetchTagsApi(selectedBankAccountId);
+    }, [selectedBankAccountId]);
+
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, [selectedBankAccountId]);
 
     useEffect(() => {
         if (fromDate && toDate) {
