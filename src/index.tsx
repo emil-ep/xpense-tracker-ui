@@ -9,6 +9,7 @@ import { AnalyticsView } from './pages/analytics/AnalyticsView';
 import AppLayout from './components/AppLayout';
 import CustomDashboard from './pages/customDashboard/CustomDashboard';
 import { DateRangeProvider } from './context/DateRangeContext';
+import { BankAccountProvider } from './context/BankAccountContext';
 import { ExpenseView } from './pages/expense/ExpenseView';
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
@@ -65,21 +66,23 @@ root.render(
   // <React.StrictMode> This is commented since api calls were going twice
     <Router>
       <DateRangeProvider>
-        <div>
-          <ToastContainer 
-            position="top-right"
-            autoClose={5000}
-            hideProgressBar={false}
-            newestOnTop={false}
-            closeOnClick
-            rtl={false}
-            pauseOnFocusLoss={false}
-            draggable
-            pauseOnHover
-            theme="light"
-          />
-          <AppRoutes />
-        </div>
+        <BankAccountProvider>
+          <div>
+            <ToastContainer 
+              position="top-right"
+              autoClose={5000}
+              hideProgressBar={false}
+              newestOnTop={false}
+              closeOnClick
+              rtl={false}
+              pauseOnFocusLoss={false}
+              draggable
+              pauseOnHover
+              theme="light"
+            />
+            <AppRoutes />
+          </div>
+        </BankAccountProvider>
       </DateRangeProvider>
     </Router>
     //<React.StrictMode>

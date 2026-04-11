@@ -11,6 +11,7 @@ import { useApi } from '../../api/hook/useApi';
 import { fetchTagCategories, fetchTagsApi } from '../../api/tagApi';
 import { Timeframe } from '../analytics/AnalyticsView';
 import { useDateRange } from '../../context/DateRangeContext';
+import { useBankAccount } from '../../context/BankAccountContext';
 import { format } from 'date-fns';
 
 
@@ -34,6 +35,7 @@ export const ExpenseView = () => {
     const [timeframe, setTimeframe] = useState<Timeframe | null>(null);
     
     const { fromDate, toDate } = useDateRange();
+    const { selectedBankAccountId } = useBankAccount();
 
     const updateParams = (newParams: Record<string, string | number>) => {
         const updatedParams = new URLSearchParams(searchParams.toString());
@@ -56,11 +58,11 @@ export const ExpenseView = () => {
     }, [fromDate, toDate]);
 
     const fetchExpenses = useCallback(() => {
-        if (timeframe && timeframe.fromDate && timeframe.toDate) {
-            return getExpensesV2(1, 50000, timeframe.fromDate, timeframe.toDate);
+        if (timeframe && timeframe.fromDate && timeframe.toDate && selectedBankAccountId) {
+            return getExpensesV2(1, 50000, timeframe.fromDate, timeframe.toDate, selectedBankAccountId);
         }
         return { url: '', method: 'GET' as 'GET' };
-    }, [timeframe]);
+    }, [timeframe, selectedBankAccountId]);
 
     const { responseBody, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
     const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
