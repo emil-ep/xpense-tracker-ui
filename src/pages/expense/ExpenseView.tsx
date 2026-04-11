@@ -65,7 +65,13 @@ export const ExpenseView = () => {
     }, [timeframe, selectedBankAccountId]);
 
     const { responseBody, loading } = useApi<PaginatedExpenseResponse>(fetchExpenses, [timeframe]);
-    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTagsApi, []);
+    const fetchTags = useCallback(() => {
+        if (!selectedBankAccountId) {
+            return { url: '', method: 'GET' as 'GET' };
+        }
+        return fetchTagsApi(selectedBankAccountId);
+    }, [selectedBankAccountId]);
+    const { responseBody: tagsResponse } = useApi<FetchTagsResponse>(fetchTags, [selectedBankAccountId]);
     const { responseBody: tagsCategoryResponse, loading: tagLoading } = useApi<TagCategoryResponse>(fetchTagCategories, []);
 
     useEffect(() => {

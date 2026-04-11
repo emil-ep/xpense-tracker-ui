@@ -13,8 +13,8 @@ export const editTagApi = (body: any): ApiConfig => ({
     body: body
 });
 
-export const fetchTagsApi = (): ApiConfig => ({
-    url: TAG_URL,
+export const fetchTagsApi = (bankAccountId: string): ApiConfig => ({
+    url: `${TAG_URL}?bankAccount=${bankAccountId}`,
     method: 'GET',
 })
 
