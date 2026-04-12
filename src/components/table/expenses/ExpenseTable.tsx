@@ -24,6 +24,7 @@ import AttachmentUploadDialog from "../../popper/AttachmentUploadDialog";
 import { uploadAttachment } from "../../../api/fileApi";
 import AttachmentPreviewDialog from "../../popper/AttachmentPreviewDialog";
 import DeleteExpenseDialog from "../../popper/DeleteExpenseDialog";
+import { useBankAccount } from "../../../context/BankAccountContext";
 
 interface TableProps {
     clazzName?: string;
@@ -56,6 +57,8 @@ export default function ExpenseTable(
     const [previewFileId, setPreviewFileId] = useState<string | null>(null);
     const [showPreviewDialog, setShowPreviewDialog] = useState<boolean>(false);
     const [showDeleteExpenseDialog, setShowDeleteExpenseDialog] = useState<boolean>(false);
+    const { selectedBankAccountId } = useBankAccount();
+        
 
     useEffect(() => {
         setRowData(expenses);
@@ -80,7 +83,8 @@ export default function ExpenseTable(
         const body = {
             name : tagName,
             keywords : keywords,
-            tagCategoryId: selectedTagCategoryId
+            tagCategoryId: selectedTagCategoryId,
+            bankAccountId: selectedBankAccountId
     }
 
 
