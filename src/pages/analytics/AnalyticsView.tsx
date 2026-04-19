@@ -75,6 +75,7 @@ export const AnalyticsView = () => {
                                 aggregationMode='monthly' 
                                 metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
                                 timeframe={timeframe}
+                                bankAccountId={selectedBankAccountId}
                             />
                         </Grid2>
                         {/* <Grid2 size={6}>
@@ -91,6 +92,7 @@ export const AnalyticsView = () => {
                                 aggregationMode='yearly' 
                                 metricsToFetch={['credit_aggregate', 'debit_aggregate']} 
                                 timeframe={timeframe}
+                                bankAccountId={selectedBankAccountId}
                             />
                         </Grid2>
                         <Grid2 size={6}>
@@ -99,6 +101,7 @@ export const AnalyticsView = () => {
                                 aggregationMode='monthly' 
                                 metricsToFetch={['expense_aggregate']} 
                                 timeframe={timeframe}
+                                bankAccountId={selectedBankAccountId}
                                 tooltipText='Expense is calculated as the sum of all debits - any expense having tag category "Mutual Fund Savings, Salary, Own Account, Other Savings"'
                             />
                         </Grid2>
@@ -110,6 +113,7 @@ export const AnalyticsView = () => {
                                 timeframe={timeframe}
                                 tags={tags}
                                 showLegend={false}
+                                bankAccountId={selectedBankAccountId}
                                 tooltipText={'Tags aggregation is calculated as the difference between credit and debits of expenses in the same timeframe'}
                             />
                         </Grid2>

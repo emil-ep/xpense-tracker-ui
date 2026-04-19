@@ -17,13 +17,14 @@ export interface AnalyticCardProps {
   tags?: Tag[];
   tooltipText?: string;
   showLegend?: boolean;
+  bankAccountId: string;
 }
 
-export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText, showLegend }: AnalyticCardProps) {
+export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText, showLegend, bankAccountId }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
   const fetchMetrics = React.useCallback(() => {
-    return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe);
-  }, [timeframe]);
+    return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe, bankAccountId);
+  }, [timeframe, bankAccountId, aggregationMode, metricsToFetch]);
 
   const { responseBody, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 

@@ -28,9 +28,10 @@ import AnalyticPieChart from "../charts/AnalyticPieChart";
 export interface CustomAnalyticCardProps {
   timeframe: Timeframe;
   tags?: Tag[];
+  bankAccountId: string;
 }
 
-export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCardProps) {
+export default function CustomAnalyticCard({ tags, timeframe, bankAccountId} : CustomAnalyticCardProps) {
 
   const expenseMetrics = ['credit_aggregate', 'debit_aggregate', 'tags_aggregate', 'expense_aggregate'];
   const aggregationModes = ['daily','monthly', 'weekly', 'yearly'];
@@ -57,7 +58,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     const newMetrics = typeof value === 'string' ? value.split(',') : (value as string[]);
     setSelectedMetrics(newMetrics);
     setLoading(true);
-    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(selectedAggregationMode, newMetrics, timeframe));
+    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(selectedAggregationMode, newMetrics, timeframe, bankAccountId));
     setMetricsApiResponse(responseBody);
     setLoading(false);
   };
@@ -69,7 +70,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
     const newAggregationMode = findAggregationModeByValue(value);
     setSelectedAggregationMode(newAggregationMode);
     setLoading(true);
-    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe));
+    const responseBody: MetricsV2Response = await apiCaller(fetchMetricsV2(newAggregationMode, selectedMetrics, timeframe, bankAccountId));
     setMetricsApiResponse(responseBody);
     setLoading(false);
   };
@@ -147,12 +148,12 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
       });
       setMetrics(results);
     }
-  }, [metricsApiResponse]);
+  }, [metricsApiResponse, selectedTags]);
 
   useEffect(() => {
     if (timeframe) {
       setLoading(true);
-      apiCaller(fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe))
+      apiCaller(fetchMetricsV2(selectedAggregationMode, selectedMetrics, timeframe, bankAccountId))
         .then((responseBody: any) => {
           setMetricsApiResponse(responseBody);
           setLoading(false);
@@ -162,7 +163,7 @@ export default function CustomAnalyticCard({ tags, timeframe} : CustomAnalyticCa
           setLoading(false);
         });
     }
-  }, [timeframe]);
+  }, [timeframe, bankAccountId, selectedAggregationMode, selectedMetrics]);
 
   return (
     <ThemeProvider theme={theme}>

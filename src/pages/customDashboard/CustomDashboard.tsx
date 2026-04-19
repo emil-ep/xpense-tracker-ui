@@ -55,7 +55,7 @@ export default function CustomDashboard() {
             <Grid2 className="gridContainer" container spacing={2}>
                 <Grid2 size={12}>
                     {timeframe && (
-                        <CustomAnalyticCard tags={tagsResponse?.data} timeframe={timeframe}/>
+                        <CustomAnalyticCard tags={tagsResponse?.data} timeframe={timeframe} bankAccountId={selectedBankAccountId}/>
                     )}
                 </Grid2>
             </Grid2>
