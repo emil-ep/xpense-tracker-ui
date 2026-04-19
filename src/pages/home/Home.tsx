@@ -4,6 +4,7 @@ import { Stack, Card, CardContent, CircularProgress, Typography, Grid, createThe
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
 import { findCurrency } from "../../utils/CurrencyUtil";
+import { useBankAccount } from "../../context/BankAccountContext";
 
 export default function Home(){
 
@@ -38,10 +39,11 @@ export default function Home(){
     });
 
     const [metrics, setMetrics] = useState<Record<string, any>>({});
+    const { selectedBankAccountId } = useBankAccount();
 
     const fetchMetrics = useCallback(() => {
-        return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null});
-    }, []);
+        return fetchMetricsV2('custom', metricNames, { fromDate: null, toDate: null}, selectedBankAccountId);
+    }, [selectedBankAccountId]);
     
     const { responseBody, loading } = useApi<MetricsV2Response>(fetchMetrics, []);
 
