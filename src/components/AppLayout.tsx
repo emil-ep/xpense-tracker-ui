@@ -26,13 +26,15 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   
    useEffect(() => {
-          if (userBankAccountResponse) {
+          if (userBankAccountResponse && userBankAccountResponse.data && userBankAccountResponse.data.length > 0) {
+              // Set the first bank account as selected by default
+              setSelectedBankAccountId(userBankAccountResponse.data[0].id);
               console.log("User bank accounts fetched successfully", userBankAccountResponse);
           }
           if (userBankAccountError) {
               showToast("Fetching user bank accounts failed");
           }
-      }, [userBankAccountResponse, userBankAccountError]);
+      }, [userBankAccountResponse, userBankAccountError, setSelectedBankAccountId]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
