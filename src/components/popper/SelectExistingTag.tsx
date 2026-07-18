@@ -14,13 +14,13 @@ interface SelectExistingTagProps {
 export default function SelectExistingTag({tags, expense, onClose} : SelectExistingTagProps) {
 
     const [selectedExistingTag, setSelectedExistingTag] = useState<Tag | null>(null);
-    const [keywordsToAdd, setKeywordsToAdd] = useState<string | undefined>(selectedExistingTag?.keywords.concat().join(", ") + ", " + expense.description);
+    const [keywordsToAdd, setKeywordsToAdd] = useState<string>("");
 
     const onExistingTagChange = (name: string) => {
         const tag = tags.find((tag) => tag.name === name);
         if(tag){
             setSelectedExistingTag(tag);
-            setKeywordsToAdd(tag.keywords.concat().join(", ") + ", " + expense.description);
+            setKeywordsToAdd(expense.description || "");
         }
     }
 
@@ -32,7 +32,7 @@ export default function SelectExistingTag({tags, expense, onClose} : SelectExist
         if(selectedExistingTag){
             const reqBody = {
                 ...selectedExistingTag,
-                keywords: keywordsToAdd ? keywordsToAdd.split(",").map((kw) => kw.trim()) : selectedExistingTag.keywords
+                keywords: keywordsToAdd ? keywordsToAdd.split(",").map((kw) => kw.trim()) : []
             }
             const response: any = await apiCaller(editTagApi(reqBody));
             if(response.status === 1){
