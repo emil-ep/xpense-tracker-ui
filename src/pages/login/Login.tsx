@@ -53,12 +53,24 @@ export default function Login() {
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const token = params.get("token");
+    const error = params.get("error");
 
     if (token) {
       localStorage.setItem("authToken", token);
       showToast("Login Success");
       window.history.replaceState({}, document.title, "/login");
       navigate("/home");
+      return;
+    }
+
+    if (error) {
+      const decodedError = decodeURIComponent(error.replace(/\+/g, "%20"));
+      toast.error(decodedError, {
+        position: "top-right",
+        autoClose: 5000,
+        theme: "dark",
+      });
+      window.history.replaceState({}, document.title, "/login");
     }
   }, [navigate]);
 
