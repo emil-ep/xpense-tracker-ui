@@ -1,5 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Box, Typography, TextField, Button, Stack, Link } from "@mui/material";
+import Google from '@mui/icons-material/Google';
 import { signInV2, signUpApi } from "../../api/authApi";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
@@ -48,6 +49,23 @@ export default function Login() {
       });
     }
   }
+
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const token = params.get("token");
+
+    if (token) {
+      localStorage.setItem("authToken", token);
+      showToast("Login Success");
+      window.history.replaceState({}, document.title, "/login");
+      navigate("/home");
+    }
+  }, [navigate]);
+
+  const handleGoogleLogin = () => {
+    const googleAuthUrl = `${process.env.REACT_APP_API_BASE_URL}/oauth2/authorization/google`;
+    window.location.href = googleAuthUrl;
+  };
 
   return (
     <Box
@@ -116,6 +134,17 @@ export default function Login() {
           >
             {isSignUp ? "Sign Up" : "Login"}
           </Button>
+          {!isSignUp && (
+            <Button
+              variant="outlined"
+              fullWidth
+              startIcon={<Google />}
+              onClick={handleGoogleLogin}
+              sx={{ textTransform: 'none' }}
+            >
+              Continue with Google
+            </Button>
+          )}
           <Typography variant="body2" align="center">
             {isSignUp ? (
               <>
