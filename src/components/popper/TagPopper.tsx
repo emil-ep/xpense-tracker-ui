@@ -18,8 +18,8 @@ interface TagPopupProps {
     tagName: string, 
     keywords: string[], 
     expenseId: string, 
-    selectedTagCategoryId: string | undefined) => void;
-  onEdit?: (updatedTag: Tag, expenseId: string) => void; 
+    selectedTagCategoryId: string | undefined) => void | Promise<void>;
+  onEdit?: (updatedTag: Tag, expenseId: string) => void | Promise<void>;
 }
 
 const TagPopper: React.FC<TagPopupProps> = (

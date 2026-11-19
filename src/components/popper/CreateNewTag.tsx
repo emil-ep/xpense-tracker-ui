@@ -1,19 +1,20 @@
-import { Button, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
+import { Button, CircularProgress, FormControl, InputLabel, MenuItem, Select, Stack, TextField, Typography } from "@mui/material";
 import { ExpenseItemType, Tag, TagCategory } from "../../api/ApiResponses";
 import { useEffect, useId, useState } from "react";
+import { showToast } from "../../utils/ToastUtil";
 
 
 interface CreateNewTagProps {
     tagCategories: TagCategory[];
     tag?: Tag | null;
     expense: ExpenseItemType;
-    onEdit?: (updatedTag: Tag, expenseId: string) => void;
+    onEdit?: (updatedTag: Tag, expenseId: string) => void | Promise<void>;
     onCreate: (
         tagName: string, 
         keywords: string[], 
         expenseId: string, 
         selectedTagCategoryId: string | undefined
-    ) => void;
+    ) => void | Promise<void>;
 }
 
 
@@ -23,6 +24,7 @@ const componentId = useId().replace(/:/g, "");
 const [tagName, setTagName] = useState<string>(tag?.name ?? "");
 const [keywords, setKeywords] = useState<string>(tag?.keywords.join(", ") ?? expense.description ?? "");
 const [selectedTagCategoryId, setSelectedTagCategoryId] = useState<string | undefined>(tag?.category?.id);
+const [isSaving, setIsSaving] = useState(false);
 
 useEffect(() => {
     setTagName(tag?.name ?? "");
@@ -34,19 +36,28 @@ const onCategoryChange = (value : string) => {
     setSelectedTagCategoryId(value);
 }
 
-  const handleSave = () => {
+  const handleSave = async () => {
+        if (isSaving) return;
+
         const parsedKeywords = keywords.split(",").map((keyword) => keyword.trim()).filter(Boolean);
-        if (tag) {
-            onEdit?.(
-                {
-                    ...tag,
-                    name: tagName,
-                    keywords: parsedKeywords,
-                },
-                expense.id ?? ''
-            );
-        } else {
-            onCreate(tagName, parsedKeywords, expense.id ?? '', selectedTagCategoryId);
+        setIsSaving(true);
+        try {
+            if (tag) {
+                await onEdit?.(
+                    {
+                        ...tag,
+                        name: tagName,
+                        keywords: parsedKeywords,
+                    },
+                    expense.id ?? ''
+                );
+            } else {
+                await onCreate(tagName, parsedKeywords, expense.id ?? '', selectedTagCategoryId);
+            }
+        } catch (error) {
+            showToast(tag ? "Saving tag changes failed" : "Creating tag failed");
+        } finally {
+            setIsSaving(false);
         }
   };
 
@@ -66,6 +77,7 @@ const onCategoryChange = (value : string) => {
                 fullWidth
                 value={tagName}
                 required
+                disabled={isSaving}
                 onChange={(e) => setTagName(e.target.value)}
             />
             <TextField
@@ -77,6 +89,7 @@ const onCategoryChange = (value : string) => {
                 minRows={2}
                 maxRows={4}
                 value={keywords}
+                disabled={isSaving}
                 onChange={(e) => setKeywords(e.target.value)}
             />
             {!tag && (
@@ -86,6 +99,7 @@ const onCategoryChange = (value : string) => {
                         labelId={`${componentId}-category-label`}
                         id={`${componentId}-category-select`}
                         value={selectedTagCategoryId ?? ""}
+                        disabled={isSaving}
                         onChange={(event) => onCategoryChange(event.target.value)}
                         label="Category"
                     >
@@ -101,9 +115,11 @@ const onCategoryChange = (value : string) => {
                 fullWidth
                 onClick={handleSave}
                 sx={{ mt: 1 }}
-                disabled={!tagName.trim() || !keywords.trim() || (!tag && !selectedTagCategoryId)}
+                                disabled={!tagName.trim() || !keywords.trim() || (!tag && !selectedTagCategoryId) || isSaving}
+                                startIcon={isSaving ? <CircularProgress size={18} color="inherit" aria-label={tag ? "Saving tag" : "Creating tag"} /> : undefined}
+                                aria-busy={isSaving}
             >
-              {tag ? "Save changes" : "Create and apply tag"}
+                            {isSaving ? (tag ? "Saving changes…" : "Creating and applying…") : (tag ? "Save changes" : "Create and apply tag")}
             </Button>
         </Stack>
           

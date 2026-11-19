@@ -87,38 +87,50 @@ export default function ExpenseTable(
             keywords : keywords,
             tagCategoryId: selectedTagCategoryId,
             bankAccountId: selectedBankAccountId
-    }
+        };
 
+        let createdTag: Tag | null = null;
 
-    try{
+        try {
             const createTagResponse: any = await apiCaller(createTagApi(body));
-            if(createTagResponse.status === 1){
-                const tagId = createTagResponse.data.id;
-                const tag = createTagResponse.data;
-                setTagData((previousTags) => [...previousTags, tag]);
-                const expense = rowData.find((row) => row.id === expenseId);
-                const updateExpenseBody = {
-                    tagIds: [...new Set([...(expense?.tags ?? []).map((existingTag) => existingTag.id), tagId])]
-                }
-                const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, updateExpenseBody));
-                if(updateExpenseResponse.status === 1){
-                    showToast("Expense Saved!");
-                    setRowData((prevRowData) =>
-                        prevRowData.map((expense) =>
-                            expense.id === expenseId
-                            ? { ...expense, tags: expense.tags.some((existingTag) => existingTag.id === tagId)
-                                ? expense.tags
-                                : [...expense.tags, tag] }
-                            : expense
-                        )
-                    );
-                    handleClose();
-                } else {
-                    showToast(`Tag created, but could not be applied: ${updateExpenseResponse.message ?? "unknown error"}`);
-                }
+            if (createTagResponse.status !== 1) {
+                showToast("Creating tag failed");
+                return;
             }
-        } catch(err) {
-            showToast("Creating tag failed")
+
+            const createdTagData: Tag = createTagResponse.data;
+            createdTag = createdTagData;
+            const expense = rowData.find((row) => row.id === expenseId);
+            const tagIds = [...new Set([...(expense?.tags ?? []).map((existingTag) => existingTag.id), createdTagData.id])];
+            const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, { tagIds }));
+
+            setTagData((previousTags) => previousTags.some((tag) => tag.id === createdTagData.id)
+                ? previousTags
+                : [...previousTags, createdTagData]
+            );
+
+            if (updateExpenseResponse.status === 1) {
+                setRowData((previousRows) => previousRows.map((row) =>
+                    row.id === expenseId && !row.tags.some((tag) => tag.id === createdTagData.id)
+                        ? { ...row, tags: [...row.tags, createdTagData] }
+                        : row
+                ));
+                showToast("Expense saved!");
+            } else {
+                showToast(`Tag created, but could not be applied: ${updateExpenseResponse.message ?? "unknown error"}`);
+            }
+            handleClose();
+        } catch (err) {
+            if (createdTag) {
+                setTagData((previousTags) => previousTags.some((tag) => tag.id === createdTag?.id)
+                    ? previousTags
+                    : [...previousTags, createdTag as Tag]
+                );
+                showToast("Tag created, but applying it failed. You can apply it from existing tags.");
+                handleClose();
+            } else {
+                showToast("Creating tag failed");
+            }
         }
     }
 
