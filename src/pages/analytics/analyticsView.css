@@ -1,5 +1,32 @@
+.analyticsPage {
+    min-height: 100vh;
+    background: #f5f6f3;
+    color: #202b27;
+    padding: 6.5rem 2rem 3rem;
+}
 
+.analyticsContent {
+    max-width: 1440px;
+    margin: 0 auto;
+}
 
-.gridContainer {
-    padding: 4rem 2rem 3rem 2rem;
+.analyticsNotice {
+    border: 1px solid #e8ece7;
+    border-radius: 16px;
+    padding: 2rem;
+    background: #fff;
+    color: #718078;
+}
+
+@media (max-width: 600px) {
+    .analyticsPage {
+        padding: 6rem 1rem 2rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .analyticsPage {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
 }

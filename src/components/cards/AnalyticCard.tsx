@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Box, Card, CardContent, Typography, Backdrop, CircularProgress, Stack } from '@mui/material';
+import { Box, Card, CardContent, Typography, LinearProgress } from '@mui/material';
 import AnalyticBarChart from '../charts/AnalyticBarChart';
 import { useApi } from '../../api/hook/useApi';
 import { fetchMetricsV2 } from '../../api/metricsApi';
@@ -11,6 +11,7 @@ import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 
 export interface AnalyticCardProps {
   title?: string;
+  subtitle?: string;
   aggregationMode: MetricAggregatioMode;
   metricsToFetch: Metrics[];
   timeframe: Timeframe;
@@ -20,7 +21,7 @@ export interface AnalyticCardProps {
   bankAccountId: string;
 }
 
-export default function AnalyticCard({ title = '', aggregationMode, metricsToFetch, timeframe, tags, tooltipText, showLegend, bankAccountId }: AnalyticCardProps) {
+export default function AnalyticCard({ title = '', subtitle, aggregationMode, metricsToFetch, timeframe, tags, tooltipText, showLegend, bankAccountId }: AnalyticCardProps) {
   const [metrics, setMetrics] = React.useState<MetricsV2[]>([]);
   const fetchMetrics = React.useCallback(() => {
     return fetchMetricsV2(aggregationMode, metricsToFetch, timeframe, bankAccountId);
@@ -39,43 +40,22 @@ export default function AnalyticCard({ title = '', aggregationMode, metricsToFet
   }, [responseBody]);
 
   return (
-    <Stack>
-      {/* Loading Spinner */}
-      <Backdrop sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }} open={loading}>
-        <CircularProgress color="inherit" />
-      </Backdrop>
-
-      {/* Styled Analytics Card */}
-      <Box sx={{ minWidth: 275 }}>
-        <Card
-          variant="outlined"
-          sx={{
-            p: 2,
-            boxShadow: "0px 4px 15px rgba(0, 0, 0, 0.3)",  // Soft shadow
-            borderRadius: "12px",
-            background: "linear-gradient(145deg, #0d1b2a, #152c3e)", // Subtle gradient
-            border: "1px solid rgba(255, 255, 255, 0.1)",  // Soft border
-          }}
-        >
-          <CardContent>
-            <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 14 }}>
-                {title}
-              </Typography>
-
-              <Tooltip title={tooltipText} arrow placement="left">
-                <IconButton size="small" sx={{ color: 'rgba(255,255,255,0.6)' }}>
-                  <InfoOutlinedIcon fontSize="small" />
-                </IconButton>
-              </Tooltip>
-            </Box>
-
-            <Box sx={{ width: "100%" }}>
-              <AnalyticBarChart metrics={metrics} tags={tags} showLegend={showLegend}/>
-            </Box>
-          </CardContent>
-        </Card>
-      </Box>
-    </Stack>
+    <Card variant="outlined" sx={{ height: '100%', borderRadius: 4, border: '1px solid #e8ece7', boxShadow: '0 8px 24px rgba(35, 55, 43, .045)', bgcolor: '#fff' }}>
+      <CardContent sx={{ p: { xs: 2, md: 2.5 }, '&:last-child': { pb: 2 } }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', minHeight: 46 }}>
+          <Box>
+            <Typography sx={{ color: '#203b30', fontWeight: 720, letterSpacing: '-.02em' }}>{title}</Typography>
+            {subtitle && <Typography variant="body2" sx={{ color: '#849087', mt: .4 }}>{subtitle}</Typography>}
+          </Box>
+          {tooltipText && <Tooltip title={tooltipText} arrow placement="left">
+            <IconButton size="small" aria-label={`About ${title}`} sx={{ color: '#89958c' }}><InfoOutlinedIcon fontSize="small" /></IconButton>
+          </Tooltip>}
+        </Box>
+        {loading && <LinearProgress sx={{ mt: 1, borderRadius: 2, '& .MuiLinearProgress-bar': { bgcolor: '#43815b' } }} />}
+        <Box sx={{ width: '100%', mt: 1 }}>
+          <AnalyticBarChart metrics={metrics} tags={tags} showLegend={showLegend} loading={loading} />
+        </Box>
+      </CardContent>
+    </Card>
   );
 }
