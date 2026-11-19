@@ -1,5 +1,26 @@
 
-.paper {
-    width: 100% !important;
-    padding: 2rem !important;
+.tagDialogPaper {
+    width: min(760px, calc(100vw - 32px));
+    max-height: calc(100% - 32px);
+    border-radius: 16px !important;
+}
+
+.keywordEditorDialogPaper {
+    max-height: min(80vh, 760px);
+    border-radius: 16px !important;
+}
+
+@media (max-width: 600px) {
+    .tagDialogPaper {
+        width: calc(100vw - 24px);
+        max-height: calc(100% - 24px);
+        margin: 12px !important;
+        border-radius: 12px !important;
+    }
+
+    .keywordEditorDialogPaper {
+        max-height: 88vh;
+        margin: 12px !important;
+        border-radius: 12px !important;
+    }
 }

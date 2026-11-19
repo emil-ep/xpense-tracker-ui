@@ -2,6 +2,7 @@ import { Box, Button, Chip, createTheme,
     CssBaseline, FormControl, InputLabel, 
     MenuItem, OutlinedInput, Select, 
     SelectChangeEvent, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import Google from '@mui/icons-material/Google';
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagCategories } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
@@ -36,6 +37,7 @@ export default function Settings() {
     const [tempBankAccount, setTempBankAccount] = useState<BankAccount>({ name: '', accountNumber: '', type: '' });
     const [tagCateoryData, setTagCategoryData] = useState<TagCategory[]>([]);
     const [bankAccountTypes, setBankAccountTypes] = useState<string[]>([]);
+    const [googleDriveStatus, setGoogleDriveStatus] = useState<string>("");
     
     
     const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
@@ -74,6 +76,22 @@ export default function Settings() {
         }
 
     }, [userSettingsResponse]);
+
+    useEffect(() => {
+        const params = new URLSearchParams(window.location.search);
+        const driveConnected = params.get("driveConnected");
+        const driveError = params.get("driveError");
+
+        if (driveConnected === "true") {
+            setGoogleDriveStatus("Google Drive connected successfully. Backup sync is now enabled.");
+            showToast("Google Drive connected successfully");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        } else if (driveError) {
+            setGoogleDriveStatus("Google Drive connection failed. Please try again.");
+            showToast("Google Drive connection failed");
+            window.history.replaceState({}, document.title, window.location.pathname);
+        }
+    }, []);
 
     useEffect(() => {
         if(bankAccountsResponse && bankAccountsResponse.data) {
@@ -128,6 +146,11 @@ export default function Settings() {
         setTempBankAccount({ name: '', accountNumber: '', type: '' });
     };
 
+    const handleGoogleDriveLogin = () => {
+        const googleDriveAuthUrl = `${process.env.REACT_APP_API_BASE_URL}/oauth2/authorization/google?redirect_uri=${encodeURIComponent(window.location.origin + '/settings?driveConnected=true')}`;
+        window.location.href = googleDriveAuthUrl;
+    }
+
     const logout = async () => {
         const response: any = await apiCaller(logoutApi());
         if(response.status === 1){
@@ -169,6 +192,29 @@ export default function Settings() {
                     <Typography variant="h6" mb={2}>
                         User Preferences
                     </Typography>
+
+                    {/* Google Drive Login */}
+                    <Box mb={3} p={3} sx={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.04)' }}>
+                        <Typography variant="h6" gutterBottom>
+                            Google Drive Login
+                        </Typography>
+                        <Typography variant="body2" sx={{ color: '#ccc', mb: 2 }}>
+                            Optional functionality to keep your backup data in sync with Google Drive.
+                        </Typography>
+                        <Button
+                            variant="outlined"
+                            startIcon={<Google />}
+                            onClick={handleGoogleDriveLogin}
+                            sx={{ textTransform: 'none' }}
+                        >
+                            Connect Google Drive
+                        </Button>
+                        {googleDriveStatus && (
+                            <Typography variant="body2" sx={{ mt: 2, color: '#a5d6a7' }}>
+                                {googleDriveStatus}
+                            </Typography>
+                        )}
+                    </Box>
 
                     {/* Currency Select */}
                     <FormControl fullWidth margin="normal">

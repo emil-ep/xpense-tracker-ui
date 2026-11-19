@@ -82,7 +82,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         showToast("Sync failed");
         setIsSyncing(false);
       }
-    }, 5000);
+    }, 3000);
   }
 
   useEffect(() => {
