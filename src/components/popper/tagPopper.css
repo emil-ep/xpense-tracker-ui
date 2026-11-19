@@ -1,5 +1,5 @@
 
 .paper {
-    width: 100% !important;
-    padding: 2rem !important;
+    width: min(320px, calc(100vw - 32px)) !important;
+    padding: 1.5rem !important;
 }
