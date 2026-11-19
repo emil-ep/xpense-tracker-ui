@@ -1,5 +1,17 @@
+.tagManagementPage {
+    min-height: 100vh;
+    background: #f5f6f3;
+    color: #202b27;
+    padding: 6.5rem 2rem 3rem;
+}
 
+.tagManagementContent {
+    max-width: 1440px;
+    margin: 0 auto;
+}
 
-.tagTable {
-    height: 500;
+@media (max-width: 600px) {
+    .tagManagementPage {
+        padding: 6rem 1rem 2rem;
+    }
 }
