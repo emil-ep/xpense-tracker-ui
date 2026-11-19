@@ -20,7 +20,11 @@ export default function SelectExistingTag({tags, expense, onClose} : SelectExist
         const tag = tags.find((tag) => tag.name === name);
         if(tag){
             setSelectedExistingTag(tag);
-            setKeywordsToAdd(expense.description || "");
+            setKeywordsToAdd(
+                [...tag.keywords, expense.description]
+                    .filter((keyword): keyword is string => Boolean(keyword))
+                    .join(", ")
+            );
         }
     }
 
@@ -32,7 +36,9 @@ export default function SelectExistingTag({tags, expense, onClose} : SelectExist
         if(selectedExistingTag){
             const reqBody = {
                 ...selectedExistingTag,
-                keywords: keywordsToAdd ? keywordsToAdd.split(",").map((kw) => kw.trim()) : []
+                keywords: keywordsToAdd
+                    ? keywordsToAdd.split(",").map((kw) => kw.trim())
+                    : selectedExistingTag.keywords
             }
             const response: any = await apiCaller(editTagApi(reqBody));
             if(response.status === 1){
