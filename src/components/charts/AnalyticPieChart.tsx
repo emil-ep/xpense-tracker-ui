@@ -11,8 +11,6 @@ interface Metrics {
 }
 
 export default function AnalyticPieChart({ metrics, tags, loading = false }: Metrics) {
-  const today = new Date();
-
   const metricKeys: string[] = Array.from(
     new Set(metrics?.flatMap(obj => Object.keys(obj).filter(key => key !== 'timeframe')))
   );
@@ -20,10 +18,12 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
   function generateRandomHexColor(metricKey: string): string {
     if (metricKey === 'credit_aggregate') return CREDIT_AGGREGATE_COLOR;
     if (metricKey === 'debit_aggregate') return DEBIT_AGGREGATE_COLOR;
-    return '#' + Math.floor(Math.random() * 0xffffff).toString(16).padStart(6, '0');
+    const palette = ['#78a88d', '#9995bf', '#d2a36f', '#83a9b8'];
+    const hash = Array.from(metricKey).reduce((sum, character) => sum + character.charCodeAt(0), 0);
+    return palette[hash % palette.length];
   }
 
-  const data = metricKeys.map(metricKey => {
+  const allData = metricKeys.map(metricKey => {
     //@ts-expect-error
     const total = metrics?.reduce((acc, metric) => acc + metric[metricKey] || 0, 0) || 0;
     const matchingTag = tags?.find(tag => tag.name === metricKey);
@@ -36,14 +36,15 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
       color,
     };
   });
+  const visibleData = [...allData].sort((first, second) => second.value - first.value);
 
   return (
-    <Box sx={{ width: '100%', position: 'relative', minHeight: 300 }}>
-      <Stack direction="row" spacing={4} alignItems="center" justifyContent="center">
+    <Box sx={{ width: '100%', position: 'relative' }}>
+      <Stack direction={{ xs: 'column', md: 'row' }} spacing={{ xs: 1, md: 2 }} alignItems="center" justifyContent="center">
         <PieChart
           series={[
             {
-              data: data,
+              data: visibleData,
               innerRadius: 40,
               outerRadius: 100,
               paddingAngle: 3,
@@ -54,18 +55,18 @@ export default function AnalyticPieChart({ metrics, tags, loading = false }: Met
           ]}
           width={300}
           height={300}
-          colors={data.map(d => d.color)}
-          margin={{ top: 10, bottom: 10, left: 10, right: 10 }}
+          colors={visibleData.map(d => d.color)}
+          margin={{ top: 4, bottom: 4, left: 4, right: 4 }}
           legend={{ hidden: true }}
           loading={loading}
         />
 
         {/* Custom Legend */}
-        <Stack spacing={1}>
-          {data.map(item => (
+        <Stack spacing={.75} sx={{ width: { xs: '100%', md: 'auto' }, minWidth: { md: 230 }, maxHeight: { xs: 180, md: 260 }, overflowY: 'auto', pr: 1 }}>
+          {visibleData.map(item => (
             <Stack key={item.id} direction="row" spacing={1} alignItems="center">
-              <Box sx={{ width: 12, height: 12, bgcolor: item.color, borderRadius: '50%' }} />
-              <Typography variant="body2">
+              <Box sx={{ width: 10, height: 10, flexShrink: 0, bgcolor: item.color, borderRadius: '50%' }} />
+              <Typography variant="caption" noWrap sx={{ color: '#526157' }}>
                 {item.label}: {findCurrency(window.tracker?.userCurrency ?? '')} {item.value.toLocaleString()}
               </Typography>
             </Stack>

@@ -70,6 +70,10 @@ export interface MetricsV2 {
     timeframe : string;
     debit_aggregate?: number;
     credit_aggregate?: number;
+    expense_aggregate?: number;
+    total_expenses_entry?: number;
+    total_untagged_expenses_entry?: number;
+    highest_expense_recorded?: number;
     tags_aggregate?: Object;
 }
 

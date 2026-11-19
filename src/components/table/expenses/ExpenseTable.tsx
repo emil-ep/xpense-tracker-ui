@@ -12,7 +12,7 @@ import RotateRightTwoToneIcon from '@mui/icons-material/RotateRightTwoTone';
 
 
 import { AgGridReact } from 'ag-grid-react';
-import { IconButton, Stack, TextField } from "@mui/material";
+import { Box, IconButton, Stack, TextField, Typography } from "@mui/material";
 import DeleteIcon from '@mui/icons-material/Delete';
 import TagPopper from "../../popper/TagPopper";
 import { apiCaller } from "../../../api/apicaller";
@@ -25,6 +25,7 @@ import { uploadAttachment } from "../../../api/fileApi";
 import AttachmentPreviewDialog from "../../popper/AttachmentPreviewDialog";
 import DeleteExpenseDialog from "../../popper/DeleteExpenseDialog";
 import { useBankAccount } from "../../../context/BankAccountContext";
+import SearchRoundedIcon from '@mui/icons-material/SearchRounded';
 
 interface TableProps {
     clazzName?: string;
@@ -56,6 +57,7 @@ export default function ExpenseTable(
 
     const [showPreviewDialog, setShowPreviewDialog] = useState<boolean>(false);
     const [showDeleteExpenseDialog, setShowDeleteExpenseDialog] = useState<boolean>(false);
+    const [searchTerm, setSearchTerm] = useState('');
     const { selectedBankAccountId } = useBankAccount();
         
 
@@ -346,7 +348,7 @@ export default function ExpenseTable(
 
         return (
             <div>
-                <Stack sx={{ pb: 10 }} direction="row" alignItems="center">
+                <Stack direction="row" alignItems="center">
                     <TextField
                         id={`notes-${props.data.id}`}
                         value={localNotes}
@@ -355,7 +357,7 @@ export default function ExpenseTable(
                         disabled={isSaving}
                         fullWidth={true}
                     />
-                    <IconButton aria-label="save-notes" onClick={handleSave} disabled={isSaving}>
+                    <IconButton aria-label="save-notes" onClick={handleSave} disabled={isSaving} sx={{ color: '#43815b' }}>
                         <SaveIcon />
                     </IconButton>
                     {isSaving && (
@@ -402,34 +404,39 @@ export default function ExpenseTable(
     };
 
     const headers: Object[] = [
-        {field: "id", flex: 1},
-        {field: "transactionDate", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
-        {field: "description", flex: 1, filter: "agTextColumnFilter", floatingFilter: true},
-        {field: "type", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
-        {field: "amount", flex: 0.5, filter: "agTextColumnFilter", floatingFilter: true},
+        {field: "id", hide: true},
+        {field: "transactionDate", headerName: 'Date', minWidth: 125, flex: 0.7},
+        {field: "description", headerName: 'Description', minWidth: 180, flex: 1.4},
+        {field: "type", headerName: 'Type', minWidth: 105, flex: 0.55},
+        {field: "amount", headerName: 'Amount', minWidth: 130, flex: 0.7, valueFormatter: (params: any) => `${window.tracker?.userCurrency ?? ''} ${Number(params.value || 0).toLocaleString()}`},
         {
             field: 'notes',
+            headerName: 'Notes',
             cellRenderer: notesCellRenderer,
-            filter: "agTextColumnFilter",
             sortable: true,
-            floatingFilter: true,
             flex: 2
         },
         {
             field: 'tags', 
+            headerName: 'Tags',
             cellRenderer: tagCellRenderer, 
             sortable: true, 
             flex: 2
         },
-        {field: "attachment", flex: 0.5, cellRenderer: attachmentCellRenderer},
-        {field: "actions", flex: 1, cellRenderer: actionCellRenderer}
+        {field: "attachment", headerName: 'Files', minWidth: 80, flex: 0.4, cellRenderer: attachmentCellRenderer},
+        {field: "actions", headerName: '', minWidth: 110, flex: 0.55, cellRenderer: actionCellRenderer}
     ];
 
     
     return (
-        <div
-        className={`ag-theme-quartz-auto-dark ${clazzName}`} 
-        style={{ height: height}}
+        <Box className="expenseTableShell" sx={{ height, width: '100%' }}>
+        {!isPreview && <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'stretch', sm: 'center' }} spacing={1} className="expenseTableToolbar">
+            <Box><Typography variant="subtitle1" sx={{ color: '#203b30', fontWeight: 720 }}>Transaction details</Typography><Typography variant="caption" sx={{ color: '#849087' }}>Search, review, and update your activity</Typography></Box>
+            <TextField size="small" value={searchTerm} onChange={event => setSearchTerm(event.target.value)} placeholder="Search transactions" inputProps={{ 'aria-label': 'Search transactions' }} InputProps={{ startAdornment: <SearchRoundedIcon sx={{ color: '#8b978e', mr: 1, fontSize: 20 }} /> }} sx={{ width: { xs: '100%', sm: 260 }, '& .MuiOutlinedInput-root': { bgcolor: '#fff', borderRadius: 2 } }} />
+        </Stack>}
+        <Box
+        className={`ag-theme-quartz ${clazzName ?? ''}`}
+        sx={{ height: isPreview ? '100%' : 'calc(100% - 82px)', width: '100%' }}
         >
             <AgGridReact
                 pagination={pagination? pagination : undefined}
@@ -437,7 +444,12 @@ export default function ExpenseTable(
                 paginationPageSizeSelector={[20, 50, 100]}
                 rowData={rowData}
                 columnDefs={headers}
+                quickFilterText={searchTerm}
+                rowHeight={60}
+                headerHeight={48}
+                defaultColDef={{ resizable: true }}
             />
+        </Box>
             <AttachmentUploadDialog
                 open={showUploadDialog}
                 onClose={closeUploadDialog}
@@ -453,6 +465,6 @@ export default function ExpenseTable(
                 onClose={closeDeleteExpenseDialog}
                 onDelete={handleDelete}
             />
-        </div>
+        </Box>
     )
 }

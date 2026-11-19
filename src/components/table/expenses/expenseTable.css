@@ -1,3 +1,82 @@
 .tag-button{
   margin-right: 0.5rem;
 }
+
+.expenseTableShell {
+  overflow: hidden;
+  border: 1px solid #e8ece7;
+  border-radius: 16px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(35, 55, 43, .045);
+}
+
+.expenseTableToolbar {
+  min-height: 82px;
+  padding: 1rem 1.5rem;
+  border-bottom: 1px solid #edf0ed;
+}
+
+.expenseTableContainer {
+  --ag-background-color: #fff;
+  --ag-foreground-color: #405147;
+  --ag-header-background-color: #f7f9f6;
+  --ag-header-foreground-color: #718078;
+  --ag-border-color: #edf0ed;
+  --ag-row-border-color: #edf0ed;
+  --ag-odd-row-background-color: #fff;
+  --ag-row-hover-color: #f5f8f4;
+  --ag-selected-row-background-color: #edf4ef;
+  --ag-font-family: inherit;
+  --ag-font-size: 13px;
+  --ag-grid-size: 6px;
+  border: 0;
+}
+
+.expenseTableContainer .ag-root-wrapper {
+  border: 0;
+  border-radius: 0;
+}
+
+.expenseTableContainer .ag-header-cell-text {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.expenseTableContainer .ag-cell {
+  display: flex;
+  align-items: center;
+}
+
+.expenseTableContainer .tag-button {
+  border: 0;
+  border-radius: 999px;
+  padding: 4px 9px;
+  margin: 2px 4px 2px 0;
+  color: #426b53;
+  background: #eff5f0;
+  font: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.expenseTableContainer .tag-button:hover {
+  background: #dfece2;
+}
+
+.expenseTableContainer .view-button {
+  border: 0;
+  border-radius: 8px;
+  padding: 6px 10px;
+  color: #28634c;
+  background: #eff5f0;
+  font: inherit;
+  cursor: pointer;
+}
+
+@media (max-width: 600px) {
+  .expenseTableToolbar {
+    padding: 1rem;
+  }
+}
