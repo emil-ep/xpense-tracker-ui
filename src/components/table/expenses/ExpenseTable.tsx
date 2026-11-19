@@ -36,8 +36,6 @@ interface TableProps {
     tags: Tag[];
 }
 
-const dummyAnchor = document.createElement('div');
-
 export default function ExpenseTable(
     {clazzName, 
         expenses, 
@@ -49,12 +47,13 @@ export default function ExpenseTable(
     } : TableProps){
         
     const [rowData, setRowData] = useState<ExpenseItemType[]>([]);
-    const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
+    const [tagData, setTagData] = useState<Tag[]>(tags);
     const [openPopperId, setOpenPopperId] = useState<string | null>(null);
     const [editingTag, setEditingTag] = useState<Tag | null>();
     const [selectedExpenseId, setSelectedExpenseId] = useState<string | null>(null);
     const [showUploadDialog, setShowUploadDialog] = useState(false);
     const [previewFileId, setPreviewFileId] = useState<string | null>(null);
+
     const [showPreviewDialog, setShowPreviewDialog] = useState<boolean>(false);
     const [showDeleteExpenseDialog, setShowDeleteExpenseDialog] = useState<boolean>(false);
     const { selectedBankAccountId } = useBankAccount();
@@ -64,13 +63,16 @@ export default function ExpenseTable(
         setRowData(expenses);
     }, [expenses]);
 
+    useEffect(() => {
+        setTagData(tags);
+    }, [tags]);
+
     const handleClose = () => {
         setOpenPopperId(null);
     };
 
-    const handleOpen = (event: React.MouseEvent<HTMLElement>, id: string) => {
+    const handleOpen = (id: string) => {
         setEditingTag(null);
-        setAnchorEl(dummyAnchor);
         setOpenPopperId(id);
     }
 
@@ -93,20 +95,26 @@ export default function ExpenseTable(
             if(createTagResponse.status === 1){
                 const tagId = createTagResponse.data.id;
                 const tag = createTagResponse.data;
+                setTagData((previousTags) => [...previousTags, tag]);
+                const expense = rowData.find((row) => row.id === expenseId);
                 const updateExpenseBody = {
-                    tagIds: [tagId]
+                    tagIds: [...new Set([...(expense?.tags ?? []).map((existingTag) => existingTag.id), tagId])]
                 }
-                handleClose();
                 const updateExpenseResponse: any = await apiCaller(updateExpense(expenseId, updateExpenseBody));
                 if(updateExpenseResponse.status === 1){
                     showToast("Expense Saved!");
                     setRowData((prevRowData) =>
                         prevRowData.map((expense) =>
                             expense.id === expenseId
-                            ? { ...expense, tags: [...expense.tags, tag] } // Add the new tag
+                            ? { ...expense, tags: expense.tags.some((existingTag) => existingTag.id === tagId)
+                                ? expense.tags
+                                : [...expense.tags, tag] }
                             : expense
                         )
                     );
+                    handleClose();
+                } else {
+                    showToast(`Tag created, but could not be applied: ${updateExpenseResponse.message ?? "unknown error"}`);
                 }
             }
         } catch(err) {
@@ -134,10 +142,44 @@ export default function ExpenseTable(
         setShowDeleteExpenseDialog(false);
     }
 
-    const handleEditTag = (event: React.MouseEvent<HTMLElement>, expenseId: string, tag: Tag) => {
-        setAnchorEl(dummyAnchor); // Keep the popper aligned
+    const handleEditTag = (expenseId: string, tag: Tag) => {
         setOpenPopperId(expenseId);
         setEditingTag(tag); // Set the tag to edit
+    };
+
+    const handleSelectExistingTag = async (tag: Tag, expense: ExpenseItemType) => {
+        const expenseId = expense.id;
+        if (!expenseId) return;
+
+        if (expense.tags.some((existingTag) => existingTag.id === tag.id)) {
+            setTagData((previousTags) => previousTags.map((existingTag) =>
+                existingTag.id === tag.id ? tag : existingTag
+            ));
+            showToast("Tag keywords updated. This tag is already on the expense.");
+            handleClose();
+            return;
+        }
+
+        try {
+            const tagIds = [...new Set([...expense.tags.map((existingTag) => existingTag.id), tag.id])];
+            const response: any = await apiCaller(updateExpense(expenseId, { tagIds }));
+            if (response.status === 1) {
+                setTagData((previousTags) => previousTags.map((existingTag) =>
+                    existingTag.id === tag.id ? tag : existingTag
+                ));
+                setRowData((prevRowData) => prevRowData.map((row) =>
+                    row.id === expenseId
+                        ? { ...row, tags: [...row.tags, tag] }
+                        : row
+                ));
+                showToast("Tag applied to expense!");
+                handleClose();
+            } else {
+                showToast(`Unable to apply tag: ${response.message ?? "unknown error"}`);
+            }
+        } catch (err) {
+            showToast("Unable to apply tag to expense");
+        }
     };
 
     const handleAttachmentUpload = async (file: File | null) => {
@@ -175,6 +217,9 @@ export default function ExpenseTable(
             const updateTagResponse: any = await apiCaller(editTagApi(updatedTag));
             if (updateTagResponse.status === 1) {
                 showToast("Tag updated!");
+                setTagData((previousTags) => previousTags.map((tag) =>
+                    tag.id === updatedTag.id ? updatedTag : tag
+                ));
                 // Update the state with the modified tag
                 setRowData((prevRowData) =>
                     prevRowData.map((expense) =>
@@ -320,23 +365,22 @@ export default function ExpenseTable(
         return (
             <div>
                 {props.value.map((tag: Tag, index: number) => (
-                    <button key={index} className="tag-button" onClick={(e) => handleEditTag(e, props.data.id, tag)}>
+                    <button key={index} className="tag-button" onClick={() => handleEditTag(props.data.id, tag)}>
                         {tag.name}
                     </button>
                 ))}
-                <IconButton aria-label="add-tag" onClick={(e) => handleOpen(e, props.data.id)}>
+                <IconButton aria-label="add-tag" onClick={() => handleOpen(props.data.id)}>
                     <AddCircleIcon />
                 </IconButton>
                 {!isPreview && 
                     <TagPopper
-                        clazzName="popperCentered"
                         expense={props.data}
                         tag={editingTag}
-                        tags={tags}
+                        tags={tagData}
                         tagCategories={tagCategories}
-                        anchorEl={dummyAnchor}
                         open={openPopperId === props.data.id}
                         onClose={handleClose}
+                        onSelectExistingTag={(tag) => handleSelectExistingTag(tag, props.data)}
                         onCreate={handleCreateTag}
                         onEdit={handleEditTagSave}
                     />
@@ -382,12 +426,6 @@ export default function ExpenseTable(
                 rowData={rowData}
                 columnDefs={headers}
             />
-            {openPopperId && (
-                <div
-                    className="overlay"
-                    onClick={handleClose}
-                />
-            )}
             <AttachmentUploadDialog
                 open={showUploadDialog}
                 onClose={closeUploadDialog}
