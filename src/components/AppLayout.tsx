@@ -3,7 +3,8 @@ import { AppBar, Toolbar, Box, CssBaseline, IconButton, Typography, Button, Form
 import NavigationDrawer from "./NavigationDrawer";
 import MenuIcon from '@mui/icons-material/Menu';
 import DatePickerMenu from "./DatePickerMenu";
-import SyncIcon from '@mui/icons-material/Sync';
+import SyncRoundedIcon from '@mui/icons-material/SyncRounded';
+import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
 import { apiCaller } from "../api/apicaller";
 import { fetchSyncStatus, syncExpense } from "../api/expensesApi";
 import { showToast } from "../utils/ToastUtil";
@@ -26,15 +27,14 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   
    useEffect(() => {
-          if (userBankAccountResponse && userBankAccountResponse.data && userBankAccountResponse.data.length > 0) {
-              // Set the first bank account as selected by default
+          if (userBankAccountResponse?.data?.length > 0 &&
+              (!selectedBankAccountId || !userBankAccountResponse.data.some((account: any) => account.id === selectedBankAccountId))) {
               setSelectedBankAccountId(userBankAccountResponse.data[0].id);
-              console.log("User bank accounts fetched successfully", userBankAccountResponse);
           }
           if (userBankAccountError) {
               showToast("Fetching user bank accounts failed");
           }
-      }, [userBankAccountResponse, userBankAccountError, setSelectedBankAccountId]);
+      }, [userBankAccountResponse, userBankAccountError, selectedBankAccountId, setSelectedBankAccountId]);
 
   const toggleDrawer = () => {
     setDrawerOpen(!drawerOpen);
@@ -109,31 +109,29 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   return (
     <Box sx={{ display: "flex" }}>
       <CssBaseline />
-      <AppBar position="fixed" sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, backgroundColor: "#003f5c" }}>
-        <Toolbar>
+      <AppBar position="fixed" elevation={0} sx={{ zIndex: (theme) => theme.zIndex.drawer + 1, bgcolor: '#1f4b3a', color: '#fff', boxShadow: '0 4px 18px rgba(24, 56, 45, .16)' }}>
+        <Toolbar sx={{ minHeight: { xs: 64, md: 72 }, gap: { xs: .75, md: 1.5 }, px: { xs: 1.5, md: 3 } }}>
           <IconButton
             edge="start"
-            color="inherit"
-            aria-label="menu"
+            aria-label="open navigation"
             onClick={toggleDrawer}
-            sx={{ mr: 2 }}
+            sx={{ color: '#fff', borderRadius: 2, '&:hover': { bgcolor: 'rgba(255,255,255,.1)' } }}
           >
             <MenuIcon />
           </IconButton>
-          <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-            Expense Tracker
-          </Typography>
-          <FormControl variant="outlined" size="small" sx={{ minWidth: 220, mr: 2, backgroundColor: 'rgba(255,255,255,0.08)', borderRadius: 1 }}>
-            <InputLabel sx={{ color: '#fff' }}>Bank Account</InputLabel>
+          <Box sx={{ display: { xs: 'none', sm: 'block' }, minWidth: { sm: 145, md: 220 }, flexGrow: 1 }}>
+            <Typography variant="subtitle1" component="div" sx={{ color: '#fff', fontWeight: 750, lineHeight: 1.2, letterSpacing: '-.02em' }}>Xpense Tracker</Typography>
+            <Typography variant="caption" sx={{ color: 'rgba(255,255,255,.7)' }}>Your finances, in view</Typography>
+          </Box>
+          <FormControl variant="outlined" size="small" sx={{ minWidth: { xs: 145, sm: 205, md: 245 }, maxWidth: 300, flexGrow: { xs: 1, sm: 0 }, '& .MuiOutlinedInput-root': { bgcolor: '#f7f9f6', borderRadius: 2, color: '#30473a', '& fieldset': { borderColor: '#e2e9e2' }, '&:hover fieldset': { borderColor: '#a9c2ae' }, '&.Mui-focused fieldset': { borderColor: '#43815b' } } }}>
             <Select
-              value={selectedBankAccountId}
+              value={selectedBankAccountId ?? ''}
               onChange={(e) => setSelectedBankAccountId(e.target.value as string)}
-              label="Bank Account"
-              sx={{ color: '#fff', '& .MuiSvgIcon-root': { color: '#fff' } }}
               displayEmpty
+              startAdornment={<AccountBalanceRoundedIcon sx={{ mr: 1, color: '#6d9077', fontSize: 19 }} />}
             >
               <MenuItem value="">
-                <em style={{ color: '#aaa' }}>Select bank account</em>
+                <em style={{ color: '#849087' }}>Select account</em>
               </MenuItem>
               {userBankAccountResponse?.data?.map((account: any) => (
                 <MenuItem key={account.id} value={account.id}>
@@ -142,24 +140,15 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               ))}
             </Select>
           </FormControl>
-          <Button onClick={() => window.location.href = "/add/expense"} color="inherit">
-            Add Expense
-          </Button>
-          <IconButton
-            color="inherit"
+          <Button
+            variant="outlined"
             aria-label="sync"
-            sx={{
-              marginRight: "1rem",
-              animation: isSyncing ? "rotate 1s linear infinite" : "none",
-              "@keyframes rotate": {
-                "0%": { transform: "rotate(0deg)" },
-                "100%": { transform: "rotate(360deg)" },
-              },
-            }}
+            startIcon={<SyncRoundedIcon sx={{ animation: isSyncing ? 'toolbarSync 1s linear infinite' : 'none', '@keyframes toolbarSync': { from: { transform: 'rotate(0deg)' }, to: { transform: 'rotate(360deg)' } } }} />}
             onClick={handleSyncClick}
+            sx={{ minWidth: { xs: 42, sm: 90 }, px: { xs: 1, sm: 1.5 }, borderRadius: 2, borderColor: 'rgba(255,255,255,.42)', color: '#fff', textTransform: 'none', fontWeight: 650, '&:hover': { bgcolor: 'rgba(255,255,255,.1)', borderColor: 'rgba(255,255,255,.75)' } }}
           >
-            <SyncIcon />
-          </IconButton>
+            <Box component="span" sx={{ display: { xs: 'none', sm: 'inline' } }}>{isSyncing ? 'Syncing' : 'Sync'}</Box>
+          </Button>
           <DatePickerMenu />
         </Toolbar>
       </AppBar>

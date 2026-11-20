@@ -13,6 +13,7 @@ import { showToast } from "../../utils/ToastUtil";
 
 import {
     Box,
+    Alert,
     Button,
     MenuItem,
     Select,
@@ -38,6 +39,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     const [possibleMatches, setPossibleMatches] = useState<{ [key: string]: string }>({});
     const [headerStartIndex, setHeaderRowIndex] = useState<number>(0);
     const [selectedUserBankAccount, setSelectedUserBankAccount] = useState<string>("");
+    const [hasCurrentPreview, setHasCurrentPreview] = useState(false);
 
     const headerMapperGetApi = useCallback(() => getHeaderMapperConfig(fileName), [fileName]);
 
@@ -49,6 +51,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     } = useApi<any>(fetchUserBankAccountsApi, []);
 
     const handleSelectionChange = (systemHeader: string, selectedHeader: string) => {
+        setHasCurrentPreview(false);
         setSelectedHeaders((prev) => ({
             ...prev,
             [systemHeader]: selectedHeader,
@@ -85,14 +88,23 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                     element.amount = element.type === "CREDIT" ? element.credit : element.debit;
                 });
                 setExpensePreviewItems(items);
+                setHasCurrentPreview(true);
+                setIsModalOpen(true);
+            } else {
+                setHasCurrentPreview(false);
+                showToast("Could not prepare the transaction preview");
             }
-            setIsModalOpen(true);
         } catch (err) {
+            setHasCurrentPreview(false);
             showToast("Fetching preview failed");
         }
     };
 
     const handleSaveExpense = async () => {
+        if (!hasCurrentPreview) {
+            showToast("Preview the transactions before saving");
+            return;
+        }
         if (!selectedUserBankAccount) {
             showToast("Please select a bank account before submitting expenses");
             return;
@@ -141,51 +153,25 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
     }, [userBankAccountError]);
 
     return (
-        <Box
-            sx={{
-                minHeight: "100vh",
-                width: "100vw",
-                backgroundColor: "rgb(5, 30, 52)",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                justifyContent: "center",
-                color: "white",
-                padding: 3
-            }}
-        >
-            {/* Title */}
-            <Typography variant="h5" sx={{ color: "#fff", marginBottom: 3 }}>
-                Map System Header with your statement header
-            </Typography>
-
-            {/* Bank Account Selection */}
-            <Box sx={{ marginBottom: 3, width: "90%", maxWidth: "900px" }}>
-                <Typography variant="body1" sx={{ color: "#fff", marginBottom: 1 }}>
-                    Select Bank Account *
-                </Typography>
+        <Box sx={{ mt: 1 }}>
+            <Box sx={{ mb: 2 }}>
+                <Typography variant="h6" sx={{ color: '#203b30', fontWeight: 720 }}>2. Match your statement columns</Typography>
+                <Typography variant="body2" sx={{ color: '#849087', mt: .4 }}>Confirm which statement column contains each transaction field.</Typography>
+            </Box>
+            <Paper variant="outlined" sx={{ p: { xs: 1.5, md: 2 }, mb: 2, borderRadius: 3, borderColor: '#e8ece7', bgcolor: '#fff' }}>
+                <Typography variant="body2" sx={{ color: '#536158', fontWeight: 650, mb: 1 }}>Save these transactions to</Typography>
                 <Select
                     fullWidth
                     value={selectedUserBankAccount}
-                    onChange={(e) => setSelectedUserBankAccount(e.target.value)}
-                    displayEmpty
-                    sx={{
-                        backgroundColor: "#1B3A57",
-                        color: "white",
-                        borderRadius: 1,
-                        '& .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#0288d1',
-                        },
-                        '&:hover .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#0277bd',
-                        },
-                        '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-                            borderColor: '#0288d1',
-                        }
+                    onChange={(e) => {
+                        setSelectedUserBankAccount(e.target.value);
+                        setHasCurrentPreview(false);
                     }}
+                    displayEmpty
+                    sx={{ bgcolor: '#fff', borderRadius: 2, color: '#30473a' }}
                 >
                     <MenuItem value="">
-                        <em style={{ color: "#aaa" }}>Select a bank account</em>
+                        <em style={{ color: '#8a978e' }}>Select a bank account</em>
                     </MenuItem>
                     {userBankAccountResponse?.data?.map((account: any) => (
                         <MenuItem key={account.id} value={account.id}>
@@ -193,68 +179,34 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                         </MenuItem>
                     ))}
                 </Select>
-            </Box>
+            </Paper>
 
-            {/* Buttons - Moved to Top for Better Visibility */}
-            <Stack direction="row" spacing={2} sx={{ marginBottom: 2 }}>
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#0288d1", "&:hover": { backgroundColor: "#0277bd" } }}
-                    onClick={handleVerifyExpense}
-                >
-                    Verify Expense
-                </Button>
-                <Button
-                    variant="contained"
-                    sx={{ backgroundColor: "#43a047", "&:hover": { backgroundColor: "#388e3c" } }}
-                    onClick={handleSaveExpense}
-                >
-                    Submit Expense
-                </Button>
-            </Stack>
-            {possibleMatches && Object.keys(possibleMatches).length > 0 && (
-                <Typography sx={{ color: "lightgreen", marginBottom: 2 }}>
-                    Hurray! our AI engine auto matched {Object.keys(possibleMatches).length} headers!
-                </Typography>
-            )}
-            <TableContainer
-                component={Paper}
-                sx={{
-                    width: "90%",
-                    maxWidth: "900px",
-                    borderRadius: 2,
-                    padding: 2,
-                    backgroundColor: "#0A253F",
-                    boxShadow: "0px 0px 10px rgba(255, 255, 255, 0.2)"
-                }}
-            >
-                <Table>
+            {possibleMatches && Object.keys(possibleMatches).length > 0 && <Alert severity="success" sx={{ mb: 2, borderRadius: 2 }}>
+                Auto-matched {Object.keys(possibleMatches).length} statement fields. Please review the matches below.
+            </Alert>}
+            <TableContainer component={Paper} sx={{ border: '1px solid #e8ece7', borderRadius: 3, boxShadow: '0 8px 24px rgba(35, 55, 43, .045)', overflowX: 'auto' }}>
+                <Table sx={{ minWidth: 560, width: '100%', borderCollapse: 'separate', borderSpacing: 0 }}>
                     <TableHead>
-                        <TableRow sx={{ backgroundColor: "#1B3A57" }}>
-                            <TableCell sx={{ color: "white" }}><b>System Header</b></TableCell>
-                            <TableCell sx={{ color: "white" }}><b>Statement Header</b></TableCell>
+                        <TableRow sx={{ bgcolor: '#f3f6f2' }}>
+                            <TableCell sx={{ color: '#65756b', fontWeight: 750, fontSize: 12, letterSpacing: '.04em', textTransform: 'uppercase', borderColor: '#edf0ed' }}>Transaction field</TableCell>
+                            <TableCell sx={{ color: '#65756b', fontWeight: 750, fontSize: 12, letterSpacing: '.04em', textTransform: 'uppercase', borderColor: '#edf0ed' }}>Statement column</TableCell>
                         </TableRow>
                     </TableHead>
                     <TableBody>
                         {systemHeaders.map((header: string) => (
-                            <TableRow key={header}>
-                                <TableCell sx={{ color: "white" }}>{header}</TableCell>
-                                <TableCell>
+                            <TableRow key={header} hover>
+                                <TableCell sx={{ color: '#405147', fontWeight: 600, borderColor: '#edf0ed' }}>{header}</TableCell>
+                                <TableCell sx={{ borderColor: '#edf0ed' }}>
                                     <Select
                                         fullWidth
-                                        value={selectedHeaders[header] || ""}
+                                        size="small"
+                                        value={selectedHeaders[header] || ''}
                                         onChange={(e) => handleSelectionChange(header, e.target.value)}
                                         displayEmpty
-                                        sx={{ backgroundColor: "#1B3A57", color: "white", borderRadius: 1 }}
+                                        sx={{ bgcolor: '#fff', borderRadius: 2, color: '#405147' }}
                                     >
-                                        <MenuItem value="">
-                                            <em style={{ color: "white" }}>Select Header</em>
-                                        </MenuItem>
-                                        {getAvailableHeaders(selectedHeaders[header])?.map((header) => (
-                                            <MenuItem key={header} value={header}>
-                                                {header}
-                                            </MenuItem>
-                                        ))}
+                                        <MenuItem value=""><em>Select a column</em></MenuItem>
+                                        {getAvailableHeaders(selectedHeaders[header])?.map((header) => <MenuItem key={header} value={header}>{header}</MenuItem>)}
                                     </Select>
                                 </TableCell>
                             </TableRow>
@@ -262,6 +214,17 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
                     </TableBody>
                 </Table>
             </TableContainer>
+
+            {!hasCurrentPreview && <Alert severity="warning" sx={{ mt: 2, borderRadius: 2 }}>
+                Preview the transactions before saving. If you change the bank account or any column mapping, preview them again.
+            </Alert>}
+            {hasCurrentPreview && <Alert severity="success" sx={{ mt: 2, borderRadius: 2 }}>
+                Preview complete. You can now save these transactions.
+            </Alert>}
+            <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="flex-end" spacing={1.5} sx={{ mt: 2 }}>
+                <Button variant="outlined" onClick={handleVerifyExpense} sx={{ borderColor: '#cbd9ce', color: '#28634c', borderRadius: 2.5, textTransform: 'none', fontWeight: 700 }}>Preview transactions</Button>
+                <Button variant="contained" disabled={!hasCurrentPreview} onClick={handleSaveExpense} sx={{ bgcolor: '#28634c', borderRadius: 2.5, textTransform: 'none', fontWeight: 700, '&:hover': { bgcolor: '#1e503c' } }}>Save transactions</Button>
+            </Stack>
 
             {/* Expense Preview Modal */}
             <ExpensePreviewModal isOpen={isModalOpen} onClose={closeModal}>
