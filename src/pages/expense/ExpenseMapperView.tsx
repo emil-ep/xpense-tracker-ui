@@ -123,7 +123,7 @@ export default function ExpenseMapperView({ fileName }: { fileName: string }) {
             const expenseSaveResponse: ExpenseSaveResponse = await apiCaller(saveExpense(fileName, result));
             if (expenseSaveResponse.status === 1) {
                 showToast("Expense saved!");
-                navigate("/home");
+                navigate({ pathname: "/home", search: window.location.search });
             }
         } catch (err) {
             showToast("Saving expense failed");

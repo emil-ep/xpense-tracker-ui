@@ -74,14 +74,21 @@ export default function Settings() {
         const driveConnected = params.get("driveConnected");
         const driveError = params.get("driveError");
 
+        const clearDriveStatusParams = () => {
+            params.delete("driveConnected");
+            params.delete("driveError");
+            const query = params.toString();
+            window.history.replaceState({}, document.title, `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`);
+        };
+
         if (driveConnected === "true") {
             setGoogleDriveStatus("Google Drive connected successfully. Backup sync is now enabled.");
             showToast("Google Drive connected successfully");
-            window.history.replaceState({}, document.title, window.location.pathname);
+            clearDriveStatusParams();
         } else if (driveError) {
             setGoogleDriveStatus("Google Drive connection failed. Please try again.");
             showToast("Google Drive connection failed");
-            window.history.replaceState({}, document.title, window.location.pathname);
+            clearDriveStatusParams();
         }
     }, []);
 

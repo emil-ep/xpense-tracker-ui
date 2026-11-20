@@ -51,7 +51,7 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, toggleDrawe
         }}
       >
         <Box sx={{ px: 2.5, pt: 2.5, pb: 2 }}>
-          <ListItemButton component={Link} to="/home" onClick={toggleDrawer} sx={{ px: 0, py: 1, borderRadius: 2, '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } }}>
+          <ListItemButton component={Link} to={{ pathname: '/home', search: location.search }} onClick={toggleDrawer} sx={{ px: 0, py: 1, borderRadius: 2, '&:hover': { bgcolor: 'rgba(255,255,255,.08)' } }}>
             <ListItemIcon sx={{ minWidth: 48, mr: 1 }}>
               <Box sx={{ width: 40, height: 40, display: 'grid', placeItems: 'center', borderRadius: 2, bgcolor: 'rgba(255,255,255,.12)' }}>
                 <img src="/images/wallet-icon-custom-3.svg" alt="" className="appIcon" />
@@ -99,7 +99,7 @@ const NavigationDrawer: React.FC<NavigationDrawerProps> = ({ isOpen, toggleDrawe
                     '&.Mui-selected:hover, &:hover': { bgcolor: 'rgba(255,255,255,.11)', color: '#fff' },
                   }}
                   component={Link}
-                  to={item.path}
+                  to={{ pathname: item.path, search: location.search }}
                   onClick={toggleDrawer}
                 >
                   <ListItemIcon sx={{ minWidth: 0, mr: 1.5, color: 'inherit' }}>

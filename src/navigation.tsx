@@ -1,12 +1,11 @@
+import type { NavigateFunction } from 'react-router-dom';
 
+let navigateRef: NavigateFunction;
 
-
-let navigateRef: (path: string) => void;
-
-export const setNavigate = (navigate: (path: string) => void) => {
+export const setNavigate = (navigate: NavigateFunction) => {
   navigateRef = navigate;
 };
 
-export const getNavigate = (): ((path: string) => void) => {
+export const getNavigate = (): NavigateFunction => {
   return navigateRef;
 };

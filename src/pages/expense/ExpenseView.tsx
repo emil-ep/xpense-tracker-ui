@@ -7,7 +7,7 @@ import ReceiptLongRoundedIcon from '@mui/icons-material/ReceiptLongRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import LocalOfferRoundedIcon from '@mui/icons-material/LocalOfferRounded';
-import { useSearchParams } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import ExpenseTable from '../../components/table/expenses/ExpenseTable';
 import { getExpensesV2 } from '../../api/expensesApi';
@@ -22,7 +22,6 @@ import { findCurrency } from '../../utils/CurrencyUtil';
 const summaryCardSx = { height: '100%', borderRadius: 4, border: '1px solid #e8ece7', boxShadow: '0 8px 24px rgba(35, 55, 43, .045)', bgcolor: '#fff' };
 
 export const ExpenseView = () => {
-    const [, setSearchParams] = useSearchParams();
     const [expenseItems, setExpenseItems] = useState<ExpenseItemType[]>([]);
     const [tagCategories, setTagCategories] = useState<TagCategory[]>([]);
     const [tags, setTags] = useState<Tag[]>([]);
@@ -30,21 +29,12 @@ export const ExpenseView = () => {
     const { fromDate, toDate } = useDateRange();
     const { selectedBankAccountId } = useBankAccount();
 
-    const updateParams = useCallback((newParams: Record<string, string | number>) => {
-        setSearchParams(currentParams => {
-            const updatedParams = new URLSearchParams(currentParams);
-            Object.entries(newParams).forEach(([key, value]) => updatedParams.set(key, String(value)));
-            return updatedParams;
-        });
-    }, [setSearchParams]);
-
     useEffect(() => {
         if (fromDate && toDate) {
             const newTimeframe = { fromDate: format(fromDate, 'dd-MM-yy'), toDate: format(toDate, 'dd-MM-yy') };
-            updateParams(newTimeframe);
             setTimeframe(newTimeframe);
         }
-    }, [fromDate, toDate, updateParams]);
+    }, [fromDate, toDate]);
 
     const fetchExpenses = useCallback(() => timeframe && selectedBankAccountId
         ? getExpensesV2(1, 50000, timeframe.fromDate!, timeframe.toDate!, selectedBankAccountId)
@@ -90,7 +80,7 @@ export const ExpenseView = () => {
                             {!loading && <Chip size="small" label={`${stats.count.toLocaleString()} transactions`} sx={{ height: 23, bgcolor: '#e9f1eb', color: '#426b53', fontWeight: 650 }} />}
                         </Stack>
                     </Box>
-                    <Button href="/add/expense" variant="contained" startIcon={<AddRoundedIcon />} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' }, borderRadius: 3, px: 2.5, py: 1.2, bgcolor: '#28634c', textTransform: 'none', fontWeight: 700, boxShadow: '0 8px 20px #28634c2e', '&:hover': { bgcolor: '#1e503c' } }}>Add expense</Button>
+                    <Button component={Link} to={{ pathname: '/add/expense', search: window.location.search }} variant="contained" startIcon={<AddRoundedIcon />} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' }, borderRadius: 3, px: 2.5, py: 1.2, bgcolor: '#28634c', textTransform: 'none', fontWeight: 700, boxShadow: '0 8px 20px #28634c2e', '&:hover': { bgcolor: '#1e503c' } }}>Add expense</Button>
                 </Stack>
 
                 {!selectedBankAccountId && <Alert severity="info" sx={{ mb: 2 }}>Select a bank account to see your transactions.</Alert>}

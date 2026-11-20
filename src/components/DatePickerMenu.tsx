@@ -3,8 +3,8 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import { Box, Button, Divider, Grid, Popover, Stack, Typography } from '@mui/material';
 import CalendarMonthRoundedIcon from '@mui/icons-material/CalendarMonthRounded';
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
-import { endOfMonth, format, startOfMonth, subMonths } from 'date-fns';
-import { useState } from 'react';
+import { endOfMonth, format, isSameDay, startOfMonth, subMonths } from 'date-fns';
+import { useEffect, useState } from 'react';
 import { useDateRange } from '../context/DateRangeContext';
 
 const presets = [
@@ -16,13 +16,28 @@ const presets = [
   { months: 12, label: 'Last year', range: 'Last 1 Year' },
 ];
 
+const displayRangeLabel = (from: Date | null, to: Date | null) => {
+  if (!from || !to) return 'Choose date range';
+  const today = new Date();
+  const exactPreset = presets.find(preset => {
+    const expectedFrom = preset.months === 0 ? startOfMonth(today) : startOfMonth(subMonths(today, preset.months));
+    const expectedTo = preset.months === 0 ? today : endOfMonth(subMonths(today, 1));
+    return isSameDay(from, expectedFrom) && isSameDay(to, expectedTo);
+  });
+  return exactPreset?.range ?? `${format(from, 'MMM d, yyyy')} – ${format(to, 'MMM d, yyyy')}`;
+};
+
 export default function DatePickerMenu() {
   const { fromDate, toDate, updateDateRange } = useDateRange();
   const [anchorEl, setAnchorEl] = useState<HTMLElement | null>(null);
   const [customDateMode, setCustomDateMode] = useState(false);
-  const [selectedRange, setSelectedRange] = useState('Last 6 Months');
+  const [selectedRange, setSelectedRange] = useState(() => displayRangeLabel(fromDate, toDate));
   const [draftFromDate, setDraftFromDate] = useState<Date | null>(fromDate);
   const [draftToDate, setDraftToDate] = useState<Date | null>(toDate);
+
+  useEffect(() => {
+    setSelectedRange(displayRangeLabel(fromDate, toDate));
+  }, [fromDate, toDate]);
 
   const handleMenuOpen = (event: React.MouseEvent<HTMLButtonElement>) => {
     setDraftFromDate(fromDate);

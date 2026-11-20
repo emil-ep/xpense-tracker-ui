@@ -14,6 +14,7 @@ import SavingsRoundedIcon from '@mui/icons-material/SavingsRounded';
 import TrendingDownRoundedIcon from '@mui/icons-material/TrendingDownRounded';
 import TrendingUpRoundedIcon from '@mui/icons-material/TrendingUpRounded';
 import { BarChart } from '@mui/x-charts/BarChart';
+import { Link, useLocation } from 'react-router-dom';
 import { MetricsV2, MetricsV2Response, PaginatedExpenseResponse, ExpenseItemType } from '../../api/ApiResponses';
 import { MetricBody } from '../../api/ApiRequests';
 import { fetchMetricsV2 } from '../../api/metricsApi';
@@ -39,6 +40,7 @@ const dateText = (date?: string) => {
 };
 
 export default function Home() {
+  const location = useLocation();
   const { selectedBankAccountId } = useBankAccount();
   const { fromDate, toDate } = useDateRange();
   const timeframe = useMemo<MetricBody | null>(() => fromDate && toDate ? {
@@ -95,7 +97,7 @@ export default function Home() {
               <Typography variant="body2" sx={{ color: '#728078' }}>{rangeLabel}</Typography>
             </Stack>
           </Box>
-          <Button href="/add/expense" variant="contained" startIcon={<AddRoundedIcon />} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' }, borderRadius: 3, px: 2.5, py: 1.2, bgcolor: '#28634c', textTransform: 'none', fontWeight: 700, boxShadow: '0 8px 20px #28634c2e', '&:hover': { bgcolor: '#1e503c' } }}>
+          <Button component={Link} to={{ pathname: '/add/expense', search: location.search }} variant="contained" startIcon={<AddRoundedIcon />} sx={{ alignSelf: { xs: 'flex-start', sm: 'center' }, borderRadius: 3, px: 2.5, py: 1.2, bgcolor: '#28634c', textTransform: 'none', fontWeight: 700, boxShadow: '0 8px 20px #28634c2e', '&:hover': { bgcolor: '#1e503c' } }}>
             Add expense
           </Button>
         </Stack>
@@ -149,7 +151,7 @@ export default function Home() {
                     <LinearProgress variant="determinate" value={Math.max(5, amount / tagMax * 100)} sx={{ height: 6, borderRadius: 5, bgcolor: '#eef1ed', '& .MuiLinearProgress-bar': { borderRadius: 5, bgcolor: ['#78a88d', '#9995bf', '#d2a36f', '#83a9b8'][index] } }} />
                   </Box>)}
                 </Stack> : <EmptyBlock text="Categories will appear once your expenses are tagged." />}
-                <Button href="/analytics" endIcon={<ArrowForwardRoundedIcon />} sx={{ mt: 3, px: 0, color: '#28634c', textTransform: 'none', fontWeight: 700 }}>Explore analytics</Button>
+                <Button component={Link} to={{ pathname: '/analytics', search: location.search }} endIcon={<ArrowForwardRoundedIcon />} sx={{ mt: 3, px: 0, color: '#28634c', textTransform: 'none', fontWeight: 700 }}>Explore analytics</Button>
               </CardContent>
             </Card>
           </Grid>
@@ -159,7 +161,7 @@ export default function Home() {
               <CardContent sx={{ p: { xs: 2, md: 3 } }}>
                 <Stack direction="row" justifyContent="space-between" alignItems="center" sx={{ mb: 1.5 }}>
                   <Box><Typography variant="h6" sx={sectionTitle}>Recent activity</Typography><Typography variant="body2" sx={muted}>Your latest transactions in this period</Typography></Box>
-                  <Button href="/expense" endIcon={<ArrowForwardRoundedIcon />} sx={{ color: '#28634c', textTransform: 'none', fontWeight: 700 }}>All expenses</Button>
+                  <Button component={Link} to={{ pathname: '/expense', search: location.search }} endIcon={<ArrowForwardRoundedIcon />} sx={{ color: '#28634c', textTransform: 'none', fontWeight: 700 }}>All expenses</Button>
                 </Stack>
                 {recentLoading ? <LinearProgress /> : recent.length ? <Stack divider={<Divider flexItem sx={{ borderColor: '#edf0ed' }} />}>
                   {recent.map((expense, index) => <RecentRow key={expense.id ?? `${expense.transactionDate}-${index}`} expense={expense} />)}
