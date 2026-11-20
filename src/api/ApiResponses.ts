@@ -37,6 +37,16 @@ export interface FetchUserSettingsResponse extends BaseResponse {
     data : UserSettings[];
 }
 
+export interface FetchUserMailLabelsResponse extends BaseResponse {
+    data: MailLabel[];
+}
+
+export interface MailLabel {
+    id: string;
+    name: string;
+    type: string;
+}
+
 export interface TagCategoryResponse extends BaseResponse {
     data: TagCategory[];
 }

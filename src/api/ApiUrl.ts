@@ -8,6 +8,7 @@ export const FILE_MAPPER_URL = `${API_BASE_URL}/v1/expenses/statement`;
 export const METRICS_URL = `${API_BASE_URL}/v1/metrics`;
 export const TAG_URL = `${API_BASE_URL}/v1/tag`;
 export const USER_SETTINGS_URL = `${API_BASE_URL}/v1/user/settings`;
+export const USER_MAIL_LABELS_URL = `${USER_SETTINGS_URL}/mail/labels`;
 export const MUTUAL_FUND_URL = `${API_BASE_URL}/v1/mf`;
 export const LOGOUT_URL = `${API_BASE_URL}/v1/logout`;
 export const USER_BANK_ACCOUNT_URL = `${API_BASE_URL}/v1/userBankAccount`;
