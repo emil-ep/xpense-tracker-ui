@@ -8,8 +8,8 @@ import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagCategories } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
-import { BankAccount, FetchUserSettingsResponse, TagCategory, TagCategoryResponse, UserBankAccountResponse } from "../../api/ApiResponses";
-import { fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
+import { BankAccount, FetchUserMailLabelsResponse, FetchUserSettingsResponse, TagCategory, TagCategoryResponse, UserBankAccountResponse } from "../../api/ApiResponses";
+import { fetchUserMailLabelsApi, fetchUserSettingsApi, updateUserSettingsApi } from "../../api/userSettingsApi";
 import { apiCaller } from "../../api/apicaller";
 import { showToast } from "../../utils/ToastUtil";
 import { logoutApi } from "../../api/authApi";
@@ -23,6 +23,8 @@ export default function Settings() {
     const [currency, setCurrency] = useState('');
     const [savingsTags, setSavingsTags] = useState<string[]>([]);
     const [username, setUsername] = useState('');
+    const [mailLabelId, setMailLabelId] = useState('');
+    const [mailLabelChanged, setMailLabelChanged] = useState(false);
     const [bankAccounts, setBankAccounts] = useState<BankAccount[]>([]);
     const [editingBankAccountIndex, setEditingBankAccountIndex] = useState<number | null>(null);
     const [newBankAccountFormVisible, setNewBankAccountFormVisible] = useState(false);
@@ -36,6 +38,8 @@ export default function Settings() {
     const { responseBody: bankAccountTypeResponse } = useApi<any>(fetchBankAccountTypes, []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
     const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
+    const fetchUserMailLabels = useCallback(() => fetchUserMailLabelsApi(), []);
+    const { responseBody: mailLabelsResponse, loading: mailLabelsLoading, error: mailLabelsError, refetch: refetchMailLabels } = useApi<FetchUserMailLabelsResponse>(fetchUserMailLabels, []);
     const { responseBody: bankAccountsResponse } = useApi<UserBankAccountResponse>(fetchUserBankAccountsApi, []);
 
 
@@ -64,6 +68,10 @@ export default function Settings() {
             const usernameSetting = userSettingsResponse.data.find(item => item.type === 'USERNAME');
             if (usernameSetting) {
                 setUsername(usernameSetting.payload.username || '');
+            }
+            const mailLabelSetting = userSettingsResponse.data.find(item => item.type === 'MAIL_LABEL_ID');
+            if (mailLabelSetting) {
+                setMailLabelId(mailLabelSetting.payload.mailLabelId || '');
             }
         }
 
@@ -163,15 +171,18 @@ export default function Settings() {
 
 
     const saveValue = async () => {
-        const reqBody = {
-            items: [
+        const items: { type: string; payload: Record<string, unknown> }[] = [
                 { type: 'currency', payload: { userCurrency: currency } },
                 { type: 'savingsTags', payload: { tags: savingsTags } },
                 { type: 'username', payload: { username: username } }
-            ]
-        };
+            ];
+        if (mailLabelChanged) {
+            items.push({ type: 'mailLabelId', payload: { mailLabelId } });
+        }
+        const reqBody = { items };
         const createTagResponse: any = await apiCaller(updateUserSettingsApi(reqBody));
         if(createTagResponse.status === 1){
+            setMailLabelChanged(false);
             showToast("Settings saved successfully");
         }else{
             showToast("Failed to save settings");
@@ -208,6 +219,26 @@ export default function Settings() {
                                         </Select>
                                     </FormControl>
                                     <TextField label="Your name" value={username} onChange={event => setUsername(event.target.value)} fullWidth />
+                                    <FormControl fullWidth>
+                                        <InputLabel id="mail-label-select-label">Gmail label for expenses</InputLabel>
+                                        <Select
+                                            labelId="mail-label-select-label"
+                                            value={mailLabelId}
+                                            label="Gmail label for expenses"
+                                            onChange={event => {
+                                                setMailLabelId(event.target.value);
+                                                setMailLabelChanged(true);
+                                            }}
+                                            disabled={mailLabelsLoading || !mailLabelsResponse?.data?.length}
+                                        >
+                                            {(mailLabelsResponse?.data ?? []).map(label => (
+                                                <MenuItem key={label.id} value={label.id}>{label.name}</MenuItem>
+                                            ))}
+                                        </Select>
+                                    </FormControl>
+                                    {mailLabelsLoading && <Typography variant="caption" color="text.secondary">Loading Gmail labels…</Typography>}
+                                    {mailLabelsError && <Alert severity="error" action={<Button color="inherit" size="small" onClick={refetchMailLabels}>Retry</Button>}>Could not load Gmail labels.</Alert>}
+                                    {!mailLabelsLoading && !mailLabelsError && mailLabelsResponse?.data?.length === 0 && <Alert severity="info">No Gmail labels are available for this account.</Alert>}
                                     <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={saveValue} sx={{ alignSelf: 'flex-start', borderRadius: 2.5, bgcolor: '#28634c', px: 2.5, textTransform: 'none', fontWeight: 700, '&:hover': { bgcolor: '#1e503c' } }}>Save preferences</Button>
                                 </Stack>
                             </CardContent>
