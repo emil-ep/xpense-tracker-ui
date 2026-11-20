@@ -1,20 +1,62 @@
+.addExpensePage {
+    min-height: 100vh;
+    background: #f5f6f3;
+    color: #202b27;
+    padding: 6.5rem 2rem 3rem;
+}
 
-.homeContainer {
-    background-color: #573d3d;
-    height: 100vh;
-    width: 100vw;
+.addExpenseContent {
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-    .uploadContainer {
-        margin: 5rem 0 5rem 0;
-        border-block-end: 2px solid #000;
+.statementDropzone {
+    min-height: 230px;
+    padding: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    border: 2px dashed #cbd9ce;
+    border-radius: 18px;
+    background: #fbfcfa;
+    cursor: pointer;
+    transition: border-color .16s ease, background-color .16s ease, transform .16s ease;
+}
+
+.statementDropzone:hover,
+.statementDropzone.isDragging {
+    border-color: #43815b;
+    background: #f1f7f2;
+}
+
+.statementDropzone.isDragging {
+    transform: scale(1.005);
+}
+
+.statementDropzone:focus-visible {
+    outline: 3px solid #9fc5a9;
+    outline-offset: 3px;
+}
+
+.uploadIconBubble {
+    width: 54px;
+    height: 54px;
+    display: grid;
+    place-items: center;
+    color: #43815b;
+    border-radius: 16px;
+    background: #e8f1e9;
+}
+
+@media (max-width: 600px) {
+    .addExpensePage {
+        padding: 6rem 1rem 2rem;
     }
 
-    .uploadBtn {
-        background-color: #705c59;
-        padding: 0.5rem;
-        font-family: 'Ubuntu', sans-serif;
-        color: #ac9f9f;
-        font-size: medium;
-        margin: 1rem;
+    .statementDropzone {
+        min-height: 200px;
+        padding: 1.25rem;
     }
 }

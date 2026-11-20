@@ -1,8 +1,10 @@
-import { Box, Button, Chip, createTheme, 
-    CssBaseline, FormControl, InputLabel, 
-    MenuItem, OutlinedInput, Select, 
-    SelectChangeEvent, Stack, TextField, ThemeProvider, Typography } from "@mui/material";
+import { Alert, Box, Button, Card, CardContent, Chip, FormControl, Grid, InputLabel, MenuItem, OutlinedInput, Select, SelectChangeEvent, Stack, TextField, Typography } from "@mui/material";
 import Google from '@mui/icons-material/Google';
+import SettingsRoundedIcon from '@mui/icons-material/SettingsRounded';
+import AccountBalanceRoundedIcon from '@mui/icons-material/AccountBalanceRounded';
+import SaveRoundedIcon from '@mui/icons-material/SaveRounded';
+import LogoutRoundedIcon from '@mui/icons-material/LogoutRounded';
+import AddRoundedIcon from '@mui/icons-material/AddRounded';
 import { useCallback, useEffect, useState } from "react";
 import { fetchTagCategories } from "../../api/tagApi";
 import { useApi } from "../../api/hook/useApi";
@@ -13,18 +15,8 @@ import { showToast } from "../../utils/ToastUtil";
 import { logoutApi } from "../../api/authApi";
 import { fetchBankAccountTypes, fetchUserBankAccountsApi, upsertUserBankAccountApi } from "../../api/userBankAccountApi";
 
-const theme = createTheme({
-  palette: {
-    mode: 'dark',
-    primary: { main: '#669df6' },
-    background: { 
-      default: 'rgb(5, 30, 52)',
-      paper: 'rgb(5, 30, 52)',   
-    },
-  },
-});
-
 const currencies = ['USD', 'EUR', 'INR', 'JPY', 'GBP'];
+const panelSx = { borderRadius: 4, border: '1px solid #e8ece7', boxShadow: '0 8px 24px rgba(35, 55, 43, .045)', bgcolor: '#fff' };
 
 export default function Settings() {
     
@@ -41,7 +33,7 @@ export default function Settings() {
     
     
     const { responseBody: tagsCategoryResponse } = useApi<TagCategoryResponse>(fetchTagCategories, []);
-    const { responseBody: bankAccountTypeResponse, error: bankAccountTypeError } = useApi<any>(fetchBankAccountTypes, []);
+    const { responseBody: bankAccountTypeResponse } = useApi<any>(fetchBankAccountTypes, []);
     const fetchUserSettings = useCallback(() => fetchUserSettingsApi(), []);
     const { responseBody: userSettingsResponse } = useApi<FetchUserSettingsResponse>(fetchUserSettings, []);
     const { responseBody: bankAccountsResponse } = useApi<UserBankAccountResponse>(fetchUserBankAccountsApi, []);
@@ -180,271 +172,89 @@ export default function Settings() {
     };
 
     return (
-        <ThemeProvider theme={theme}>
-            <CssBaseline />
-            <Box p={4} maxWidth={600} display={'flex'} flexDirection='column'>
-                <Typography variant="h5" mb={4}>
-                    Settings
-                </Typography>
+        <Box sx={{ minHeight: '100vh', bgcolor: '#f5f6f3', px: { xs: 2, md: 4 }, pt: { xs: 10, md: 11 }, pb: 5, color: '#202b27' }}>
+            <Box sx={{ maxWidth: 1200, mx: 'auto' }}>
+                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: .75 }}>
+                    <SettingsRoundedIcon sx={{ color: '#43815b', fontSize: 21 }} />
+                    <Typography variant="overline" sx={{ color: '#6f8175', fontWeight: 700, letterSpacing: '.12em' }}>Make it yours</Typography>
+                </Stack>
+                <Typography variant="h4" sx={{ color: '#18382d', fontWeight: 750, letterSpacing: '-.04em' }}>Settings</Typography>
+                <Typography variant="body2" sx={{ color: '#849087', mt: .75, mb: 3 }}>Manage your preferences, connected services, and accounts.</Typography>
 
-                {/* User Preferences Section */}
-                <Box mb={4}>
-                    <Typography variant="h6" mb={2}>
-                        User Preferences
-                    </Typography>
-
-                    {/* Google Drive Login */}
-                    <Box mb={3} p={3} sx={{ border: '1px solid rgba(255,255,255,0.12)', borderRadius: 2, backgroundColor: 'rgba(255,255,255,0.04)' }}>
-                        <Typography variant="h6" gutterBottom>
-                            Google Drive Login
-                        </Typography>
-                        <Typography variant="body2" sx={{ color: '#ccc', mb: 2 }}>
-                            Optional functionality to keep your backup data in sync with Google Drive.
-                        </Typography>
-                        <Button
-                            variant="outlined"
-                            startIcon={<Google />}
-                            onClick={handleGoogleDriveLogin}
-                            sx={{ textTransform: 'none' }}
-                        >
-                            Connect Google Drive
-                        </Button>
-                        {googleDriveStatus && (
-                            <Typography variant="body2" sx={{ mt: 2, color: '#a5d6a7' }}>
-                                {googleDriveStatus}
-                            </Typography>
-                        )}
-                    </Box>
-
-                    {/* Currency Select */}
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Select your currency</InputLabel>
-                        <Select
-                            value={currency}
-                            onChange={(e) => setCurrency(e.target.value)}
-                            label="Select your currency"
-                        >
-                        {currencies.map((cur) => (
-                            <MenuItem key={cur} value={cur}>
-                            {cur}
-                            </MenuItem>
-                        ))}
-                        </Select>
-                    </FormControl>
-
-                    {/* Savings Tag Multi-Select */}
-                    <FormControl fullWidth margin="normal">
-                        <InputLabel>Select your savings tags</InputLabel>
-                        <Select
-                            multiple
-                            value={savingsTags}
-                            onChange={(e) => handleSavingsTagsChange(e)}
-                            input={<OutlinedInput label="Select your savings tags" />}
-                            renderValue={(selected) => (
-                                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-                                {selected.map((tag: string) => (
-                                    <Chip key={tag} label={tag} />
-                                ))}
-                                </Box>
-                            )}
-                        >
-                        {tagCateoryData.map((tagCategory) => (
-                            <MenuItem key={tagCategory.id} value={tagCategory.name} selected={savingsTags.indexOf(tagCategory.name) > -1}>
-                                {tagCategory.name}
-                            </MenuItem>
-                        ))}
-                        </Select>
-                    </FormControl>
-                    <FormControl fullWidth margin="normal">
-                        <TextField 
-                        id="username" 
-                        label="Username" 
-                        variant="outlined" 
-                        value={username}
-                        onChange={(e) => setUsername(e.target.value)}
-                    />
-                    </FormControl>
-                </Box>
-
-                {/* User Bank Account Details Section */}
-                <Box mb={4}>
-                    <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
-                        <Typography variant="h6">
-                            Bank Account Details
-                        </Typography>
-                        <Button 
-                            variant="outlined" 
-                            size="small"
-                            onClick={handleAddNewBankAccount}
-                        >
-                            Add New Account
-                        </Button>
-                    </Box>
-
-                    {/* Display Bank Accounts */}
-                    {bankAccounts.map((account, index) => (
-                        <Box key={index} mb={3} p={2} sx={{ border: '1px solid #444', borderRadius: '4px' }}>
-                            {editingBankAccountIndex === index ? (
-                                <Box>
-                                    <TextField 
-                                        fullWidth
-                                        label="Name" 
-                                        variant="outlined" 
-                                        value={tempBankAccount.name}
-                                        onChange={(e) => setTempBankAccount({ ...tempBankAccount, name: e.target.value })}
-                                        margin="normal"
-                                    />
-                                    <TextField 
-                                        fullWidth
-                                        label="Account Number" 
-                                        variant="outlined" 
-                                        value={tempBankAccount.accountNumber}
-                                        onChange={(e) => setTempBankAccount({ ...tempBankAccount, accountNumber: e.target.value })}
-                                        margin="normal"
-                                    />
-                                    <FormControl fullWidth margin="normal">
-                                        <InputLabel>Account Type</InputLabel>
-                                        <Select
-                                            value={tempBankAccount.type}
-                                            onChange={(e) => setTempBankAccount({ ...tempBankAccount, type: e.target.value })}
-                                            label="Account Type"
-                                        >
-                                        {bankAccountTypes.map((type) => (
-                                            <MenuItem key={type} value={type}>
-                                                {type}
-                                            </MenuItem>
-                                        ))}
+                <Grid container spacing={2} alignItems="stretch">
+                    <Grid item xs={12} lg={5}>
+                        <Card sx={panelSx}>
+                            <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+                                <Typography variant="h6" sx={{ color: '#203b30', fontWeight: 720 }}>Preferences</Typography>
+                                <Typography variant="body2" sx={{ color: '#849087', mt: .4, mb: 2 }}>Personalize how your activity is displayed and categorized.</Typography>
+                                <Stack spacing={2}>
+                                    <FormControl fullWidth>
+                                        <InputLabel>Display currency</InputLabel>
+                                        <Select value={currency} onChange={event => setCurrency(event.target.value)} label="Display currency">
+                                            {currencies.map(cur => <MenuItem key={cur} value={cur}>{cur}</MenuItem>)}
                                         </Select>
                                     </FormControl>
-                                    <Stack direction="row" spacing={1} mt={2}>
-                                        <Button 
-                                            variant="contained" 
-                                            size="small"
-                                            onClick={handleSaveBankAccount}
-                                        >
-                                            Save
-                                        </Button>
-                                        <Button 
-                                            variant="outlined" 
-                                            size="small"
-                                            onClick={handleCancelBankAccountEdit}
-                                        >
-                                            Cancel
-                                        </Button>
-                                    </Stack>
-                                </Box>
-                            ) : (
-                                <Box>
-                                    <Box display="flex" justifyContent="space-between" alignItems="flex-start" mb={2}>
-                                        <Box flex={1}>
-                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                Account Name
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5, mb: 1.5 }}>
-                                                {account.name}
-                                            </Typography>
-                                            
-                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                Account Number
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5, mb: 1.5 }}>
-                                                {account.accountNumber}
-                                            </Typography>
-                                            
-                                            <Typography variant="body2" sx={{ color: '#aaa', fontSize: '0.85rem', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
-                                                Account Type
-                                            </Typography>
-                                            <Typography variant="body1" sx={{ fontWeight: 500, mt: 0.5 }}>
-                                                {account.type}
-                                            </Typography>
-                                        </Box>
-                                        <Button 
-                                            variant="contained" 
-                                            size="small"
-                                            sx={{ ml: 2 }}
-                                            onClick={() => handleEditBankAccount(index)}
-                                        >
-                                            Edit
-                                        </Button>
-                                    </Box>
-                                </Box>
-                            )}
-                        </Box>
-                    ))}
+                                    <FormControl fullWidth>
+                                        <InputLabel>Savings categories</InputLabel>
+                                        <Select multiple value={savingsTags} onChange={handleSavingsTagsChange} input={<OutlinedInput label="Savings categories" />} renderValue={selected => <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: .5 }}>{selected.map(tag => <Chip key={tag} size="small" label={tag} sx={{ bgcolor: '#e9f1eb', color: '#426b53' }} />)}</Box>}>
+                                            {tagCateoryData.map(category => <MenuItem key={category.id} value={category.name}>{category.name}</MenuItem>)}
+                                        </Select>
+                                    </FormControl>
+                                    <TextField label="Your name" value={username} onChange={event => setUsername(event.target.value)} fullWidth />
+                                    <Button variant="contained" startIcon={<SaveRoundedIcon />} onClick={saveValue} sx={{ alignSelf: 'flex-start', borderRadius: 2.5, bgcolor: '#28634c', px: 2.5, textTransform: 'none', fontWeight: 700, '&:hover': { bgcolor: '#1e503c' } }}>Save preferences</Button>
+                                </Stack>
+                            </CardContent>
+                        </Card>
 
-                    {/* New Bank Account Form */}
-                    {newBankAccountFormVisible && (
-                        <Box p={2} sx={{ border: '1px solid #444', borderRadius: '4px' }}>
-                            <TextField 
-                                fullWidth
-                                label="Name" 
-                                variant="outlined" 
-                                value={tempBankAccount.name}
-                                onChange={(e) => setTempBankAccount({ ...tempBankAccount, name: e.target.value })}
-                                margin="normal"
-                            />
-                            <TextField 
-                                fullWidth
-                                label="Account Number" 
-                                variant="outlined" 
-                                value={tempBankAccount.accountNumber}
-                                onChange={(e) => setTempBankAccount({ ...tempBankAccount, accountNumber: e.target.value })}
-                                margin="normal"
-                            />
-                            <FormControl fullWidth margin="normal">
-                                <InputLabel>Account Type</InputLabel>
-                                <Select
-                                    value={tempBankAccount.type}
-                                    onChange={(e) => setTempBankAccount({ ...tempBankAccount, type: e.target.value })}
-                                    label="Account Type"
-                                >
-                                {bankAccountTypes.map((type) => (
-                                    <MenuItem key={type} value={type}>
-                                        {type}
-                                    </MenuItem>
-                                ))}
-                                </Select>
-                            </FormControl>
-                            <Stack direction="row" spacing={1} mt={2}>
-                                <Button 
-                                    variant="contained" 
-                                    size="small"
-                                    onClick={handleSaveBankAccount}
-                                >
-                                    Save
-                                </Button>
-                                <Button 
-                                    variant="outlined" 
-                                    size="small"
-                                    onClick={handleCancelBankAccountEdit}
-                                >
-                                    Cancel
-                                </Button>
-                            </Stack>
-                        </Box>
-                    )}
-                </Box>
-                <Stack direction={"row"} spacing={2}>
-                    <Button 
-                        sx={{ mt : "0.5rem", alignSelf: 'flex-start' }} 
-                        variant="contained" 
-                        color="error"
-                        // disabled={!edited} 
-                        onClick={logout}
-                        >
-                        Logout
-                    </Button>
-                    <Button 
-                        sx={{ mt : "0.5rem", alignSelf: 'flex-end' }} 
-                        variant="contained" 
-                        // disabled={!edited} 
-                        onClick={saveValue}
-                        >
-                        Save Settings
-                    </Button>
-                </Stack>
-                
+                        <Card sx={{ ...panelSx, mt: 2 }}>
+                            <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+                                <Stack direction="row" spacing={1} alignItems="center" sx={{ mb: .75 }}><Google sx={{ color: '#5267a2' }} /><Typography variant="h6" sx={{ color: '#203b30', fontWeight: 720 }}>Google Drive</Typography></Stack>
+                                <Typography variant="body2" sx={{ color: '#849087', mb: 2 }}>Connect Drive to keep your backup data in sync.</Typography>
+                                <Button variant="outlined" startIcon={<Google />} onClick={handleGoogleDriveLogin} sx={{ borderColor: '#cbd9ce', color: '#28634c', borderRadius: 2, textTransform: 'none', fontWeight: 650 }}>Connect Google Drive</Button>
+                                {googleDriveStatus && <Alert severity={googleDriveStatus.includes('failed') ? 'error' : 'success'} sx={{ mt: 2 }}>{googleDriveStatus}</Alert>}
+                            </CardContent>
+                        </Card>
+                        <Button startIcon={<LogoutRoundedIcon />} onClick={logout} sx={{ mt: 2, color: '#a34f4f', textTransform: 'none', fontWeight: 650 }}>Log out</Button>
+                    </Grid>
+
+                    <Grid item xs={12} lg={7}>
+                        <Card sx={panelSx}>
+                            <CardContent sx={{ p: { xs: 2, md: 3 } }}>
+                                <Stack direction="row" justifyContent="space-between" alignItems="center" spacing={1} sx={{ mb: 2 }}>
+                                    <Box><Stack direction="row" spacing={1} alignItems="center"><AccountBalanceRoundedIcon sx={{ color: '#43815b' }} /><Typography variant="h6" sx={{ color: '#203b30', fontWeight: 720 }}>Bank accounts</Typography></Stack><Typography variant="body2" sx={{ color: '#849087', mt: .5 }}>Manage the accounts linked to your transactions.</Typography></Box>
+                                    {!newBankAccountFormVisible && editingBankAccountIndex === null && <Button variant="outlined" startIcon={<AddRoundedIcon />} onClick={handleAddNewBankAccount} sx={{ borderColor: '#cbd9ce', color: '#28634c', borderRadius: 2, textTransform: 'none', whiteSpace: 'nowrap' }}>Add account</Button>}
+                                </Stack>
+
+                                {bankAccounts.map((account, index) => <Card key={account.id ?? index} variant="outlined" sx={{ mb: 1.5, borderColor: '#edf0ed', borderRadius: 3, boxShadow: 'none' }}>
+                                    <CardContent sx={{ p: 2, '&:last-child': { pb: 2 } }}>
+                                        {editingBankAccountIndex === index ? <BankAccountForm
+                                            account={tempBankAccount}
+                                            bankAccountTypes={bankAccountTypes}
+                                            onChange={setTempBankAccount}
+                                            onSave={handleSaveBankAccount}
+                                            onCancel={handleCancelBankAccountEdit}
+                                        /> : <Stack direction={{ xs: 'column', sm: 'row' }} justifyContent="space-between" alignItems={{ xs: 'flex-start', sm: 'center' }} spacing={1.5}>
+                                            <Box><Typography variant="subtitle1" sx={{ color: '#30473a', fontWeight: 700 }}>{account.name}</Typography><Typography variant="body2" sx={{ color: '#718078', mt: .25 }}>{account.type} · {account.accountNumber}</Typography></Box>
+                                            <Button size="small" onClick={() => handleEditBankAccount(index)} sx={{ color: '#28634c', textTransform: 'none', fontWeight: 650 }}>Edit details</Button>
+                                        </Stack>}
+                                    </CardContent>
+                                </Card>)}
+                                {bankAccounts.length === 0 && !newBankAccountFormVisible && <Typography variant="body2" sx={{ color: '#849087', py: 2 }}>No bank accounts added yet.</Typography>}
+                                {newBankAccountFormVisible && <Card variant="outlined" sx={{ borderColor: '#dfe8e0', borderRadius: 3, bgcolor: '#fbfcfa', boxShadow: 'none' }}><CardContent><Typography variant="subtitle1" sx={{ color: '#30473a', fontWeight: 700, mb: 1 }}>Add a bank account</Typography><BankAccountForm account={tempBankAccount} bankAccountTypes={bankAccountTypes} onChange={setTempBankAccount} onSave={handleSaveBankAccount} onCancel={handleCancelBankAccountEdit} /></CardContent></Card>}
+                            </CardContent>
+                        </Card>
+                    </Grid>
+                </Grid>
             </Box>
-        </ThemeProvider>
-    )
+        </Box>
+    );
+}
+
+function BankAccountForm({ account, bankAccountTypes, onChange, onSave, onCancel }: { account: BankAccount; bankAccountTypes: string[]; onChange: (account: BankAccount) => void; onSave: () => void; onCancel: () => void }) {
+    return <Stack spacing={1.5}>
+        <TextField label="Account name" value={account.name} onChange={event => onChange({ ...account, name: event.target.value })} fullWidth />
+        <TextField label="Account number" value={account.accountNumber} onChange={event => onChange({ ...account, accountNumber: event.target.value })} fullWidth />
+        <FormControl fullWidth><InputLabel>Account type</InputLabel><Select value={account.type} onChange={event => onChange({ ...account, type: event.target.value })} label="Account type">{bankAccountTypes.map(type => <MenuItem key={type} value={type}>{type}</MenuItem>)}</Select></FormControl>
+        <Stack direction="row" spacing={1}><Button variant="contained" onClick={onSave} sx={{ bgcolor: '#28634c', textTransform: 'none', '&:hover': { bgcolor: '#1e503c' } }}>Save account</Button><Button variant="outlined" onClick={onCancel} sx={{ textTransform: 'none' }}>Cancel</Button></Stack>
+    </Stack>;
 }
