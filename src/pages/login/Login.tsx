@@ -58,8 +58,9 @@ export default function Login() {
     if (token) {
       localStorage.setItem("authToken", token);
       showToast("Login Success");
-      window.history.replaceState({}, document.title, "/login");
-      navigate("/home");
+      // OAuth returns through a full-page redirect. Reload onto the protected
+      // route so the app starts with the token already available everywhere.
+      window.location.replace("/home");
       return;
     }
 
@@ -70,7 +71,7 @@ export default function Login() {
         autoClose: 5000,
         theme: "dark",
       });
-      window.history.replaceState({}, document.title, "/login");
+      window.location.replace("/login");
     }
   }, [navigate]);
 
